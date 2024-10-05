@@ -1,0 +1,50 @@
+CLASSES:
+1. Barbarian 
+2. Wizard 
+3. Cleric 
+4. Rogue
+
+RACES:
+1. Human    
+2. Gnome 
+3. Elf 
+4. Halfling 
+
+TRAITS:
+Human ->
+Ability Score Increase: +1 to all ability scores (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma).
+Age: Humans reach adulthood in their late teens and live less than a century.
+Size: Medium. Height ranges between 5 and 6 feet.
+Speed: Your base walking speed is 30 feet.
+Languages: You can speak, read, and write Common and one extra language of your choice.
+
+Gnome ->
+Ability Score Increase: +2 to Intelligence.
+Age: Gnomes reach adulthood at the same rate as humans and live for 350 to almost 500 years.
+Size: Small. Gnomes are around 3 to 4 feet tall.
+Speed: Your base walking speed is 25 feet.
+Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light (you can't discern color in darkness, only shades of gray).
+Gnome Cunning: You have advantage on all Intelligence, Wisdom, and Charisma saving throws against magic.
+Languages: You can speak, read, and write Common and Gnomish.
+
+Elf ->
+Ability Score Increase: +2 to Dexterity.
+Age: Elves mature at the same rate as humans, but they live much longer (up to 750 years).
+Size: Elves are Medium, standing between 5 and 6 feet tall.
+Speed: Your base walking speed is 30 feet.
+Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.
+Keen Senses: You have proficiency in the Perception skill.
+Fey Ancestry: You have advantage on saving throws against being charmed, and magic can’t put you to sleep.
+Trance: Elves don’t sleep but instead meditate deeply for 4 hours a day.
+Languages: You can speak, read, and write Common and Elvish.
+
+
+Halfling -> 
+Ability Score Increase: +2 to Dexterity.
+Age: Halflings reach adulthood at age 20 and live to around 150 years.
+Size: Halflings are Small, standing about 3 feet tall.
+Speed: Your base walking speed is 25 feet.
+Lucky: When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll.
+Brave: You have advantage on saving throws against being frightened.
+Halfling Nimbleness: You can move through the space of any creature that is larger than you.
+Languages: You can speak, read, and write Common and Halfling.
