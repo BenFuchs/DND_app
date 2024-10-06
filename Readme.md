@@ -56,11 +56,11 @@ An interactive D&D character management app, including features such as an inven
   - [ ] Payment system for unlocking more sheets
 
 - [ ] **Character Creation System**:
-  - [ ] Class selection logic
-  - [ ] Race selection logic
-  - [ ] Fully interactive character traits
-  - [ ] Partially interactive inventory and currency system
-  - [ ] Spell slot & selection based on class
+  - [ ] Class selection logic (requires frontend)
+  - [WIP] Race selection logic (requires frontend)
+  - [ ] Fully interactive character traits (requires frontend)
+  - [ ] Partially interactive inventory and currency system (requires frontend)
+  - [ ] Spell slot & selection based on class (requires frontend)
 
 - [ ] **Party System** *(optional)*:
   - [ ] Server-hosted party system with room creation
@@ -80,7 +80,7 @@ An interactive D&D character management app, including features such as an inven
 
 1. Clone the repository:
    ```bash
-   git clone ***WIP***
-   cd ***WIP***
+   git clone https://github.com/BenFuchs/DND_app.git
+   cd https://github.com/BenFuchs/DND_app.git
 
 
