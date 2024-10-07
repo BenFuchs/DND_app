@@ -76,6 +76,16 @@ An interactive D&D character management app, including features such as an inven
   - [ ] End-to-end integration testing
 
 
+## Existing flow
+<!-- This is how a user would go about using the website for the first time -->
+- [V] Registeration and Log in 
+- [V] Creating a new sheet/Checking how many sheets exist per logged user/Deleting sheets
+- [V] Race selection
+- [ ] Appending appropriate traits per selected race to the sheet 
+- [ ] Class selection
+- [ ] Appending appropriate traits and requirements per selected class to the sheet
+- [ ] Stat setting and saving 
+
 ## Installation
 
 1. Clone the repository:

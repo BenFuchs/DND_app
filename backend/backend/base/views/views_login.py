@@ -21,7 +21,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 def register(request):
     user = User.objects.create_user(
                 username=request.data['username'],
-                email=request.data['email'],
+                # email=request.data['email'],
                 password=request.data['password']
             )
     user.is_active = True

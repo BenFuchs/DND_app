@@ -19,3 +19,20 @@ class CharacterSheet(models.Model):
     
     def __str__(self) -> str:
         return f"{self.owner} is the owner of {self.Sheet_name}, Race: {self.get_race_display()}"
+
+class HumanSheets(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    char_name = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE)
+
+class GnomeSheets(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    char_name = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE)
+
+class ElfSheets(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    char_name = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE)
+
+class HalflingSheets(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    char_name = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE)
+

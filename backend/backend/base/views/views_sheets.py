@@ -64,3 +64,5 @@ def sheet_delete(request, id):
     except CharacterSheet.DoesNotExist:
         # If the sheet does not exist or doesn't belong to the user, return an error response
         return Response({"msg": "Character sheet not found or not owned by the user."}, status=status.HTTP_404_NOT_FOUND)
+    
+    
