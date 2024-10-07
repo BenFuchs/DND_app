@@ -1,6 +1,7 @@
 import axios from 'axios';  
 import { useState, useEffect } from 'react';
 import React from 'react';
+import { Outlet, Link } from "react-router-dom";
 
 // Define interface for the decoded JWT payload if known
 interface JwtPayload {
@@ -23,6 +24,8 @@ function App() {
         axios.post(SERVER + 'login/', { username, password })
             .then(res => setAccess(res.data.access))
             .catch(error => console.error('Error fetching data:', error));
+
+            localStorage.setItem('Token', access)
     };
 
     const register = () => {
@@ -91,10 +94,12 @@ function App() {
             {access && (
                 <>
                     <h1>Welcome {decodedUsername} </h1><br/>
-                    Is user staff: {staff}
+                    <Link to='/sheets'>Sheet selection</Link>
                 </>
             )}
+            <Outlet/>
         </div>
+
     );
 }
 
