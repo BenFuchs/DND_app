@@ -56,7 +56,7 @@ An interactive D&D character management app, including features such as an inven
   - [ ] Payment system for unlocking more sheets
 
 - [ ] **Character Creation System**:
-  - [ ] Class selection logic (requires frontend)
+  - [WIP] Class selection logic (requires frontend)
   - [WIP] Race selection logic (requires frontend)
     |- [ ] change login into a component in the frontend
     |- [WIP] change sheet creation flow (see notebook for information)
@@ -83,10 +83,10 @@ An interactive D&D character management app, including features such as an inven
 - [V] Registeration and Log in 
 - [V] Creating a new sheet/Checking how many sheets exist per logged user/Deleting sheets
 - [V] Race selection
-- [ ] Appending appropriate traits per selected race to the sheet 
-- [ ] Class selection
-- [ ] Appending appropriate traits and requirements per selected class to the sheet
-- [ ] Stat setting and saving 
+- [ ] Appending appropriate traits per selected race to the sheet (frontend view left)
+- [V] Class selection
+- [ ] Appending appropriate traits and requirements per selected class to the sheet 
+- [V] Stat setting and saving 
 
 ## Installation
 
@@ -96,3 +96,7 @@ An interactive D&D character management app, including features such as an inven
    cd https://github.com/BenFuchs/DND_app.git
 
 
+## notes:
+  6/11/24:
+  currently on character creation in the frontend. need to choose between 1 vs 2 endpoint route for the stat mechanic
+  (1 endpoint with a flag or 2 seperate calls, 2 is probably simpler to implement to be honest)

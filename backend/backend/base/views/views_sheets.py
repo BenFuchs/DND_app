@@ -47,7 +47,10 @@ def sheet_creation(request):
     else:
         createHalflingSheet(user)
 
-    return Response({"msg": f"New character sheet created for {user.username} with race {CharacterSheet.Race(race).label}."}, status=status.HTTP_201_CREATED)
+    return Response({
+        "msg": f"New character sheet created for {user.username} with race {CharacterSheet.Race(race).label}."
+        }, status=status.HTTP_201_CREATED)
+
 #Endpoint to delete sheets for logged user 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

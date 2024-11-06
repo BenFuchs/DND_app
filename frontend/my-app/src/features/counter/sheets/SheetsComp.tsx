@@ -1,18 +1,47 @@
-import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'; // Adjust path based on your folder structure
-import { getNum_of_sheetsAsync, selectNumSheets, selectSheetStatus, createNewSheet_Aysnc } from '../sheets/sheetsSlice';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { getNum_of_sheetsAsync, selectNumSheets, selectSheetStatus, create_new_sheetAsync } from '../sheets/sheetsSlice';
 
 const SheetsComp = () => {
   const dispatch = useAppDispatch();
-  const numSheets = useAppSelector(selectNumSheets); // This contains the full response object
+  const numSheets = useAppSelector(selectNumSheets); // Contains { username, sheet_count }
   const status = useAppSelector(selectSheetStatus);
+
+  // State to handle race selection and character creation
+  const [selectedRace, setSelectedRace] = useState<number | null>(null);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [characterName, setCharacterName] = useState<string>('');
+  const [charClass, setCharClass] = useState<number | null>(null);
+  const [stats, setStats] = useState<number[]>(Array(6).fill(0));
+
+  // Roll stats function
+  const rollStats = () => {
+    setStats(Array.from({ length: 6 }, () => Math.floor(Math.random() * 6) + 1));
+  };
+
+  // Handle form submission
+  const handleCreateCharacterSheet = () => {
+    if (characterName && charClass && selectedRace !== null) {
+      dispatch(create_new_sheetAsync({ characterName, charClass, race: selectedRace, stats }));
+    } else {
+      alert('Please fill out all fields!');
+    }
+  };
 
   useEffect(() => {
     const access = localStorage.getItem('Access');
-    if(access) {
+    if (access) {
       dispatch(getNum_of_sheetsAsync());
     }
   }, [dispatch]);
+
+  const handleCreateSheet = () => {
+    if (selectedRace !== null) {
+      setShowForm(true);
+    } else {
+      alert('Please select a race first!');
+    }
+  };
 
   if (status === 'loading') {
     return <div>Loading...</div>;
@@ -22,8 +51,8 @@ const SheetsComp = () => {
     return <div>Error loading the number of sheets.</div>;
   }
 
+  // Check if numSheets is available and destructure it properly
   if (numSheets && typeof numSheets === 'object') {
-    // Destructure the response object if it's an object
     const { username, sheet_count } = numSheets;
 
     if (sheet_count < 3) {
@@ -31,10 +60,65 @@ const SheetsComp = () => {
         <div>
           <h1>Username: {username}</h1>
           <h2>Number of Sheets: {sheet_count}</h2>
-          {/* button should get username save it locally (from token maybe?) and proceed to race selection */}
-          <button onClick={()=>{createNewSheet_Aysnc()}}>Create new sheet</button> 
+          <div>
+            <label>Select Race: </label>
+            <select
+              value={selectedRace ?? ''}
+              onChange={(e) => setSelectedRace(Number(e.target.value))}
+            >
+              <option value="">Select a race</option>
+              <option value={1}>Human</option>
+              <option value={2}>Gnome</option>
+              <option value={3}>Elf</option>
+              <option value={4}>Halfling</option>
+            </select>
+          </div>
+          <button onClick={handleCreateSheet}>Create new character sheet</button>
+
+          {/* Show the character creation form when selectedRace is chosen */}
+          {showForm && (
+            <div>
+              <div>
+                <label>Character Name: </label>
+                <input
+                  type="text"
+                  value={characterName}
+                  onChange={(e) => setCharacterName(e.target.value)}
+                  placeholder="Enter character name"
+                />
+              </div>
+
+              <div>
+                <label>Class: </label>
+                <select
+                  value={charClass ?? ''}
+                  onChange={(e) => setCharClass(Number(e.target.value))}
+                >
+                  <option value="">Select Class</option>
+                  <option value={1}>Barbarian</option>
+                  <option value={2}>Wizard</option>
+                  <option value={3}>Cleric</option>
+                  <option value={4}>Rogue</option>
+                </select>
+              </div>
+
+              <div>
+                <button onClick={rollStats}>Roll Stats</button>
+                <div>
+                  {stats.map((stat, index) => (
+                    <div key={index}>
+                      <label>Stat {index}: </label>
+                      <input type="number" value={stat} readOnly />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button onClick={handleCreateCharacterSheet}>Submit</button>
+            </div>
+          )}
         </div>
-      )
+      );
     }
 
     return (
@@ -47,7 +131,7 @@ const SheetsComp = () => {
 
   return (
     <div>
-      <h1>Number of Sheets: {numSheets}</h1>
+      <h1>No sheets available or invalid data.</h1>
     </div>
   );
 };

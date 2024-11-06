@@ -40,7 +40,7 @@ def createHumanSheet(user):
         stat_Constitution=stat_Constitution,
         stat_Charisma=stat_Charisma
     )    
-    return {"msg": f"Human character sheet created for {user.username} with name {char_name} and class {HumanSheets.CharClass(char_class).label}."}
+    return {"msg": f"Human character sheet created for {user.username} with name {char_name} and class {HumanSheets.CharClass(char_class).label}.", "stats":stats}
 
 
 def createGnomeSheet(user):
