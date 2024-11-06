@@ -12,7 +12,13 @@ export function num_of_sheets() {
     });
 }
 
-
-
-
-export {}
+export function createNewSheet() {
+    const access = localStorage.getItem('Access');
+    console.log('token: ', access)
+    if (access)
+        return axios.post(SERVER + '/sheetCreation', {
+            headers: {
+                'Authorization': `Bearer ${access}`
+            }
+        });
+}

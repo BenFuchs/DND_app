@@ -58,7 +58,9 @@ An interactive D&D character management app, including features such as an inven
 - [ ] **Character Creation System**:
   - [ ] Class selection logic (requires frontend)
   - [WIP] Race selection logic (requires frontend)
-  - [ ] Fully interactive character traits (requires frontend)
+    |- [ ] change login into a component in the frontend
+    |- [WIP] change sheet creation flow (see notebook for information)
+  - [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
   - [ ] Partially interactive inventory and currency system (requires frontend)
   - [ ] Spell slot & selection based on class (requires frontend)
 

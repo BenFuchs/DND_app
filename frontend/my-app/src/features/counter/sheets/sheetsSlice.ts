@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from '../../../app/store';
-import { num_of_sheets } from "./sheetsAPI";
+import { createNewSheet, num_of_sheets } from "./sheetsAPI";
 
 // Define the initial state for the slice
 interface SheetState {
@@ -17,13 +17,21 @@ const initialState: SheetState = {
 
 // Async function to fetch the number of sheets
 export const getNum_of_sheetsAsync = createAsyncThunk(
-  'sheets/getNum_of_sheets',
+  'sheets/num_of_sheets',
   async () => {
     const response = await num_of_sheets();
     return response.data; 
     // Assuming response.data is the number of sheets
   }
 );
+
+// function to create new sheet 
+export const createNewSheet_Aysnc = createAsyncThunk(
+  'sheets/createNewSheet',
+  async () => {
+    return (await createNewSheet()).data;
+  }
+)
 
 // Create the slice
 export const sheetSlice = createSlice({
