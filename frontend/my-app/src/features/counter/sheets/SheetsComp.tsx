@@ -1,35 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { getNum_of_sheetsAsync, selectNumSheets, selectSheetStatus, create_new_sheetAsync } from '../sheets/sheetsSlice';
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import {
+  getNum_of_sheetsAsync,
+  selectNumSheets,
+  selectSheetStatus,
+  create_new_sheetAsync,
+  rollStatsAsync,
+  selectStats,
+} from "../sheets/sheetsSlice";
 
 const SheetsComp = () => {
   const dispatch = useAppDispatch();
   const numSheets = useAppSelector(selectNumSheets); // Contains { username, sheet_count }
   const status = useAppSelector(selectSheetStatus);
+  const stats = useAppSelector(selectStats);
 
   // State to handle race selection and character creation
   const [selectedRace, setSelectedRace] = useState<number | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [characterName, setCharacterName] = useState<string>('');
+  const [characterName, setCharacterName] = useState<string>("");
   const [charClass, setCharClass] = useState<number | null>(null);
-  const [stats, setStats] = useState<number[]>(Array(6).fill(0));
-
-  // Roll stats function
-  const rollStats = () => {
-    setStats(Array.from({ length: 6 }, () => Math.floor(Math.random() * 6) + 1));
-  };
-
-  // Handle form submission
-  const handleCreateCharacterSheet = () => {
-    if (characterName && charClass && selectedRace !== null) {
-      dispatch(create_new_sheetAsync({ characterName, charClass, race: selectedRace, stats }));
-    } else {
-      alert('Please fill out all fields!');
-    }
-  };
 
   useEffect(() => {
-    const access = localStorage.getItem('Access');
+    const access = localStorage.getItem("Access");
     if (access) {
       dispatch(getNum_of_sheetsAsync());
     }
@@ -39,20 +32,50 @@ const SheetsComp = () => {
     if (selectedRace !== null) {
       setShowForm(true);
     } else {
-      alert('Please select a race first!');
+      alert("Please select a race first!");
     }
   };
 
-  if (status === 'loading') {
+  const handleCreateCharacterSheet = () => {
+    if (characterName && charClass && selectedRace !== null) {
+      // console.log(characterName, charClass, selectedRace, stats) #debug line works 
+      dispatch(
+        create_new_sheetAsync({
+          characterName,
+          charClass,
+          race: selectedRace,
+          stats,
+        })
+      );
+    } else {
+      alert("Please fill out all fields!");
+    }
+  };
+
+  const handleRollStat = () => {
+    console.log("stats:", stats);
+    dispatch(rollStatsAsync());
+  };
+
+  const statNames = [
+    "Strength", 
+    "Dexterity", 
+    "Constitution", 
+    "Intelligence", 
+    "Wisdom", 
+    "Charisma"
+  ];
+  
+
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
 
-  if (status === 'failed') {
+  if (status === "failed") {
     return <div>Error loading the number of sheets.</div>;
   }
 
-  // Check if numSheets is available and destructure it properly
-  if (numSheets && typeof numSheets === 'object') {
+  if (numSheets && typeof numSheets === "object") {
     const { username, sheet_count } = numSheets;
 
     if (sheet_count < 3) {
@@ -63,7 +86,7 @@ const SheetsComp = () => {
           <div>
             <label>Select Race: </label>
             <select
-              value={selectedRace ?? ''}
+              value={selectedRace ?? ""}
               onChange={(e) => setSelectedRace(Number(e.target.value))}
             >
               <option value="">Select a race</option>
@@ -73,7 +96,9 @@ const SheetsComp = () => {
               <option value={4}>Halfling</option>
             </select>
           </div>
-          <button onClick={handleCreateSheet}>Create new character sheet</button>
+          <button onClick={handleCreateSheet}>
+            Create new character sheet
+          </button>
 
           {/* Show the character creation form when selectedRace is chosen */}
           {showForm && (
@@ -91,7 +116,7 @@ const SheetsComp = () => {
               <div>
                 <label>Class: </label>
                 <select
-                  value={charClass ?? ''}
+                  value={charClass ?? ""}
                   onChange={(e) => setCharClass(Number(e.target.value))}
                 >
                   <option value="">Select Class</option>
@@ -103,11 +128,11 @@ const SheetsComp = () => {
               </div>
 
               <div>
-                <button onClick={rollStats}>Roll Stats</button>
+                <button onClick={handleRollStat}>Roll Stats</button>
                 <div>
-                  {stats.map((stat, index) => (
+                  {stats?.map((stat, index) => (
                     <div key={index}>
-                      <label>Stat {index}: </label>
+                      <label>{statNames[index]}: </label>
                       <input type="number" value={stat} readOnly />
                     </div>
                   ))}

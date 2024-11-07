@@ -30,15 +30,15 @@ class HumanSheets(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     char_name = models.CharField(max_length=10,unique = True) #characters name 
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
-    char_gold = models.IntegerField(validators=[MinValueValidator(0)]) # characters gold 
+    char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     
     #stats
-    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
+    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
 
 
 class GnomeSheets(models.Model):
@@ -50,15 +50,16 @@ class GnomeSheets(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     char_name = models.CharField(max_length=10,unique = True)
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
-    char_gold = models.IntegerField(validators=[MinValueValidator(0)]) # characters gold 
+    char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     
     #stats
-    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
+    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+
 
 class ElfSheets(models.Model):
     class CharClass(models.IntegerChoices):
@@ -69,15 +70,16 @@ class ElfSheets(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     char_name = models.CharField(max_length=10,unique = True)
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
-    char_gold = models.IntegerField(validators=[MinValueValidator(0)]) # characters gold 
+    char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     
     #stats
-    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
+    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+
 
 class HalflingSheets(models.Model):
     class CharClass(models.IntegerChoices):
@@ -88,13 +90,14 @@ class HalflingSheets(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     char_name = models.CharField(max_length=10,unique = True)
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
-    char_gold = models.IntegerField(validators=[MinValueValidator(0)]) # characters gold 
+    char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     
     #stats
-    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
-    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)])
+    stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Dexterity = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+    stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+
 

@@ -12,15 +12,26 @@ export function num_of_sheets() {
     });
 }
 
-export function create_new_sheet(characterName: string, charClass: number, race: number) {
+export function create_new_sheet(characterName: string, charClass: number, race: number, stats: number[]) {
     const access = localStorage.getItem('Access'); // Get the access token from localStorage
+    console.log(characterName, charClass, race, stats)
     return axios.post(SERVER + 'sheetCreation/', {
         data: { 
             characterName: characterName,  // Send character name
             charClass: charClass,          // Send character class
-            race: race,                    // Send race
+            race: race,   
+            stats: stats                 // Send race
         },
     }, {
+        headers: {
+            'Authorization': `Bearer ${access}`,  // Send the access token in the header
+        }
+    })
+}
+
+export function rollStats() {
+    const access = localStorage.getItem('Access'); // Get the access token from localStorage
+    return axios.get(SERVER + 'statRoll/', {
         headers: {
             'Authorization': `Bearer ${access}`,  // Send the access token in the header
         }

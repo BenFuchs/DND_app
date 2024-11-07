@@ -20,32 +20,37 @@ def logged_sheetNum_check(request):
     # Return the sheet count in the response
     return Response({'username': user.username, 'sheet_count': sheet_count})
 
-#Endpoint to create a sheet for the logged user 
+#Endpoint to create a sheet for the logged user / requires logged in user and sending statBlocks
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sheet_creation(request):
+    print(request.data)
     user = request.user
-
+    data = request.data.get('data', {}) #use data to get information 
+    #info from data
+    user_stats = data.get('stats')  
+    user_Name = data.get('characterName')
+    user_Class = data.get('charClass')
     # Check if the user already has 3 character sheets
     sheet_count = CharacterSheet.objects.filter(owner=user, active=True).count()
     if sheet_count >= 3:
         return Response({"msg": "You have reached the maximum of 3 character sheets."}, status=status.HTTP_400_BAD_REQUEST)
 
     # Get the race selection from the request data
-    race = request.data.get('race')
+    race = data.get('race')
     if race is None or int(race) not in [choice[0] for choice in CharacterSheet.Race.choices]:
         return Response({"msg": "Invalid race selection."}, status=status.HTTP_400_BAD_REQUEST)
 
     # Create a new character sheet with the selected race
     CharacterSheet.objects.create(owner=user, race=race)
     if race == 1:
-        createHumanSheet(user)
+        createHumanSheet(user, user_stats, user_Name, user_Class)
     elif race == 2:
-        createGnomeSheet(user)
+        createGnomeSheet(user, user_stats, user_Name, user_Class)
     elif race == 3:
-        createElfSheet(user)
+        createElfSheet(user, user_stats, user_Name, user_Class)
     else:
-        createHalflingSheet(user)
+        createHalflingSheet(user, user_stats, user_Name, user_Class)
 
     return Response({
         "msg": f"New character sheet created for {user.username} with race {CharacterSheet.Race(race).label}."
