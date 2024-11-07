@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from '../../../app/store';
+import { RootState } from '../../app/store';
 import { num_of_sheets, create_new_sheet, rollStats } from "./sheetsAPI";
 
 

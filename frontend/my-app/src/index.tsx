@@ -6,9 +6,9 @@ import App from './App';
 import {
   BrowserRouter,
   Routes,
-  Route,Link
+  Route,Link,
 } from "react-router-dom";
-import SheetsComp from './features/counter/sheets/SheetsComp';
+import SheetsComp from './features/sheets/SheetsComp';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);

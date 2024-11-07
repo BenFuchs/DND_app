@@ -56,10 +56,10 @@ An interactive D&D character management app, including features such as an inven
   - [ ] Payment system for unlocking more sheets
 
 - [ ] **Character Creation System**:
-  - [WIP] Class selection logic (requires frontend)
-  - [WIP] Race selection logic (requires frontend)
+  - [V] Class selection logic (requires frontend)
+  - [V] Race selection logic (requires frontend)
     |- [ ] change login into a component in the frontend
-    |- [WIP] change sheet creation flow (see notebook for information)
+    |- [V] change sheet creation flow (see notebook for information)
   - [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
   - [ ] Partially interactive inventory and currency system (requires frontend)
   - [ ] Spell slot & selection based on class (requires frontend)
@@ -100,3 +100,18 @@ An interactive D&D character management app, including features such as an inven
   6/11/24:
   currently on character creation in the frontend. need to choose between 1 vs 2 endpoint route for the stat mechanic
   (1 endpoint with a flag or 2 seperate calls, 2 is probably simpler to implement to be honest)
+
+  7/11/24:
+  to do list:
+  [ ] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
+  [ ] whole lot of design to do
+  [ ] add logout functionality 
+  [ ] Create component page for the character information for play, includes:
+      [ ] stats
+      [ ] Name
+      [ ] Race
+      [ ] Class
+      [ ] Race-Traits (connect to dnd explanation links)
+      [ ] Gold Counter (ability to add, remove gold like a calculator)
+      [ ] inventory (at first, keep simple, let user write in it)
+      [ ] Backstory section? 
