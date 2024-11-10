@@ -1,23 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from '../../app/store';
-import { num_of_sheets, create_new_sheet, rollStats } from "./sheetsAPI";
-
+import { num_of_sheets, create_new_sheet, rollStats, sheet_delete } from "./sheetsAPI";
+import { SheetData } from "./SheetsComp";
 
 // Define the initial state for the slice
 interface SheetState {
-  numSheets: number;
+  numSheets: SheetData | null;  // Modify this to accept a structured object or null
   username: string;
   status: 'idle' | 'loading' | 'failed';
-  error?: string;  // Add error property for better error handling
-  stats: []
+  error?: string;
+  stats: number[];
+  Id: number;
 }
 
 const initialState: SheetState = {
-  numSheets: 0,
+  numSheets: null,  // Default to null
   username: '',
   status: 'idle',
-  error: undefined,  // Initialize error as undefined
-  stats: []
+  error: undefined,
+  stats: [],
+  Id: 0
 };
 
 // Async function to fetch the number of sheets
@@ -25,6 +27,7 @@ export const getNum_of_sheetsAsync = createAsyncThunk(
   'sheets/num_of_sheets',
   async () => {
     const response = await num_of_sheets();
+    console.log(response.data) //debug line
     return response.data; 
     // Assuming response.data is the number of sheets
   }
@@ -50,6 +53,16 @@ export const rollStatsAsync = createAsyncThunk(
     return response.data.stats;
   }
 )
+
+export const deleteSheetAsync = createAsyncThunk(
+  'sheets/sheet_delete',
+  async (Id: number) => {
+      const response = await sheet_delete(Id);
+      return response.data;
+  // Return response data if any message needs to be displayed
+  }
+);
+
 
 // Create the slice
 export const sheetSlice = createSlice({
@@ -93,6 +106,21 @@ export const sheetSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;  // Capture error message
       })
+      .addCase(deleteSheetAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (state.numSheets) {
+          state.numSheets.sheets = state.numSheets.sheets.filter(
+            (sheet) => sheet.sheetID !== action.payload.sheetID
+          );
+        }
+      })
+      .addCase(deleteSheetAsync.pending, (state)=> {
+        state.status = 'loading';
+      })
+      .addCase(deleteSheetAsync.rejected, (state, action)=> {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
   },
 });
 
@@ -101,5 +129,6 @@ export const selectNumSheets = (state: RootState) => state.sheets.numSheets;
 export const selectSheetStatus = (state: RootState) => state.sheets.status;
 export const selectError = (state: RootState) => state.sheets.error;
 export const selectStats = (state: RootState) => state.sheets.stats;
+export const selectDelete = (state:RootState) => state.sheets.Id
 
 export default sheetSlice.reducer;

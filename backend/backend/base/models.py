@@ -31,6 +31,8 @@ class HumanSheets(models.Model):
     char_name = models.CharField(max_length=10,unique = True) #characters name 
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
+    active = models.BooleanField(default=True)
+
     
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -51,7 +53,8 @@ class GnomeSheets(models.Model):
     char_name = models.CharField(max_length=10,unique = True)
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
-    
+    active = models.BooleanField(default=True)
+
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -71,7 +74,8 @@ class ElfSheets(models.Model):
     char_name = models.CharField(max_length=10,unique = True)
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
-    
+    active = models.BooleanField(default=True)
+
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -91,7 +95,8 @@ class HalflingSheets(models.Model):
     char_name = models.CharField(max_length=10,unique = True)
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
-    
+    active = models.BooleanField(default=True)
+
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Wisdom = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
