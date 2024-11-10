@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from '../../app/store';
-import { num_of_sheets, create_new_sheet, rollStats, sheet_delete } from "./sheetsAPI";
+import { num_of_sheets, create_new_sheet, rollStats, sheet_delete, getSheetData } from "./sheetsAPI";
 import { SheetData } from "./SheetsComp";
 
 // Define the initial state for the slice
@@ -11,6 +11,7 @@ interface SheetState {
   error?: string;
   stats: number[];
   Id: number;
+  data: {}
 }
 
 const initialState: SheetState = {
@@ -19,7 +20,8 @@ const initialState: SheetState = {
   status: 'idle',
   error: undefined,
   stats: [],
-  Id: 0
+  Id: 0,
+  data: {}
 };
 
 // Async function to fetch the number of sheets
@@ -62,6 +64,15 @@ export const deleteSheetAsync = createAsyncThunk(
   // Return response data if any message needs to be displayed
   }
 );
+
+export const getSheetDataAsync = createAsyncThunk(
+  'sheets/getSheetData',
+  async(sheetID:number)=> {
+    const response = await getSheetData(sheetID);
+    console.log(response.data); // debugging line
+    return response.data;
+  }
+)
 
 
 // Create the slice
@@ -120,6 +131,10 @@ export const sheetSlice = createSlice({
       .addCase(deleteSheetAsync.rejected, (state, action)=> {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(getSheetDataAsync.fulfilled, (state, action)=> {
+        state.status = 'idle';
+        state.data = action.payload;
       })
   },
 });

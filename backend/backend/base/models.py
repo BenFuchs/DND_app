@@ -11,7 +11,6 @@ class CharacterSheet(models.Model):
         HALFLING = 4, 'Halfling'
     #creation and ownership section 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    sheet_name = models.CharField(max_length=255) #at first sheet name will be empty, later we will insert character name as sheet name 
     creation_time = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
@@ -32,6 +31,7 @@ class HumanSheets(models.Model):
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
+    race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=1)
 
     
     #stats
@@ -54,6 +54,8 @@ class GnomeSheets(models.Model):
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
+    race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=2)
+
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -75,6 +77,8 @@ class ElfSheets(models.Model):
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
+    race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=3)
+
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -96,6 +100,8 @@ class HalflingSheets(models.Model):
     char_class = models.IntegerField(choices=CharClass.choices, default=1) #default to barbarian
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
+    race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=4)
+
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)

@@ -10,5 +10,6 @@ urlpatterns = [
     path('sheetDel/<int:id>/', views.sheet_delete),
     path('statRoll/', views.statRoll),
     path('sheet_delete/', views.sheet_delete),
-    path('getSheetData/<int:id>/', views.get_specific_sheet),
+    path('getSheetData/<int:sheetID>/', views.get_specific_sheet),
+    path('currencyCalc/', views.currencyCalc),
 ]

@@ -1,10 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import sheetReducer from '../features/sheets/sheetsSlice';
+import gameReducer from '../features/game/gameSlice';
 
 export const store = configureStore({
   reducer: {
     sheets: sheetReducer,
-
+    game: gameReducer,
   },
 });
 

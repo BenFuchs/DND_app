@@ -9,6 +9,7 @@ import {
   Route,Link,
 } from "react-router-dom";
 import SheetsComp from './features/sheets/SheetsComp';
+import GameComponent from './features/game/GameComponent';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -21,6 +22,7 @@ root.render(
 
       <Route path='/' element={<App/>} />
       <Route path='/sheets' element={<SheetsComp/>}/>
+      <Route path="game/:sheetID" element={<GameComponent />} />
 
       </Routes>
     </Provider>

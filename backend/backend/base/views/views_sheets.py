@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from ..models import CharacterSheet
 from ..helper.raceSheets import * 
+from ..serializers import HumanSheetsSerializer, GnomeSheetsSerializer, ElfSheetsSerializer, HalflingSheetsSerializer
 
 
 # Endpoint to check how many sheets are owned by current logged user
@@ -129,67 +130,45 @@ def sheet_delete(request):
     except CharacterSheet.DoesNotExist:
         return Response({"msg": "Character sheet not found or not owned by the user."}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_specific_sheet(request):
+def get_specific_sheet(request, sheetID):
     # Ensure the user is authenticated through the token
     user = request.user  # The user is retrieved from the request, thanks to JWT authentication
     
-    # Get the sheetID from the request data (using 'GET' method, consider changing to 'GET' parameter if needed)
-    sheetID = request.query_params.get('sheetID')  # Changed to query params for GET request
-    
-    # Ensure the sheetID is provided
-    if not sheetID:
-        return Response({"msg": "Sheet ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Retrieve the CharacterSheet object for the authenticated user and the specific sheetID
     try:
-        sheet = CharacterSheet.objects.get(id=sheetID, owner=user, active=True)
-        
-        # Prepare the base character sheet data
-        sheet_data = {
-            'sheet_name': sheet.sheet_name,
-            'creation_time': sheet.creation_time,
-            'race': sheet.get_race_display(),  # Human, Elf, etc. (using the Race choices for display)
-            'active': sheet.active,
-        }
-        
-        # Now, based on the race, we fetch race-specific data
-        race = sheet.race
-        race_sheet = None
-        
-        if race == CharacterSheet.Race.HUMAN:
-            race_sheet = HumanSheets.objects.get(owner=user, char_name=sheet.sheet_name, active=True)
-        elif race == CharacterSheet.Race.GNOME:
-            race_sheet = GnomeSheets.objects.get(owner=user, char_name=sheet.sheet_name, active=True)
-        elif race == CharacterSheet.Race.ELF:
-            race_sheet = ElfSheets.objects.get(owner=user, char_name=sheet.sheet_name, active=True)
-        elif race == CharacterSheet.Race.HALFLING:
-            race_sheet = HalflingSheets.objects.get(owner=user, char_name=sheet.sheet_name, active=True)
+        # Get the parent sheet      
+        parent_sheet = CharacterSheet.objects.get(id=sheetID)
 
-        # If the specific race sheet is found, add race-specific data to the response
-        if race_sheet:
-            race_data = {
-                'char_name': race_sheet.char_name,
-                'char_class': race_sheet.get_char_class_display(),
-                'char_gold': race_sheet.char_gold,
-                'stats': {
-                    'Strength': race_sheet.stat_Strength,
-                    'Wisdom': race_sheet.stat_Wisdom,
-                    'Dexterity': race_sheet.stat_Dexterity,
-                    'Intelligence': race_sheet.stat_Intelligence,
-                    'Constitution': race_sheet.stat_Constitution,
-                    'Charisma': race_sheet.stat_Charisma,
-                }
-            }
-            sheet_data['race_data'] = race_data
-        else:
-            sheet_data['race_data'] = None  # If race-specific data is not found
-        
-        return Response(sheet_data, status=status.HTTP_200_OK)
+        # Check the race of the sheet
+        sheet_race = parent_sheet.race
+        parent_sheet_owner = parent_sheet.owner
+
+        if sheet_race == 1:  
+            char_sheet = HumanSheets.objects.get(owner=parent_sheet_owner)
+            serializer = HumanSheetsSerializer(char_sheet)
+            return Response({"data": serializer.data})
+        elif sheet_race ==2:
+            char_sheet = GnomeSheets.objects.get(owner=parent_sheet_owner)
+            serializer = GnomeSheetsSerializer(char_sheet)
+            return Response({"data": serializer.data})
+        elif sheet_race ==3:
+            char_sheet = ElfSheets.objects.get(owner=parent_sheet_owner)
+            serializer = ElfSheetsSerializer(char_sheet)
+            return Response({"data": serializer.data})
+        elif sheet_race ==4:
+            char_sheet = HalflingSheets.objects.get(owner=parent_sheet_owner)
+            serializer = HalflingSheetsSerializer(char_sheet)
+            return Response({"data": serializer.data})
 
     except CharacterSheet.DoesNotExist:
-        return Response({"msg": "Character sheet not found or not owned by the user."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"msg": "CharacterSheet not found."}, status=404)
+    except HumanSheets.DoesNotExist:
+        return Response({"msg": "HumanSheets not found for the given owner."}, status=404)
+    except Exception as e:
+        # Log the error for debugging if needed
+        print(f"Error: {e}")
+        return Response({"msg": "An error occurred."}, status=500)
 
-    except (HumanSheets.DoesNotExist, GnomeSheets.DoesNotExist, ElfSheets.DoesNotExist, HalflingSheets.DoesNotExist):
-        return Response({"msg": "Race-specific sheet not found."}, status=status.HTTP_404_NOT_FOUND)
+    return Response({"msg": "No data found for this sheet."}, status=404)
