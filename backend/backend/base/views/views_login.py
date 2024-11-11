@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from ..serializers import MyTokenObtainPairSerializer
 from ..models import CharacterSheet
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 @api_view(['GET'])
 def test(req):
@@ -29,3 +31,13 @@ def register(request):
     user.save()
     return Response("new user registered")
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        refresh_token = request.data["refresh"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()  # Blacklist the refresh token
+        return Response({"message": "Logout successful"}, status=204)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

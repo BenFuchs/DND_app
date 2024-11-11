@@ -6,10 +6,13 @@ import App from './App';
 import {
   BrowserRouter,
   Routes,
-  Route,Link,
+  Route,
 } from "react-router-dom";
 import SheetsComp from './features/sheets/SheetsComp';
 import GameComponent from './features/game/GameComponent';
+import Layout from './Layout'; // Import the Layout component
+import Inventory from './features/inventory/Inventory';
+
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -17,20 +20,16 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-    <Provider store={store}>
-      <Routes>
-
-      <Route path='/' element={<App/>} />
-      <Route path='/sheets' element={<SheetsComp/>}/>
-      <Route path="game/:sheetID" element={<GameComponent />} />
-
-      </Routes>
-    </Provider>
+      <Provider store={store}>
+        <Routes>
+          <Route element={<Layout />}> {/* Wrap routes in the Layout */}
+            <Route path="/" element={<App />} />
+            <Route path="/sheets" element={<SheetsComp />} />
+            <Route path="game/:sheetID" element={<GameComponent />} />
+            <Route path="game/:sheetID/inventory" element={<Inventory />} />
+          </Route>
+        </Routes>
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-

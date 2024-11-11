@@ -14,4 +14,5 @@ urlpatterns = [
     path('currencyCalc/', views.currencyCalc),
     path('getGold/', views.getGold),
     path('getMods/', views.getMods),
+    path('logout/', views.logout),
 ]

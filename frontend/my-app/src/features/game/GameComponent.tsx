@@ -11,6 +11,8 @@ import CharacterStats from "../game/components/CharacterStats";
 import Skills from "../game/components/Skills";
 import CurrencyCalculator from "../game/components/CurrencyCalculator";
 
+
+
 // TypeScript interface for sheet data
 interface SheetData {
   id: number;
@@ -152,6 +154,8 @@ const GameComponent = () => {
         onAdd={handleAddGold}
         onSubtract={handleSubtractGold}
       />
+
+      
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
     </div>

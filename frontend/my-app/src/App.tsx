@@ -1,7 +1,7 @@
 import axios from 'axios';  
 import { useState, useEffect } from 'react';
 import React from 'react';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 // Define interface for the decoded JWT payload if known
 interface JwtPayload {
@@ -11,22 +11,33 @@ interface JwtPayload {
 }
 
 function App() {
-    const SERVER = 'http://127.0.0.1:8000/';
+    const SERVER = 'http://127.0.0.1:8000/'
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [access, setAccess] = useState<string>('');
     const [decodedUsername, setDecodedUsername] = useState<string>(''); 
     const [staff, setStaff] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(false); // Loading state
+
+    const navigate = useNavigate();
 
     const login = () => {
         console.log('Attempting to log in with:', username, password);
+        setLoading(true); // Start loading
         axios.post(SERVER + 'login/', { username, password })
-            .then(res => setAccess(res.data.access))
-            .catch(error => console.error('Error fetching data:', error));
-
-            localStorage.setItem('Token', access)
+            .then(res => {
+                setAccess(res.data.access);
+                localStorage.setItem('Access', res.data.access); // Save token after setting it
+                setLoading(false); // Stop loading
+                navigate(`/sheets`); // Redirect to sheets after token is set
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setLoading(false); // Stop loading if there's an error
+            });
     };
+
 
     const register = () => {
         console.log(username, password);
@@ -84,21 +95,22 @@ function App() {
   
 
     return (
-         <div>
-            username: <input type="text" onChange={(e) => setUsername(e.target.value)} />
-            password: <input type="password" onChange={(e) => setPassword(e.target.value)} />
-            <button onClick={() => login()}>LOGIN</button>
-            <button onClick={() => register()}>REGISTER</button>
-
-            <br/>
-            {access && (
-                <>
-                    <h1>Welcome {decodedUsername} </h1><br/>
-                    <Link to='/sheets'>Sheet selection</Link>
-                </>
-            )}
-            <Outlet/>
-        </div>
+        <div>
+        {loading ? (
+            <p>Loading, please wait...</p> // Show loading message or spinner
+        ) : (
+            <>
+                <label>Username:</label>
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                
+                <label>Password:</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                
+                <button onClick={login}>LOGIN</button>
+                <button onClick={register}>REGISTER</button>
+            </>
+        )}
+    </div>
 
     );
 }
