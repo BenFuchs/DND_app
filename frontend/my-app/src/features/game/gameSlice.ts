@@ -1,17 +1,19 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { currencyCalc } from './gameAPI'; 
+import { currencyCalc, getGold, getMods } from './gameAPI'; 
 
 // Define the initial state
 interface GameState {
   gold: number;
   loading: boolean;
   error: string;
+  mods: []
 }
 
 const initialState: GameState = {
   gold: 0,
   loading: false,
   error: '',
+  mods: [],
 };
 
 // Create an async thunk to handle the currency calculation
@@ -26,6 +28,23 @@ export const updateGold = createAsyncThunk(
     }
   }
 );
+
+// get gold from db 
+export const getGoldAsync = createAsyncThunk(
+  'game/getGold',
+  async({race, sheetID}: {race:number, sheetID:number}) => {
+    const response = await getGold(race, sheetID);
+    return response.data;
+  }
+)
+
+export const getModsAsync = createAsyncThunk(
+  'game/getMods',
+  async({race, sheetID}: {race:number, sheetID:number})=> {
+    const response = await getMods(race, sheetID);
+    return response.data;
+  }
+)
 
 // Create the slice
 const gameSlice = createSlice({
@@ -47,7 +66,15 @@ const gameSlice = createSlice({
       .addCase(updateGold.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;  // Handle error messages
-      });
+      })
+      .addCase(getGoldAsync.fulfilled,(state, action: PayloadAction<number>) => {
+        state.loading = false;
+        state.gold = action.payload;
+      })
+      .addCase(getModsAsync.fulfilled, (state, action)=> {
+        state.loading = false;
+        state.mods = action.payload;
+      })
   },
 });
 

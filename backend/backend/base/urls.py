@@ -12,4 +12,6 @@ urlpatterns = [
     path('sheet_delete/', views.sheet_delete),
     path('getSheetData/<int:sheetID>/', views.get_specific_sheet),
     path('currencyCalc/', views.currencyCalc),
+    path('getGold/', views.getGold),
+    path('getMods/', views.getMods),
 ]
