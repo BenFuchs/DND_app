@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { updateGold, getGoldAsync, getModsAsync } from "../game/gameSlice";
 import { RootState } from "../../app/store";
@@ -44,7 +44,7 @@ interface SkillMap {
 }
 
 const GameComponent = () => {
-  const { sheetID } = useParams<{ sheetID: string }>();
+//   const { sheetID } = useParams<{ sheetID: string }>();
   const dispatch = useAppDispatch();
   const { gold, loading, error } = useAppSelector(
     (state: RootState) => state.game
