@@ -11,7 +11,8 @@ import {
 import SheetsComp from './features/sheets/SheetsComp';
 import GameComponent from './features/game/GameComponent';
 import Layout from './Layout'; // Import the Layout component
-import Inventory from './features/inventory/Inventory';
+import InventoryWrapper from './InventoryWrapper';
+
 
 
 const container = document.getElementById('root')!;
@@ -26,8 +27,8 @@ root.render(
             <Route path="/" element={<App />} />
             <Route path="/sheets" element={<SheetsComp />} />
             <Route path="game/:sheetID" element={<GameComponent />} />
-            <Route path="game/:sheetID/inventory" element={<Inventory />} />
-          </Route>
+            <Route path="game/:sheetID/inventory" element={<InventoryWrapper />} /> {/* Use a wrapper component */}
+            </Route>
         </Routes>
       </Provider>
     </BrowserRouter>

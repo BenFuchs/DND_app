@@ -1,111 +1,42 @@
-import React, { useState, useEffect } from "react";
-import Papa from "papaparse";
+import React, { useEffect } from 'react';
+import { RootState } from '../../app/store'; // Adjust imports to your store setup
+import { getInventoryAsync } from '../inventory/inventorySlice'; // Adjust the path to your inventory slice
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
-// Define the structure for the item
-interface Item {
-  name: string;
-  image: string;
-  description: string;
-  category: string;
-  rarity: string;
-  classification: string;
-  ac: string;
-  damage: string;
-  damage_type: string;
-  properties: string;
-  cost: string;
+interface InventoryComponentProps {
+  id: number;
+  race: number;
 }
 
-const Inventory = () => {
-  const [items, setItems] = useState<Item[]>([]); // All items from CSV
-  const [inventory, setInventory] = useState<Item[]>([]); // User's inventory
-  const [searchQuery, setSearchQuery] = useState<string>(""); // Search query for autocomplete
-  const [filteredItems, setFilteredItems] = useState<Item[]>([]); // Filtered items for search
+const InventoryComponent: React.FC<InventoryComponentProps> = ({ id }) => {
+  const dispatch = useAppDispatch();
+  const inventory = useAppSelector((state: RootState) => state.inventory.items); // Assuming `items` holds the inventory data
+  // const loading = useAppSelector((state: RootState) => state.inventory.loading);
+  const error = useAppSelector((state: RootState) => state.inventory.error);
 
-  // Load and parse the CSV file
   useEffect(() => {
-    // Replace with the actual path to your CSV file or fetch it from a server
-    const csvFilePath = "misc/Mythical Ink Items.csv";
-    if (csvFilePath) {
-      Papa.parse(csvFilePath, {
-        download: true,
-        complete: (result) => {
-          // Assuming your CSV headers match the keys in the Item interface
-          setItems(result.data as Item[]);
-        },
-        header: true,
-      });
-    } else {
-      console.log("error in file path")
-    }
-  }, []);
+    dispatch(getInventoryAsync({ id }));
+  }, [dispatch, id]);
 
-  // Handle search input change and filter items based on search query
-  useEffect(() => {
-    if (searchQuery) {
-      const filtered = items.filter(item =>
-        item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredItems(filtered);
-    } else {
-      setFilteredItems([]);
-    }
-  }, [searchQuery, items]);
-
-  // Add item to the inventory
-  const addItemToInventory = (item: Item) => {
-    setInventory((prev) => [...prev, item]);
-  };
-
-  // Remove item from the inventory
-  const removeItemFromInventory = (item: Item) => {
-    setInventory((prev) => prev.filter((invItem) => invItem.name !== item.name));
-  };
+  // if (loading) return <div>Loading inventory...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <h1>Inventory</h1>
-
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search for an item"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-
-      {/* Autocomplete/Filtered Item List */}
-      {searchQuery && (
+      <h2>Your Inventory</h2>
+      {inventory && inventory.length > 0 ? (
         <ul>
-          {filteredItems.map((item) => (
-            <li key={item.name}>
-              {item.name}
-              <button onClick={() => addItemToInventory(item)}>Add</button>
+          {inventory.map((item: any, index: number) => (
+            <li key={index}>
+              {item.name} - Quantity: {item.quantity}
             </li>
           ))}
         </ul>
+      ) : (
+        <p>Your inventory is empty.</p>
       )}
-
-      <h2>Your Inventory</h2>
-      <ul>
-        {inventory.map((item, index) => (
-          <li key={index}>
-            <div>
-              <strong>{item.name}</strong>
-              <button onClick={() => removeItemFromInventory(item)}>Remove</button>
-              {/* Display more item details */}
-              <div>{item.description}</div>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <div>
-        <h3>Item Details</h3>
-        {/* You can display detailed information for a selected item here */}
-      </div>
     </div>
   );
 };
 
-export default Inventory;
+export default InventoryComponent;

@@ -103,15 +103,22 @@ An interactive D&D character management app, including features such as an inven
 
   7/11/24:
   to do list:
-  [ ] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
+  [X] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
   [ ] whole lot of design to do
-  [ ] add logout functionality 
-  [ ] Create component page for the character information for play, includes:
-      [ ] stats
-      [ ] Name
-      [ ] Race
-      [ ] Class
+  [X] add logout functionality 
+  [WIP] Create component page for the character information for play, includes:
+      [X] stats
+      [X] Name
+      [X] Race
+      [X] Class
       [ ] Race-Traits (connect to dnd explanation links)
-      [ ] Gold Counter (ability to add, remove gold like a calculator)
-      [ ] inventory (at first, keep simple, let user write in it)
+      [X] Gold Counter (ability to add, remove gold like a calculator)
+      [WIP] inventory (at first, keep simple, let user write in it)
       [ ] Backstory section? 
+
+  12/11/24: 
+  in my inventory functions there is an issue with the possibility of one user having multiple sheets that are of the same race, thus getting the inventory sheet selection confused.
+  [X] add a foregin key between characterSheets model and the raceSheets models that allows better clarity. (maybe after character creation send the character name as a foregin key to the father model?)
+
+  [X] show inventory
+  [ ] add to inventory from front end

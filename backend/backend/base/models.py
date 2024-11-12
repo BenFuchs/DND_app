@@ -16,7 +16,7 @@ class CharacterSheet(models.Model):
 
     #character information
     race = models.IntegerField(choices=Race.choices, default=1) #at first all will be set to human until they reach the race selection 
-    
+    char_name = models.CharField(max_length=10, unique=True, default='') # this is what we will connect 
     def __str__(self) -> str:
         return f"{self.owner} is the owner of {self.Sheet_name}, Race: {self.get_race_display()}"
 
@@ -32,7 +32,7 @@ class HumanSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=1)
-
+    inventory = models.JSONField(default=dict)
     
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -55,7 +55,7 @@ class GnomeSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=2)
-
+    inventory = models.JSONField(default=dict)
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -78,7 +78,7 @@ class ElfSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=3)
-
+    inventory = models.JSONField(default=dict)
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -101,7 +101,7 @@ class HalflingSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=4)
-
+    inventory = models.JSONField(default=dict)
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)

@@ -77,7 +77,7 @@ def sheet_creation(request):
         return Response({"msg": "Invalid race selection."}, status=status.HTTP_400_BAD_REQUEST)
 
     # Create a new character sheet with the selected race
-    CharacterSheet.objects.create(owner=user, race=race)
+    CharacterSheet.objects.create(owner=user, race=race, char_name=user_Name)
     if race == 1:
         createHumanSheet(user, user_stats, user_Name, user_Class)
     elif race == 2:

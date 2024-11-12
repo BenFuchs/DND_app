@@ -15,4 +15,8 @@ urlpatterns = [
     path('getGold/', views.getGold),
     path('getMods/', views.getMods),
     path('logout/', views.logout),
+    path('getInventory/', views.getInventory),
+    path('searchItems/', views.searchItems),
+    path('addToInventory/', views.addItemToPlayerInv),
+
 ]

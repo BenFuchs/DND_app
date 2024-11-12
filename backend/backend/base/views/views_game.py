@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view
 from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, ElfSheets
 
 from ..helper.modifiers import modifiers
+from ..helper.inventoryParse import inventorySearch
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -145,3 +147,59 @@ def getMods(request):
         # Log the error for debugging if needed
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addItemToPlayerInv(request):
+    user = request.user
+    itemID = request.data.get("itemID")  # ID of the item the user wants to add to their inventory
+    race = request.data.get("race")
+    sheetID = request.data.get("id")
+
+    # Retrieve the item data from the CSV
+    item = inventorySearch(itemID)
+    if isinstance(item, str):
+        return Response({"msg": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        # Get the character sheet associated with the current user
+        character_sheet = CharacterSheet.objects.get(owner=user, race=race)
+
+        # Access the race-specific table based on `race`
+        if character_sheet.race == 1:
+            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+        elif character_sheet.race == 2:
+            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+        elif character_sheet.race == 3:
+            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+        elif character_sheet.race == 4:
+            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+        else:
+            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Access and update the inventory field
+        inventory = char_sheet.inventory or {}  # Initialize inventory if it's None
+        
+        # Update the inventory with the new item
+        if itemID in inventory:
+            inventory[itemID] += 1  # Increase quantity if the item is already in inventory
+        else:
+            inventory[itemID] = 1  # Add new item with quantity 1
+
+        # Save the updated inventory back to the character sheet
+        char_sheet.inventory = inventory
+        char_sheet.save()
+
+        return Response({"msg": "Item added to inventory successfully.", "inventory": inventory}, status=status.HTTP_200_OK)
+
+    except CharacterSheet.DoesNotExist:
+        return Response({"msg": "Character sheet not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        # Log the error for debugging if needed
+        print(f"Error: {e}")
+        return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
