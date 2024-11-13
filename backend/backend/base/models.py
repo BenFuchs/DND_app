@@ -19,6 +19,13 @@ class CharacterSheet(models.Model):
     char_name = models.CharField(max_length=10, unique=True, default='') # this is what we will connect 
     def __str__(self) -> str:
         return f"{self.owner} is the owner of {self.Sheet_name}, Race: {self.get_race_display()}"
+    
+class InventoryItem(models.Model):
+    itemID = models.IntegerField()  # The ID of the item
+    quantity = models.IntegerField(default=1)  # The quantity of the item
+
+    def __str__(self):
+        return f"Item ID: {self.itemID}, Quantity: {self.quantity}"
 
 class HumanSheets(models.Model):
     class CharClass(models.IntegerChoices):
@@ -32,7 +39,7 @@ class HumanSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=1)
-    inventory = models.JSONField(default=dict)
+    inventory = models.ManyToManyField(InventoryItem)  
     
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -55,7 +62,7 @@ class GnomeSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=2)
-    inventory = models.JSONField(default=dict)
+    inventory = models.ManyToManyField(InventoryItem)  
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -78,7 +85,7 @@ class ElfSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=3)
-    inventory = models.JSONField(default=dict)
+    inventory = models.ManyToManyField(InventoryItem)  
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -101,7 +108,7 @@ class HalflingSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=4)
-    inventory = models.JSONField(default=dict)
+    inventory = models.ManyToManyField(InventoryItem)  
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)

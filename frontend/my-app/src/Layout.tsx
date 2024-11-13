@@ -25,6 +25,13 @@ const Layout: React.FC = () => {
                         <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
                     </>
                 );
+            case `/game/${sheetID}/inventory`:
+                return (
+                    <>
+                    <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
+                    <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
+                    </>
+                )
             default:
                 return <Link to="/" className="btn btn-secondary">Home</Link>;
         }

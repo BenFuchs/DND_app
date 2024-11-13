@@ -1,24 +1,68 @@
-import React, { useEffect } from 'react';
-import { RootState } from '../../app/store'; // Adjust imports to your store setup
-import { getInventoryAsync } from '../inventory/inventorySlice'; // Adjust the path to your inventory slice
+import React, { useEffect, useState } from 'react';
+import { RootState } from '../../app/store';
+import { addItemToInventoryAsync, getInventoryAsync, searchItemsAsync } from '../inventory/inventorySlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 interface InventoryComponentProps {
-  id: number;
+  ID: number;
   race: number;
 }
 
-const InventoryComponent: React.FC<InventoryComponentProps> = ({ id }) => {
+const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   const dispatch = useAppDispatch();
-  const inventory = useAppSelector((state: RootState) => state.inventory.items); // Assuming `items` holds the inventory data
-  // const loading = useAppSelector((state: RootState) => state.inventory.loading);
+  const inventory = useAppSelector((state: RootState) => state.inventory.items);
   const error = useAppSelector((state: RootState) => state.inventory.error);
+  const searchResults = useAppSelector((state: RootState) => state.inventory.searchResults);
+  const [item, setItem] = useState<string>(''); // The item name input
+  const [showDropdown, setShowDropdown] = useState<boolean>(false); // To control the dropdown visibility
+  const [selectedItemID, setSelectedItemID] = useState<number | null>(null); // Track selected item ID
+
+  // Maintain a map of itemID -> itemName for easy lookup
+  const [itemNameMap, setItemNameMap] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
-    dispatch(getInventoryAsync({ id }));
-  }, [dispatch, id]);
+    dispatch(getInventoryAsync({ ID })); // Get the user's inventory
+  }, [dispatch, ID]);
 
-  // if (loading) return <div>Loading inventory...</div>;
+  useEffect(() => {
+    // Populate the itemNameMap when searchResults change
+    const newItemMap: { [key: number]: string } = searchResults.reduce((acc: { [key: number]: string }, item) => {
+      acc[item.ID] = item.name;
+      return acc;
+    }, {});
+
+    setItemNameMap(newItemMap); // Store it in state
+  }, [searchResults]);
+
+  useEffect(() => {
+    if (item) {
+      dispatch(searchItemsAsync(item)); // Trigger search when input is changed
+      setShowDropdown(true);
+    } else {
+      setShowDropdown(false); // Hide dropdown if no input
+    }
+  }, [item, dispatch]);
+
+  const handleItemSelect = (selectedItem: string, itemID: number) => {
+    setItem(selectedItem); // Set the item name
+    setSelectedItemID(itemID); // Set the item ID
+    setShowDropdown(false); // Close the dropdown
+  };
+
+  const handleAddToInventory = () => {
+    if (selectedItemID !== null) {
+      // Dispatch action to add the selected item to the user's inventory
+      dispatch(addItemToInventoryAsync({ itemID: selectedItemID, ID }));
+
+      // Re-fetch the inventory after adding the item
+      dispatch(getInventoryAsync({ ID }));
+
+      // Clear input and selected item ID
+      setItem('');
+      setSelectedItemID(null);
+    }
+  };
+
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -26,17 +70,68 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ id }) => {
       <h2>Your Inventory</h2>
       {inventory && inventory.length > 0 ? (
         <ul>
-          {inventory.map((item: any, index: number) => (
+          {inventory.map((invItem: any, index: number) => (
             <li key={index}>
-              {item.name} - Quantity: {item.quantity}
+              {/* Use itemNameMap to look up the name using invItem.itemID */}
+              {itemNameMap[invItem.itemID] || 'Unknown Item'} - Quantity: {invItem.quantity}
             </li>
           ))}
         </ul>
       ) : (
         <p>Your inventory is empty.</p>
       )}
+
+      <div style={{ position: 'relative' }}>
+        <label>Add item to inventory: </label>
+        <input
+          value={item}
+          onChange={(e) => setItem(e.target.value)}
+          onFocus={() => item && setShowDropdown(true)} // Show dropdown when input is focused
+          onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // Delay to allow click events
+        />
+
+        {showDropdown && searchResults && searchResults.length > 0 && (
+          <ul
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              border: '1px solid #ccc',
+              backgroundColor: '#fff',
+              listStyleType: 'none',
+              margin: 0,
+              padding: '0.5rem',
+              maxHeight: '150px',
+              overflowY: 'auto',
+              zIndex: 1000,
+            }}
+          >
+            {searchResults.map((result, index) => (
+              <li
+                key={index}
+                style={{
+                  padding: '0.5rem',
+                  cursor: 'pointer',
+                  backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff',
+                }}
+              >
+                {/* Select the item when clicked */}
+                <span onMouseDown={() => handleItemSelect(result.name, result.ID)}>
+                  {result.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <button onClick={handleAddToInventory} disabled={!selectedItemID}>
+        Add Selected Item to Inventory
+      </button>
     </div>
   );
 };
 
 export default InventoryComponent;
+// The item names in the inventory get set to unknown and are connected to the search item input bar. need to find a fix for that. maybe second enpoint to read through the csv list and get just the names of items in the users inventory 

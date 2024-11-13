@@ -5,7 +5,7 @@ import { getInventory, searchItems, addItemToInventory } from '../inventory/inve
 
 // Define an initial state for the inventory
 interface Item {
-    id: number;
+    ID: number;
     name: string;
     description: string;
     category: string;
@@ -35,9 +35,9 @@ const initialState: InventoryState = {
 // Async thunk for getting inventory
 export const getInventoryAsync = createAsyncThunk(
   'inventory/getInventory',
-  async ({ id }: { id: number }, { rejectWithValue }) => {
+  async ({ ID }: { ID: number }, { rejectWithValue }) => {
     try {
-      const response = await getInventory(id);
+      const response = await getInventory(ID);
       console.log(response.data)
       return response.data.inventory; // Assuming the response has an 'inventory' field
     } catch (err: any) {
@@ -52,6 +52,7 @@ export const searchItemsAsync = createAsyncThunk(
   async (query: string, { rejectWithValue }) => {
     try {
       const response = await searchItems(query);
+      console.log(response.data.items)
       return response.data.items; // Assuming the response has an 'items' field
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to search items');
@@ -62,9 +63,9 @@ export const searchItemsAsync = createAsyncThunk(
 // Async thunk for adding item to inventory
 export const addItemToInventoryAsync = createAsyncThunk(
   'inventory/addItem',
-  async ({ itemID, id }: { itemID: number; id: number }, { rejectWithValue }) => {
+  async ({ itemID, ID }: { itemID: number; ID: number }, { rejectWithValue }) => {
     try {
-      const response = await addItemToInventory(itemID, id);
+      const response = await addItemToInventory(itemID, ID);
       return response.data.inventory; // Assuming the response contains the updated inventory
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to add item to inventory');

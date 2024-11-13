@@ -50,43 +50,43 @@ An interactive D&D character management app, including features such as an inven
 
 ## To-Do List
 
-- [ ] **Backend Setup**:
-  - [V] User authentication
-  - [V] Character sheet creation & deletion
-  - [ ] Payment system for unlocking more sheets
+-- [ ] **Backend Setup**:
+  - [X] User authentication
+  - [X] Character sheet creation & deletion
+  -- [ ] Payment system for unlocking more sheets
 
-- [ ] **Character Creation System**:
-  - [V] Class selection logic (requires frontend)
-  - [V] Race selection logic (requires frontend)
-    |- [ ] change login into a component in the frontend
-    |- [V] change sheet creation flow (see notebook for information)
-  - [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
-  - [ ] Partially interactive inventory and currency system (requires frontend)
-  - [ ] Spell slot & selection based on class (requires frontend)
+-- [ ] **Character Creation System**:
+  - [X] Class selection logic (requires frontend)
+  - [X] Race selection logic (requires frontend)
+    |-- [ ] change login into a component in the frontend
+    |- [X] change sheet creation flow (see notebook for information)
+  -- [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
+  -- [ ] Partially interactive inventory and currency system (requires frontend)
+  -- [ ] Spell slot & selection based on class (requires frontend)
 
-- [ ] **Party System** *(optional)*:
-  - [ ] Server-hosted party system with room creation
-  - [ ] DM tools for managing player items
+-- [ ] **Party System** *(optional)*:
+  -- [ ] Server-hosted party system with room creation
+  -- [ ] DM tools for managing player items
 
-- [ ] **Frontend Development**:
-  - [ ] Create React pages for login, registration, and character sheets
-  - [ ] Implement React Native components for mobile support
+-- [ ] **Frontend Development**:
+  -- [ ] Create React pages for login, registration, and character sheets
+  -- [ ] Implement React Native components for mobile support
 
-- [ ] **Testing**:
-  - [ ] Unit testing for backend (Django)
-  - [ ] Frontend testing for React/React Native components
-  - [ ] End-to-end integration testing
+-- [ ] **Testing**:
+  -- [ ] Unit testing for backend (Django)
+  -- [ ] Frontend testing for React/React Native components
+  -- [ ] End-to-end integration testing
 
 
 ## Existing flow
 <!-- This is how a user would go about using the website for the first time -->
-- [V] Registeration and Log in 
-- [V] Creating a new sheet/Checking how many sheets exist per logged user/Deleting sheets
-- [V] Race selection
-- [ ] Appending appropriate traits per selected race to the sheet (frontend view left)
-- [V] Class selection
-- [ ] Appending appropriate traits and requirements per selected class to the sheet 
-- [V] Stat setting and saving 
+- [X] Registeration and Log in 
+- [X] Creating a new sheet/Checking how many sheets exist per logged user/Deleting sheets
+- [X] Race selection
+-- [ ] Appending appropriate traits per selected race to the sheet (frontend view left)
+- [X] Class selection
+-- [ ] Appending appropriate traits and requirements per selected class to the sheet 
+- [X] Stat setting and saving 
 
 ## Installation
 
@@ -103,22 +103,22 @@ An interactive D&D character management app, including features such as an inven
 
   7/11/24:
   to do list:
-  [X] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
-  [ ] whole lot of design to do
-  [X] add logout functionality 
+ - [X] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
+ - [ ] whole lot of design to do
+ - [X] add logout functionality 
   [WIP] Create component page for the character information for play, includes:
-      [X] stats
-      [X] Name
-      [X] Race
-      [X] Class
-      [ ] Race-Traits (connect to dnd explanation links)
-      [X] Gold Counter (ability to add, remove gold like a calculator)
+     - [X] stats
+     - [X] Name
+     - [X] Race
+     - [X] Class
+     - [ ] Race-Traits (connect to dnd explanation links)
+     - [X] Gold Counter (ability to add, remove gold like a calculator)
       [WIP] inventory (at first, keep simple, let user write in it)
-      [ ] Backstory section? 
+     - [ ] Backstory section? 
 
   12/11/24: 
   in my inventory functions there is an issue with the possibility of one user having multiple sheets that are of the same race, thus getting the inventory sheet selection confused.
-  [X] add a foregin key between characterSheets model and the raceSheets models that allows better clarity. (maybe after character creation send the character name as a foregin key to the father model?)
+ - [X] add a foregin key between characterSheets model and the raceSheets models that allows better clarity. (maybe after character creation send the character name as a foregin key to the father model?)
 
-  [X] show inventory
-  [ ] add to inventory from front end
+ - [X] show inventory
+ - [ ] add to inventory from front end
