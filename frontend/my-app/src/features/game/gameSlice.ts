@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { currencyCalc, getGold, getMods } from './gameAPI'; 
+import { currencyCalc, getGold, getMods, rollDice } from './gameAPI'; 
 
 // Define the initial state
 interface GameState {
@@ -7,6 +7,7 @@ interface GameState {
   loading: boolean;
   error: string;
   mods: []
+  rolls: []
 }
 
 const initialState: GameState = {
@@ -14,6 +15,7 @@ const initialState: GameState = {
   loading: false,
   error: '',
   mods: [],
+  rolls: []
 };
 
 // Create an async thunk to handle the currency calculation
@@ -46,6 +48,15 @@ export const getModsAsync = createAsyncThunk(
   }
 )
 
+export const rollDiceAsync = createAsyncThunk(
+  'game/rollDice',
+  async ({ diceType, amount }: { diceType: number; amount: number }) => {
+    const response = await rollDice(diceType, amount);
+    console.log(response.data)
+    return response.data;
+  }
+)
+
 // Create the slice
 const gameSlice = createSlice({
   name: 'game',
@@ -74,6 +85,10 @@ const gameSlice = createSlice({
       .addCase(getModsAsync.fulfilled, (state, action)=> {
         state.loading = false;
         state.mods = action.payload;
+      })
+      .addCase(rollDiceAsync.fulfilled, (state, action)=> {
+        state.loading = false;
+        state.rolls = action.payload;
       })
   },
 });

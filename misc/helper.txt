@@ -1,8 +1,10 @@
 CLASSES:
-1. Barbarian 
-2. Wizard 
-3. Cleric 
-4. Rogue
+1. Barbarian -> d12 + con (1st)
+2. Wizard -> d6 + con (1st)
+3. Cleric -> d8 + con (1st)
+4. Rogue -> d8 + con (1st)
+
+after fisrt level, roll just the hit die
 
 RACES:
 1. Human    

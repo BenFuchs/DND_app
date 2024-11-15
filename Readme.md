@@ -50,42 +50,42 @@ An interactive D&D character management app, including features such as an inven
 
 ## To-Do List
 
--- [ ] **Backend Setup**:
+- [ ] **Backend Setup**:
   - [X] User authentication
   - [X] Character sheet creation & deletion
-  -- [ ] Payment system for unlocking more sheets
+  - [ ] Payment system for unlocking more sheets
 
--- [ ] **Character Creation System**:
+- [ ] **Character Creation System**:
   - [X] Class selection logic (requires frontend)
   - [X] Race selection logic (requires frontend)
-    |-- [ ] change login into a component in the frontend
+    |- [ ] change login into a component in the frontend
     |- [X] change sheet creation flow (see notebook for information)
-  -- [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
-  -- [ ] Partially interactive inventory and currency system (requires frontend)
-  -- [ ] Spell slot & selection based on class (requires frontend)
+  - [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
+  - [ ] Partially interactive inventory and currency system (requires frontend)
+  - [ ] Spell slot & selection based on class (requires frontend)
 
--- [ ] **Party System** *(optional)*:
-  -- [ ] Server-hosted party system with room creation
-  -- [ ] DM tools for managing player items
+- [ ] **Party System** *(optional)*:
+  - [ ] Server-hosted party system with room creation
+  - [ ] DM tools for managing player items
 
--- [ ] **Frontend Development**:
-  -- [ ] Create React pages for login, registration, and character sheets
-  -- [ ] Implement React Native components for mobile support
+- [ ] **Frontend Development**:
+  - [ ] Create React pages for login, registration, and character sheets
+  - [ ] Implement React Native components for mobile support
 
--- [ ] **Testing**:
-  -- [ ] Unit testing for backend (Django)
-  -- [ ] Frontend testing for React/React Native components
-  -- [ ] End-to-end integration testing
+- [ ] **Testing**:
+  - [ ] Unit testing for backend (Django)
+  - [ ] Frontend testing for React/React Native components
+  - [ ] End-to-end integration testing
 
 
 ## Existing flow
-<!-- This is how a user would go about using the website for the first time -->
+<!- This is how a user would go about using the website for the first time ->
 - [X] Registeration and Log in 
 - [X] Creating a new sheet/Checking how many sheets exist per logged user/Deleting sheets
 - [X] Race selection
--- [ ] Appending appropriate traits per selected race to the sheet (frontend view left)
+- [ ] Appending appropriate traits per selected race to the sheet (frontend view left)
 - [X] Class selection
--- [ ] Appending appropriate traits and requirements per selected class to the sheet 
+- [ ] Appending appropriate traits and requirements per selected class to the sheet 
 - [X] Stat setting and saving 
 
 ## Installation
@@ -113,7 +113,7 @@ An interactive D&D character management app, including features such as an inven
      - [X] Class
      - [ ] Race-Traits (connect to dnd explanation links)
      - [X] Gold Counter (ability to add, remove gold like a calculator)
-      [WIP] inventory (at first, keep simple, let user write in it)
+     - [X] inventory (at first, keep simple, let user write in it)
      - [ ] Backstory section? 
 
   12/11/24: 
@@ -121,4 +121,4 @@ An interactive D&D character management app, including features such as an inven
  - [X] add a foregin key between characterSheets model and the raceSheets models that allows better clarity. (maybe after character creation send the character name as a foregin key to the father model?)
 
  - [X] show inventory
- - [ ] add to inventory from front end
+ - [X] add to inventory from front end

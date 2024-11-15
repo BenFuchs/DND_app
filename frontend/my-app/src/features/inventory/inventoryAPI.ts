@@ -49,3 +49,22 @@ export function addItemToInventory(
         }
     });
 }    
+
+export function removeItemFromInventory(
+    itemID: number, 
+    id: number
+) {
+    const access = localStorage.getItem("Access")
+    if (!access) {
+        return Promise.reject("No access token found")
+    }
+
+    return axios.post(SERVER + 'removeItem/', {
+        itemID,
+        id
+    }, {
+        headers: {
+            Authorization: `Bearer ${access}`
+        }
+    });
+}

@@ -121,3 +121,52 @@ def searchItems(request):
     items = results.to_dict(orient='records')  # Convert to a list of dictionaries
 
     return Response({"items": items}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def removeItem(request):
+    user = request.user
+    itemID = request.data.get("itemID")  # The ID of the item to remove
+    sheetID = request.data.get("id")  # The character sheet ID
+
+    try:
+        # Get the character sheet associated with the current user
+        character_sheet = CharacterSheet.objects.get(owner=user, id=sheetID)
+        charName = character_sheet.char_name
+
+        # Access the race-specific table based on `race`
+        if character_sheet.race == 1:
+            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, char_name=charName)
+        elif character_sheet.race == 2:
+            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, char_name=charName)
+        elif character_sheet.race == 3:
+            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, char_name=charName)
+        elif character_sheet.race == 4:
+            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, char_name=charName)
+        else:
+            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Attempt to get the InventoryItem
+        item_obj = char_sheet.inventory.filter(itemID=itemID).first()
+
+        if not item_obj:
+            return Response({"msg": "Item does not exist in user's inventory"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Reduce quantity or remove item if quantity is 1
+        if item_obj.quantity > 1:
+            item_obj.quantity -= 1
+            item_obj.save()
+        else:
+            # Remove the item completely if quantity is 1
+            char_sheet.inventory.remove(item_obj)
+            item_obj.delete()
+
+        # Prepare the updated inventory response
+        updated_inventory = [{"itemID": item.itemID, "quantity": item.quantity} for item in char_sheet.inventory.all()]
+
+        return Response({"msg": "Item removed from inventory successfully.", "inventory": updated_inventory}, status=status.HTTP_200_OK)
+
+    except CharacterSheet.DoesNotExist:
+        return Response({"msg": "Character sheet not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -1,7 +1,7 @@
 // src/store/inventorySlice.ts
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getInventory, searchItems, addItemToInventory } from '../inventory/inventoryAPI';
+import { getInventory, searchItems, addItemToInventory, removeItemFromInventory } from '../inventory/inventoryAPI';
 
 // Define an initial state for the inventory
 interface Item {
@@ -73,6 +73,18 @@ export const addItemToInventoryAsync = createAsyncThunk(
   }
 );
 
+export const removeItemFromInventoryAsync = createAsyncThunk(
+  'inventory/removeItem',
+  async ({itemID, ID}: {itemID: number, ID: number}, {rejectWithValue}) => {
+    try {
+      const response = await removeItemFromInventory(itemID, ID);
+      return response.data.inventory
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.msg || 'Failed to add item to inventory');
+    }
+  }
+)
+
 // Create the slice
 const inventorySlice = createSlice({
   name: 'inventory',
@@ -127,6 +139,18 @@ const inventorySlice = createSlice({
     .addCase(addItemToInventoryAsync.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload as string;
+    })
+    .addCase(removeItemFromInventoryAsync.fulfilled, (state, action)=> {
+      state.isLoading = false;
+      state.items = action.payload
+      state.error = null
+    })
+    .addCase(removeItemFromInventoryAsync.rejected, (state, action)=> {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    })
+    .addCase(removeItemFromInventoryAsync.pending, (state)=> {
+      state.isLoading = true;
     })
   },
 });

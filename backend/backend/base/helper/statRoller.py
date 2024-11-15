@@ -1,4 +1,4 @@
-from .sixSidedDice import Dice
+from .xSidedDice import Dice
 
 dice = Dice()
 

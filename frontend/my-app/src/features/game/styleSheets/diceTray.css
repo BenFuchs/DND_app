@@ -1,0 +1,22 @@
+.centerButton {
+    display: flex;
+    justify-content: center;  /* Aligns the button horizontally */
+    margin-top: 1rem;  /* Adds space above the button */
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  select {
+    width: 100px;  /* Adjust as needed */
+    padding: 0.3rem;
+    font-size: 1rem;
+  }

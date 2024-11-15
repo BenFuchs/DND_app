@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { RootState } from '../../app/store';
-import { addItemToInventoryAsync, getInventoryAsync, searchItemsAsync } from '../inventory/inventorySlice';
+import { addItemToInventoryAsync, getInventoryAsync, removeItemFromInventoryAsync, searchItemsAsync } from '../inventory/inventorySlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 interface InventoryComponentProps {
@@ -17,22 +17,9 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false); // To control the dropdown visibility
   const [selectedItemID, setSelectedItemID] = useState<number | null>(null); // Track selected item ID
 
-  // Maintain a map of itemID -> itemName for easy lookup
-  const [itemNameMap, setItemNameMap] = useState<{ [key: number]: string }>({});
-
   useEffect(() => {
     dispatch(getInventoryAsync({ ID })); // Get the user's inventory
   }, [dispatch, ID]);
-
-  useEffect(() => {
-    // Populate the itemNameMap when searchResults change
-    const newItemMap: { [key: number]: string } = searchResults.reduce((acc: { [key: number]: string }, item) => {
-      acc[item.ID] = item.name;
-      return acc;
-    }, {});
-
-    setItemNameMap(newItemMap); // Store it in state
-  }, [searchResults]);
 
   useEffect(() => {
     if (item) {
@@ -56,12 +43,21 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
 
       // Re-fetch the inventory after adding the item
       dispatch(getInventoryAsync({ ID }));
-
+      window.location.reload()
       // Clear input and selected item ID
       setItem('');
       setSelectedItemID(null);
     }
   };
+
+  const handleRemoveFromInventory = (itemID: number) => {
+    console.log(itemID)
+    dispatch(removeItemFromInventoryAsync({itemID, ID}))
+    dispatch(getInventoryAsync({ ID }));
+    window.location.reload()
+  }
+
+  console.log(inventory)
 
   if (error) return <div>Error: {error}</div>;
 
@@ -72,8 +68,8 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
         <ul>
           {inventory.map((invItem: any, index: number) => (
             <li key={index}>
-              {/* Use itemNameMap to look up the name using invItem.itemID */}
-              {itemNameMap[invItem.itemID] || 'Unknown Item'} - Quantity: {invItem.quantity}
+              {[invItem.name]} - Quantity: {invItem.quantity} - <button onClick={() => (handleRemoveFromInventory(invItem.itemID))}>Remove</button>
+
             </li>
           ))}
         </ul>

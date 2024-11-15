@@ -58,3 +58,12 @@ export function getMods(race: number, id:number) {
     },
   });
 }
+
+export function rollDice(diceType: number, amount: number) {
+  return axios.get(SERVER + '/diceRoll', {
+    params: {
+      diceType: diceType,
+      amount: amount
+    }
+  });
+}

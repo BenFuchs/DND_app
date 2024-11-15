@@ -18,5 +18,6 @@ urlpatterns = [
     path('getInventory/', views.getInventory),
     path('searchItems/', views.searchItems),
     path('addToInventory/', views.addItemToPlayerInv),
-
+    path('removeItem/', views.removeItem),
+    path('diceRoll/', views.nSidedDice),
 ]

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { updateGold, getGoldAsync, getModsAsync } from "../game/gameSlice";
 import { RootState } from "../../app/store";
+import { motion, AnimatePresence } from 'framer-motion';
 
 import CharacterName from "../game/components/CharacterName";
 import CharacterClass from "../game/components/CharacterClass";
@@ -10,8 +11,9 @@ import CharacterRace from "../game/components/CharacterRace";
 import CharacterStats from "../game/components/CharacterStats";
 import Skills from "../game/components/Skills";
 import CurrencyCalculator from "../game/components/CurrencyCalculator";
-
-
+import DiceRollsModal from "./components/DiceRollsModal";
+import styles from "./styleSheets/gamecomponent.module.css";
+import DiceRoll from "./components/DiceRoll";
 
 // TypeScript interface for sheet data
 interface SheetData {
@@ -46,7 +48,7 @@ interface SkillMap {
 }
 
 const GameComponent = () => {
-//   const { sheetID } = useParams<{ sheetID: string }>();
+  //   const { sheetID } = useParams<{ sheetID: string }>();
   const dispatch = useAppDispatch();
   const { gold, loading, error } = useAppSelector(
     (state: RootState) => state.game
@@ -54,6 +56,15 @@ const GameComponent = () => {
 
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
+  const [modal, setmodal] = useState<boolean>(false);
+
+  const open = () => {
+    setmodal(true);
+  };
+
+  const closed = () => {
+    setmodal(false);
+  };
 
   useEffect(() => {
     const storedSheetData = localStorage.getItem("SheetData");
@@ -155,7 +166,27 @@ const GameComponent = () => {
         onSubtract={handleSubtractGold}
       />
 
-      
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => (modal ? closed() : open())}
+      >
+        Open Dice tray
+      </motion.button>
+
+      <AnimatePresence>
+        {modal && (
+          <DiceRollsModal
+            handleClose={closed}
+            modal={modal}
+            backdropClass={styles.backdrop} // Pass CSS class for backdrop
+            modalClass={styles.modal} // Pass CSS class for modal
+          >
+            <DiceRoll />  {/* Render the DiceRoll component directly as a child */}
+          </DiceRollsModal>
+        )}
+      </AnimatePresence>
+
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
     </div>
