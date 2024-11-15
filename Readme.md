@@ -122,3 +122,7 @@ An interactive D&D character management app, including features such as an inven
 
  - [X] show inventory
  - [X] add to inventory from front end
+
+ 15/11/24:
+ - [X] finish dice rolling tray modal
+ - [ ] start the race/class traits page -> will be a seperate component page like the inventory, a tab acccessible when youre in your character sheet

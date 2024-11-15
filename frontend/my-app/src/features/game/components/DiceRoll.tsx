@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import '../styleSheets/diceTray.css'; // Adjust the path if necessary
 import { rollDiceAsync } from '../gameSlice';
@@ -11,16 +11,23 @@ const DiceRoll = () => {
   // Set up state for diceType, amount, and roll results
   const [diceType, setDiceType] = useState(4); // Default dice type (d4)
   const [amount, setAmount] = useState(1); // Default number of dice
-  const [rollResult, setRollResult] = useState<number[] | null>(null); // Array for roll results
+  const [rollResult, setRollResult] = useState<number[] | null>([0]); // Array for roll results
   const [modalOpen, setModalOpen] = useState(false); // State for controlling modal visibility
+
+
+  useEffect(() => {
+    if (rollResult) {
+      console.log('Updated roll results:', rollResult);
+    }
+  }, [rollResult]);
 
   // Handle roll dice action
   const handleDiceRoll = async () => {
     try {
       const result = await dispatch(rollDiceAsync({ diceType, amount }));
-
+      // console.log(result.payload)
       // Assuming the response is an array of results in result.payload
-      if (result.payload && Array.isArray(result.payload)) {
+      if (result.payload) {
         setRollResult(result.payload); // Set the array of results
         setModalOpen(true); // Open the modal with the results
       } else {
@@ -83,18 +90,13 @@ const DiceRoll = () => {
 
       {/* Conditionally render the DiceRollsModal with the roll results */}
       {modalOpen && rollResult && (
-        <DiceRollsModal
-          modal={modalOpen}
-          handleClose={handleCloseModal}
-          backdropClass="backdrop"
-          modalClass="modal"
-        >
-          {/* Render roll results directly in the modal */}
-          <p>Roll Results: {rollResult.join(', ')}</p>
-        </DiceRollsModal>
+       
+          <p className='formGroup'>Roll Results: {rollResult.join(', ')}</p>
+      
       )}
     </div>
   );
 };
 
 export default DiceRoll;
+// need to work on css inside the modal => more dice shifts the text in the modal to the left

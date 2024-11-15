@@ -52,7 +52,7 @@ export const rollDiceAsync = createAsyncThunk(
   'game/rollDice',
   async ({ diceType, amount }: { diceType: number; amount: number }) => {
     const response = await rollDice(diceType, amount);
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
   }
 )
