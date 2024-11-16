@@ -2,13 +2,14 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import sheetReducer from '../features/sheets/sheetsSlice';
 import gameReducer from '../features/game/gameSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
-
+import traitsReducer from '../features/traits/traitsSlice'
 
 export const store = configureStore({
   reducer: {
     sheets: sheetReducer,
     game: gameReducer,
     inventory: inventoryReducer,
+    traits: traitsReducer,
   },
 });
 

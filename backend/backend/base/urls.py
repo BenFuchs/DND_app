@@ -20,4 +20,5 @@ urlpatterns = [
     path('addToInventory/', views.addItemToPlayerInv),
     path('removeItem/', views.removeItem),
     path('diceRoll/', views.nSidedDice),
+    path('getRaceFeatures/', views.getSheetRaceTraits),
 ]

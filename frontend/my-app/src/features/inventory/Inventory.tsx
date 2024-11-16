@@ -57,7 +57,7 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
     window.location.reload()
   }
 
-  console.log(inventory)
+  // console.log(inventory)
 
   if (error) return <div>Error: {error}</div>;
 

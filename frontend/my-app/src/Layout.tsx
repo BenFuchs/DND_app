@@ -23,6 +23,7 @@ const Layout: React.FC = () => {
                     <>
                         <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                         <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
+                        <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
                     </>
                 );
             case `/game/${sheetID}/inventory`:
@@ -30,6 +31,15 @@ const Layout: React.FC = () => {
                     <>
                     <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                     <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
+                    <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
+                    </>
+                )
+            case `/game/${sheetID}/traits`:
+                return (
+                    <>
+                    <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
+                    <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
+                    <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
                     </>
                 )
             default:

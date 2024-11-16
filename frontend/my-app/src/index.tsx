@@ -12,6 +12,7 @@ import SheetsComp from './features/sheets/SheetsComp';
 import GameComponent from './features/game/GameComponent';
 import Layout from './Layout'; // Import the Layout component
 import InventoryWrapper from './InventoryWrapper';
+import TraitsWrapper from './TraitsWrapper';
 
 
 
@@ -28,6 +29,7 @@ root.render(
             <Route path="/sheets" element={<SheetsComp />} />
             <Route path="game/:sheetID" element={<GameComponent />} />
             <Route path="game/:sheetID/inventory" element={<InventoryWrapper />} /> {/* Use a wrapper component */}
+            <Route path="game/:sheetID/traits" element={<TraitsWrapper />} />
             </Route>
         </Routes>
       </Provider>

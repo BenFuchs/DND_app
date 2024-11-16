@@ -125,4 +125,11 @@ An interactive D&D character management app, including features such as an inven
 
  15/11/24:
  - [X] finish dice rolling tray modal
- - [ ] start the race/class traits page -> will be a seperate component page like the inventory, a tab acccessible when youre in your character sheet
+ - [WIP] start the race/class traits page -> will be a seperate component page like the inventory, a tab acccessible when youre in your character sheet
+
+
+ 16/11/24: 
+ - [ ] organizes the backend urls, split it into different sections like the views 
+ - [ ] In game component, both the race and class display numbers, set to display the actual names instead 
+ - [X] Finish race traits section
+ - [ ] Finish class traits section

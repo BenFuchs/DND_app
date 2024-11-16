@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import InventoryComponent from '../src/features/inventory/Inventory';
+import InventoryComponent from './features/inventory/Inventory';
 
 const InventoryWrapper: React.FC = () => {
   const { sheetID } = useParams<{ sheetID: string }>();
