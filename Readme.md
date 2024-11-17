@@ -60,8 +60,8 @@ An interactive D&D character management app, including features such as an inven
   - [X] Race selection logic (requires frontend)
     |- [ ] change login into a component in the frontend
     |- [X] change sheet creation flow (see notebook for information)
-  - [ ] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
-  - [ ] Partially interactive inventory and currency system (requires frontend)
+  - [WIP] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
+  - [X] Partially interactive inventory and currency system 
   - [ ] Spell slot & selection based on class (requires frontend)
 
 - [ ] **Party System** *(optional)*:
@@ -69,7 +69,7 @@ An interactive D&D character management app, including features such as an inven
   - [ ] DM tools for managing player items
 
 - [ ] **Frontend Development**:
-  - [ ] Create React pages for login, registration, and character sheets
+  - [X] Create React pages for login, registration, and character sheets
   - [ ] Implement React Native components for mobile support
 
 - [ ] **Testing**:
@@ -83,7 +83,7 @@ An interactive D&D character management app, including features such as an inven
 - [X] Registeration and Log in 
 - [X] Creating a new sheet/Checking how many sheets exist per logged user/Deleting sheets
 - [X] Race selection
-- [ ] Appending appropriate traits per selected race to the sheet (frontend view left)
+- [X] Appending appropriate traits per selected race to the sheet 
 - [X] Class selection
 - [ ] Appending appropriate traits and requirements per selected class to the sheet 
 - [X] Stat setting and saving 
@@ -130,6 +130,10 @@ An interactive D&D character management app, including features such as an inven
 
  16/11/24: 
  - [ ] organizes the backend urls, split it into different sections like the views 
- - [ ] In game component, both the race and class display numbers, set to display the actual names instead 
+ - [X] In game component, both the race and class display numbers, set to display the actual names instead 
  - [X] Finish race traits section
  - [ ] Finish class traits section
+
+ 17/11/24:
+ - [ ] Add levels to the model + frontend view
+ - [ ] set every classes health according to the correct hit die of their classes

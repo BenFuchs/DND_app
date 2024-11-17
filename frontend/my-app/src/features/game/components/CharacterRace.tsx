@@ -1,6 +1,6 @@
 // CharacterRace.tsx
 interface CharacterRaceProps {
-    race: number;
+    race: string;
   }
   
   const CharacterRace = ({ race }: CharacterRaceProps) => (

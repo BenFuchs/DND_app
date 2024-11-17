@@ -1,9 +1,10 @@
 // CharacterClass.tsx
 interface CharacterClassProps {
-    charClass: number;
+    charClass: string;
   }
-  
+
   const CharacterClass = ({ charClass }: CharacterClassProps) => (
+
     <div>
       <strong>Character Class:</strong> {charClass}
     </div>

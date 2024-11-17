@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { updateGold, getGoldAsync, getModsAsync } from "../game/gameSlice";
 import { RootState } from "../../app/store";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 import CharacterName from "../game/components/CharacterName";
 import CharacterClass from "../game/components/CharacterClass";
@@ -15,8 +14,8 @@ import DiceRollsModal from "./components/DiceRollsModal";
 import styles from "./styleSheets/gamecomponent.module.css";
 import DiceRoll from "./components/DiceRoll";
 import TraitsComponent from "../traits/TraitsComponent";
-
-// TypeScript interface for sheet data
+import "./styleSheets/gamecomponent.module.css"
+// TypeScript interfaces
 interface SheetData {
   id: number;
   char_name: string;
@@ -31,25 +30,17 @@ interface SheetData {
   race: number;
 }
 
-// TypeScript interface for Mods
 interface Mods {
   Mods: {
-    stat_Dexterity: number;
-    stat_Strength: number;
-    stat_Intelligence: number;
-    stat_Charisma: number;
-    stat_Wisdom: number;
-    stat_Constitution: number;
+    [key: string]: number;
   };
 }
 
-// TypeScript type for skills
 interface SkillMap {
   [key: string]: number;
 }
 
 const GameComponent = () => {
-  //   const { sheetID } = useParams<{ sheetID: string }>();
   const dispatch = useAppDispatch();
   const { gold, loading, error } = useAppSelector(
     (state: RootState) => state.game
@@ -57,15 +48,11 @@ const GameComponent = () => {
 
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
-  const [modal, setmodal] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
 
-  const open = () => {
-    setmodal(true);
-  };
-
-  const closed = () => {
-    setmodal(false);
-  };
+  // Toggles for modal
+  const open = () => setModal(true);
+  const close = () => setModal(false);
 
   useEffect(() => {
     const storedSheetData = localStorage.getItem("SheetData");
@@ -77,13 +64,12 @@ const GameComponent = () => {
 
   useEffect(() => {
     if (sheetData) {
-      const race = sheetData.race;
-      const sheetID = sheetData.id;
+      const { race, id: sheetID } = sheetData;
       dispatch(getGoldAsync({ race, sheetID }));
       dispatch(getModsAsync({ race, sheetID }))
         .unwrap()
-        .then((fetchedMods) => setMods(fetchedMods))
-        .catch((error) => console.error("Error fetching mods:", error));
+        .then(setMods)
+        .catch((err) => console.error("Error fetching mods:", err));
     }
   }, [sheetData, dispatch]);
 
@@ -111,40 +97,47 @@ const GameComponent = () => {
     }
   };
 
-  // Ensure calculateSkills always returns a valid SkillMap with numbers
   const calculateSkills = (): SkillMap => {
-    if (!Mods) return {}; // Return empty object if Mods is unavailable
-
+    if (!Mods) return {};
     return {
-      Acrobatics: Mods.Mods.stat_Dexterity ?? 0,
-      Athletics: Mods.Mods.stat_Strength ?? 0,
-      Arcana: Mods.Mods.stat_Intelligence ?? 0,
-      Deception: Mods.Mods.stat_Charisma ?? 0,
-      Medicine: Mods.Mods.stat_Wisdom ?? 0,
-      Persuasion: Mods.Mods.stat_Charisma ?? 0,
-      Stealth: Mods.Mods.stat_Dexterity ?? 0,
-      Insight: Mods.Mods.stat_Wisdom ?? 0,
-      Intimidation: Mods.Mods.stat_Charisma ?? 0,
-      Nature: Mods.Mods.stat_Intelligence ?? 0,
-      Perception: Mods.Mods.stat_Wisdom ?? 0,
-      Performance: Mods.Mods.stat_Charisma ?? 0,
-      Religion: Mods.Mods.stat_Intelligence ?? 0,
-      SleightOfHand: Mods.Mods.stat_Dexterity ?? 0,
-      Survival: Mods.Mods.stat_Wisdom ?? 0,
+      Acrobatics: Mods.Mods.stat_Dexterity || 0,
+      Athletics: Mods.Mods.stat_Strength || 0,
+      Arcana: Mods.Mods.stat_Intelligence || 0,
+      Deception: Mods.Mods.stat_Charisma || 0,
+      Medicine: Mods.Mods.stat_Wisdom || 0,
+      Persuasion: Mods.Mods.stat_Charisma || 0,
+      Stealth: Mods.Mods.stat_Dexterity || 0,
+      Insight: Mods.Mods.stat_Wisdom || 0,
+      Intimidation: Mods.Mods.stat_Charisma || 0,
+      Nature: Mods.Mods.stat_Intelligence || 0,
+      Perception: Mods.Mods.stat_Wisdom || 0,
+      Performance: Mods.Mods.stat_Charisma || 0,
+      Religion: Mods.Mods.stat_Intelligence || 0,
+      SleightOfHand: Mods.Mods.stat_Dexterity || 0,
+      Survival: Mods.Mods.stat_Wisdom || 0,
     };
   };
 
-  // Assign skills with the correct type
   const skills: SkillMap = Mods ? calculateSkills() : {};
 
+  const charClassString = (): string => {
+    const classes = ["Unknown", "Barbarian", "Wizard", "Cleric", "Rogue"];
+    return classes[sheetData?.char_class || 0];
+  };
+
+  const charRaceString = (): string => {
+    const races = ["Unknown", "Human", "Gnome", "Elf", "Halfling"];
+    return races[sheetData?.race || 0];
+  };
+
   return (
-    <div>
-      <h1>Game Component</h1>
+    <div className={styles.container}>
+    <div className={styles.firstColumn}>
       {sheetData ? (
-        <div>
+        <>
           <CharacterName name={sheetData.char_name} />
-          <CharacterClass charClass={sheetData.char_class} />
-          <CharacterRace race={sheetData.race} />
+          <CharacterClass charClass={charClassString()} />
+          <CharacterRace race={charRaceString()} />
           <p>
             <strong>Gold:</strong> {gold}
           </p>
@@ -153,54 +146,52 @@ const GameComponent = () => {
               .filter(([key]) => key.startsWith("stat"))
               .map(([key, value]) => ({ name: key, value }))}
           />
-          {!Mods ? (
-            <p>Loading skills...</p> // Fallback message while Mods is loading
-          ) : (
-            <Skills skills={skills} />
-          )}
-        </div>
+        </>
       ) : (
         <p>Loading sheet data...</p>
       )}
-      <CurrencyCalculator
-        onAdd={handleAddGold}
-        onSubtract={handleSubtractGold}
-      />
+    </div>
 
+    <div className={styles.secondColumn}>
       {sheetData ? (
-        <div>
-          {/* Existing components */}
-          <TraitsComponent sheetID={sheetData.id} />
-        </div>
+        !Mods ? (
+          <p>Loading skills...</p>
+        ) : (
+          <Skills skills={skills} />
+        )
       ) : (
         <p>Loading sheet data...</p>
       )}
+    </div>
 
+    <div className={styles.thirdColumn}>
+      <CurrencyCalculator onAdd={handleAddGold} onSubtract={handleSubtractGold} />
+      {sheetData && <TraitsComponent sheetID={sheetData.id} />}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => (modal ? closed() : open())}
+        onClick={() => (modal ? close() : open())}
       >
-        Open Dice tray
+        Open Dice Tray
       </motion.button>
-
       <AnimatePresence>
         {modal && (
           <DiceRollsModal
-            handleClose={closed}
+            handleClose={close}
             modal={modal}
-            backdropClass={styles.backdrop} // Pass CSS class for backdrop
-            modalClass={styles.modal} // Pass CSS class for modal
+            backdropClass={styles.backdrop}
+            modalClass={styles.modal}
           >
-            <DiceRoll />  {/* Render the DiceRoll component directly as a child */}
+            <DiceRoll />
           </DiceRollsModal>
         )}
       </AnimatePresence>
-
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
     </div>
-  );
+
+    {loading && <p>Loading...</p>}
+    {error && <p>Error: {error}</p>}
+  </div>
+);
 };
 
 export default GameComponent;

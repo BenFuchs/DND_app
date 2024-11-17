@@ -23,3 +23,25 @@
     justify-content: center;
 }
 
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .firstColumn {
+    width: 33%;
+  }
+  
+  .secondColumn {
+    width: 33%;
+  }
+
+  .thirdColumn {
+    width: 33%;
+  }
+  
+  button {
+    margin-top: 20px;
+  }
+  
