@@ -16,23 +16,25 @@ def currencyCalc(request):
     amount = request.data.get("amount")    # Amount to add or subtract
     action = request.data.get("action")    # 'add' or 'subtract'
     race = request.data.get("race")
+    sheetID = request.data.get("id")
     if amount is None or action is None:
         return Response({"msg": "Missing required fields."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         # Get the character sheet associated with the current user
-        character_sheet = CharacterSheet.objects.get(owner=user, race=race)
+        character_sheets = CharacterSheet.objects.filter(owner=user, race=race, active=True)
         # Now we need to access the race-specific table based on sheet_race
-        if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner)
-        elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner)
-        elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner)
-        elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner)
-        else:
-            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
+        for character_sheet in character_sheets:
+            if character_sheet.race == 1:
+                char_sheet = HumanSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            elif character_sheet.race == 2:
+                char_sheet = GnomeSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            elif character_sheet.race == 3:
+                char_sheet = ElfSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            elif character_sheet.race == 4:
+                char_sheet = HalflingSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            else:
+                return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get current gold from the race-specific sheet
         current_gold = char_sheet.char_gold
@@ -68,42 +70,38 @@ def getGold(request):
     user = request.user
     race = request.query_params.get('race')  
     sheetID = request.query_params.get('id')
-    print(sheetID)
+
     try:
-        # Get the character sheet associated with the current user
-       
-        character_sheet = CharacterSheet.objects.get(owner=user, race=race, id=sheetID)
-        sheet_name = character_sheet.char_name
-        print(sheet_name)
-        # print(character_sheet.race)
-        # Now we need to access the race-specific table based on sheet_race
-        if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-            print(char_sheet.char_gold)
-        elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-            print("test")
-        elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-            print(char_sheet.char_gold)
-        elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-            print(char_sheet.char_gold)
-        else:
-            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
+        # Get all character sheets associated with the current user and race
+        character_sheets = CharacterSheet.objects.filter(owner=user, race=race, active=True)
+        
+        if not character_sheets.exists():
+            return Response({"msg": "CharacterSheet not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Now loop through the character sheets and check the race
+        for character_sheet in character_sheets:
+            if character_sheet.race == 1:
+                char_sheet = HumanSheets.objects.filter(owner=user, id=sheetID).first()
+            elif character_sheet.race == 2:
+                char_sheet = GnomeSheets.objects.filter(owner=user, id=sheetID).first()
+            elif character_sheet.race == 3:
+                char_sheet = ElfSheets.objects.filter(owner=user, id=sheetID).first()
+            elif character_sheet.race == 4:
+                char_sheet = HalflingSheets.objects.filter(owner=user, id=sheetID).first()
+            else:
+                continue  # Skip invalid races
+            
+            if char_sheet:  # Check if the sheet for this race exists
+                # Return the gold value
+                char_gold = char_sheet.char_gold
+                return Response({"gold": char_gold})
 
-        char_Gold = char_sheet.char_gold
-        return Response(char_Gold)
-
-    except CharacterSheet.DoesNotExist:
-        return Response({"msg": "CharacterSheet not found."}, status=status.HTTP_404_NOT_FOUND)
-    except (HumanSheets.DoesNotExist, GnomeSheets.DoesNotExist, ElfSheets.DoesNotExist, HalflingSheets.DoesNotExist):
+        # If no valid sheet found
         return Response({"msg": "Race-specific sheet not found."}, status=status.HTTP_404_NOT_FOUND)
+
     except Exception as e:
-        # Log the error for debugging if needed
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 @api_view(['GET'])
@@ -123,36 +121,39 @@ def getMods(request):
         'stat_Charisma'
     ]
     try:
-        # Get the character sheet associated with the current user
-        character_sheet = CharacterSheet.objects.get(owner=user, race=race, id=sheetID)
-        sheet_name = character_sheet.char_name
+        # Get all character sheets associated with the current user, race, and sheet ID
+        character_sheets = CharacterSheet.objects.filter(owner=user, race=race, active=True)
 
-        # Access the race-specific table based on `race`
-        if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-        elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-        elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-        elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
-        else:
-            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
+        if not character_sheets.exists():
+            return Response({"msg": "CharacterSheet not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Collect stat modifiers in a dictionary
-        stat_modifiers = {field: modifiers(getattr(char_sheet, field, None)) for field in stat_fields}
+        # Loop through all character sheets and check race to fetch the correct race-specific sheet
+        for character_sheet in character_sheets:
+            if character_sheet.race == 1:
+                char_sheet = HumanSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            elif character_sheet.race == 2:
+                char_sheet = GnomeSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            elif character_sheet.race == 3:
+                char_sheet = ElfSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            elif character_sheet.race == 4:
+                char_sheet = HalflingSheets.objects.filter(owner=character_sheet.owner, id=sheetID).first()
+            else:
+                continue  # Skip invalid races
+            
+            if char_sheet:  # Check if the sheet exists for this race
+                # Collect stat modifiers in a dictionary
+                stat_modifiers = {field: modifiers(getattr(char_sheet, field, None)) for field in stat_fields}
 
-        return Response({"Mods": stat_modifiers})
-       
-    except CharacterSheet.DoesNotExist:
-        return Response({"msg": "CharacterSheet not found."}, status=status.HTTP_404_NOT_FOUND)
-    except (HumanSheets.DoesNotExist, GnomeSheets.DoesNotExist, ElfSheets.DoesNotExist, HalflingSheets.DoesNotExist):
+                # Return the stat modifiers for this sheet
+                return Response({"Mods": stat_modifiers})
+
+        # If no valid sheet found
         return Response({"msg": "Race-specific sheet not found."}, status=status.HTTP_404_NOT_FOUND)
+
     except Exception as e:
         # Log the error for debugging if needed
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 

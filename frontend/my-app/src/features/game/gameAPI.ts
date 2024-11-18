@@ -5,7 +5,8 @@ const SERVER = "http://127.0.0.1:8000/";
 export function currencyCalc(
   amount: number,
   action: "add" | "subtract",
-  race: number
+  race: number,
+  id: number
 ) {
   const access = localStorage.getItem("Access"); // Get the access token from localStorage
 
@@ -19,6 +20,7 @@ export function currencyCalc(
       amount, // The amount to add or subtract
       action, // The action (either "add" or "subtract")
       race, // race of the character to know what table to address
+      id
     },
     {
       headers: {

@@ -3,7 +3,7 @@ import { currencyCalc, getGold, getMods, rollDice } from './gameAPI';
 
 // Define the initial state
 interface GameState {
-  gold: number;
+  gold: any;
   loading: boolean;
   error: string;
   mods: []
@@ -21,9 +21,9 @@ const initialState: GameState = {
 // Create an async thunk to handle the currency calculation
 export const updateGold = createAsyncThunk(
   'game/updateGold', 
-  async ({ amount, action, race }: { amount: number, action: 'add' | 'subtract', race:number }, { rejectWithValue }) => {
+  async ({ amount, action, race, id }: { amount: number, action: 'add' | 'subtract', race:number, id:number }, { rejectWithValue }) => {
     try {
-      const response = await currencyCalc(amount, action,race);
+      const response = await currencyCalc(amount, action,race,id);
       return response.data.new_gold; // Assuming backend sends the new gold value
     } catch (error) {
     //   return rejectWithValue(error.response?.data?.msg || 'An error occurred');

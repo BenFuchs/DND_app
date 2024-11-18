@@ -58,7 +58,7 @@ An interactive D&D character management app, including features such as an inven
 - [ ] **Character Creation System**:
   - [X] Class selection logic (requires frontend)
   - [X] Race selection logic (requires frontend)
-    |- [ ] change login into a component in the frontend
+    |- [ ] change login into a component in the frontend (QOL)
     |- [X] change sheet creation flow (see notebook for information)
   - [WIP] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
   - [X] Partially interactive inventory and currency system 
@@ -104,7 +104,7 @@ An interactive D&D character management app, including features such as an inven
   7/11/24:
   to do list:
  - [X] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
- - [ ] whole lot of design to do
+ - [ ] whole lot of design to do (QOL)
  - [X] add logout functionality 
   [WIP] Create component page for the character information for play, includes:
      - [X] stats
@@ -129,7 +129,7 @@ An interactive D&D character management app, including features such as an inven
 
 
  16/11/24: 
- - [ ] organizes the backend urls, split it into different sections like the views 
+ - [ ] organizes the backend urls, split it into different sections like the views (QOL)
  - [X] In game component, both the race and class display numbers, set to display the actual names instead 
  - [X] Finish race traits section
  - [ ] Finish class traits section
@@ -141,4 +141,9 @@ An interactive D&D character management app, including features such as an inven
 
  18/11/24:
  - [X] sheet.sheet_name  in the sheetsComp is grabbing the first character sheet of that race table and giving it that sheet name, instead of going through the racetable and getting the correct name (FIXED)
- 
+ - [ ] When adding/subtracting gold from a user, the gold becomes empty until thee page is refreshed, not sure why yet. (QOL)
+ - [ ] Get beta version of the website up on netlify for beta testing by friends
+ - [ ] Learn how to connect users to each other (Private messages)
+ - [ ] Learn how to create Group servers like in among us 
+ - [ ] Learn how to make group chat 
+ - [ ] Learn how to make interactions between players (sending gold/ sendinng items/ etc)

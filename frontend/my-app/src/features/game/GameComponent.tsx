@@ -14,6 +14,7 @@ import DiceRollsModal from "./components/DiceRollsModal";
 import styles from "./styleSheets/gamecomponent.module.css";
 import DiceRoll from "./components/DiceRoll";
 import "./styleSheets/gamecomponent.module.css"
+import CharacterGold from "./components/CharacterGold";
 // TypeScript interfaces
 interface SheetData {
   id: number;
@@ -43,8 +44,9 @@ const GameComponent = () => {
   const dispatch = useAppDispatch();
   const { gold, loading, error } = useAppSelector(
     (state: RootState) => state.game
+    
   );
-
+console.log(gold.gold)
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
@@ -76,7 +78,7 @@ const GameComponent = () => {
     if (sheetData && !isNaN(amount) && amount > 0) {
       try {
         await dispatch(
-          updateGold({ amount, action: "add", race: sheetData.race })
+          updateGold({ amount, action: "add", race: sheetData.race, id:sheetData.id })
         );
       } catch (err) {
         console.error("Error adding gold:", err);
@@ -88,7 +90,7 @@ const GameComponent = () => {
     if (sheetData && !isNaN(amount) && amount > 0) {
       try {
         await dispatch(
-          updateGold({ amount, action: "subtract", race: sheetData.race })
+          updateGold({ amount, action: "subtract", race: sheetData.race, id:sheetData.id })
         );
       } catch (err) {
         console.error("Error subtracting gold:", err);
@@ -137,9 +139,7 @@ const GameComponent = () => {
           <CharacterName name={sheetData.char_name} />
           <CharacterClass charClass={charClassString()} />
           <CharacterRace race={charRaceString()} />
-          <p>
-            <strong>Gold:</strong> {gold}
-          </p>
+          <CharacterGold gold={gold.gold} />
           <CharacterStats
             stats={Object.entries(sheetData)
               .filter(([key]) => key.startsWith("stat"))
