@@ -12,18 +12,14 @@ from ..serializers import HumanSheetsSerializer, GnomeSheetsSerializer, ElfSheet
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def logged_sheetNum_check(request):
-    user = request.user  # The user is retrieved from the request, thanks to JWT authentication
-    
-    # Get all active character sheets for the user
+    user = request.user
     character_sheets = CharacterSheet.objects.filter(owner=user, active=True)
-    
     sheet_data = []
-    
+
     for sheet in character_sheets:
+        sheet_name = "Unnamed"
         race_model = None
-        sheet_name = "Unnamed"  # Default name if no specific name is found for the sheet
-        sheetID = sheet.id
-        # Determine the race-specific model based on the sheet's race
+
         if sheet.race == CharacterSheet.Race.HUMAN:
             race_model = HumanSheets
         elif sheet.race == CharacterSheet.Race.GNOME:
@@ -32,27 +28,26 @@ def logged_sheetNum_check(request):
             race_model = ElfSheets
         elif sheet.race == CharacterSheet.Race.HALFLING:
             race_model = HalflingSheets
-        
-        # Fetch the name for the current sheet if a race_model is available
-        if race_model:
-            race_sheet = race_model.objects.filter(owner=user).first()
-            if race_sheet:
-                sheet_name = race_sheet.char_name  # Set specific name for each sheet
 
-        # Append the sheet details to the list
+        if race_model:
+            # Debugging: Log the query and results
+            print(f"Debug: Fetching from {race_model.__name__} for sheet ID {sheet.id}, sheet name: {sheet.char_name}")
+            race_sheet = race_model.objects.filter(owner=user, race=sheet).first()
+            print(f"Debug: Query Result: {race_sheet}")
+            if race_sheet:
+                sheet_name = race_sheet.char_name
+
         sheet_data.append({
-            'sheet_name': sheet_name,
+            'sheet_name': sheet.char_name,
             'race': sheet.get_race_display(),
             'creation_time': sheet.creation_time,
-            'sheetID': sheetID
+            'sheetID': sheet.id
         })
 
-    # Return the sheet count and detailed information
     return Response({
         'username': user.username,
         'sheet_count': character_sheets.count(),
         'sheets': sheet_data,
-
     })
 
 #Endpoint to create a sheet for the logged user / requires logged in user and sending statBlocks
@@ -103,7 +98,7 @@ def sheet_delete(request):
 
     try:
         #global sheet inactive
-        sheet = CharacterSheet.objects.get(id=sheet_id, owner=user)
+        sheet = CharacterSheet.objects.get(id=sheet_id, owner=user, active=True)
         sheet.active = False
         sheet.save()
         # race sheet inactive
@@ -139,26 +134,27 @@ def get_specific_sheet(request, sheetID):
     
     try:
         # Get the parent sheet      
-        parent_sheet = CharacterSheet.objects.get(id=sheetID)
+        parent_sheet = CharacterSheet.objects.get(id=sheetID, active=True)
 
         # Check the race of the sheet
         sheet_race = parent_sheet.race
         parent_sheet_owner = parent_sheet.owner
+        sheet_name = parent_sheet.char_name
 
         if sheet_race == 1:  
-            char_sheet = HumanSheets.objects.get(owner=parent_sheet_owner)
+            char_sheet = HumanSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
             serializer = HumanSheetsSerializer(char_sheet)
             return Response({"data": serializer.data})
         elif sheet_race ==2:
-            char_sheet = GnomeSheets.objects.get(owner=parent_sheet_owner)
+            char_sheet = GnomeSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
             serializer = GnomeSheetsSerializer(char_sheet)
             return Response({"data": serializer.data})
         elif sheet_race ==3:
-            char_sheet = ElfSheets.objects.get(owner=parent_sheet_owner)
+            char_sheet = ElfSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
             serializer = ElfSheetsSerializer(char_sheet)
             return Response({"data": serializer.data})
         elif sheet_race ==4:
-            char_sheet = HalflingSheets.objects.get(owner=parent_sheet_owner)
+            char_sheet = HalflingSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
             serializer = HalflingSheetsSerializer(char_sheet)
             return Response({"data": serializer.data})
 

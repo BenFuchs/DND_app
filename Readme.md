@@ -111,7 +111,7 @@ An interactive D&D character management app, including features such as an inven
      - [X] Name
      - [X] Race
      - [X] Class
-     - [ ] Race-Traits (connect to dnd explanation links)
+     - [X] Race-Traits (connect to dnd explanation links)
      - [X] Gold Counter (ability to add, remove gold like a calculator)
      - [X] inventory (at first, keep simple, let user write in it)
      - [ ] Backstory section? 
@@ -135,5 +135,10 @@ An interactive D&D character management app, including features such as an inven
  - [ ] Finish class traits section
 
  17/11/24:
- - [ ] Add levels to the model + frontend view
- - [ ] set every classes health according to the correct hit die of their classes
+ - [WIP] Add levels to the model + frontend view
+ - [X] set every classes health according to the correct hit die of their classes
+ - [X] The order of stats being sent to the backend and being shown in the frontend during character creation are not the same (character creation shows a con roll of 10, but later con is set to 15 instead of some other stat that got that roll.)(FIXED)
+
+ 18/11/24:
+ - [X] sheet.sheet_name  in the sheetsComp is grabbing the first character sheet of that race table and giving it that sheet name, instead of going through the racetable and getting the correct name (FIXED)
+ 

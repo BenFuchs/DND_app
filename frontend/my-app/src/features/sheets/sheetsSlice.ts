@@ -29,9 +29,8 @@ export const getNum_of_sheetsAsync = createAsyncThunk(
   'sheets/num_of_sheets',
   async () => {
     const response = await num_of_sheets();
-    console.log(response.data) //debug line
-    return response.data; 
-    // Assuming response.data is the number of sheets
+    console.log("API Response:", response.data); // Debugging line
+    return response.data; // Ensure the data structure matches SheetData
   }
 );
 

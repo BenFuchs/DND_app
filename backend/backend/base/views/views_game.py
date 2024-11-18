@@ -68,22 +68,26 @@ def getGold(request):
     user = request.user
     race = request.query_params.get('race')  
     sheetID = request.query_params.get('id')
+    print(sheetID)
     try:
         # Get the character sheet associated with the current user
-        character_sheet = CharacterSheet.objects.get(owner=user, race=race)
-        print(character_sheet.race)
+       
+        character_sheet = CharacterSheet.objects.get(owner=user, race=race, id=sheetID)
+        sheet_name = character_sheet.char_name
+        print(sheet_name)
+        # print(character_sheet.race)
         # Now we need to access the race-specific table based on sheet_race
         if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
             print(char_sheet.char_gold)
         elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
             print("test")
         elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
             print(char_sheet.char_gold)
         elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
             print(char_sheet.char_gold)
         else:
             return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
@@ -120,17 +124,18 @@ def getMods(request):
     ]
     try:
         # Get the character sheet associated with the current user
-        character_sheet = CharacterSheet.objects.get(owner=user, race=race)
+        character_sheet = CharacterSheet.objects.get(owner=user, race=race, id=sheetID)
+        sheet_name = character_sheet.char_name
 
         # Access the race-specific table based on `race`
         if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
         elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
         elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
         elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID)
+            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, id=sheetID, char_name=sheet_name)
         else:
             return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -1,0 +1,81 @@
+{
+    "barbarian": {
+      "level_1": [
+        {
+          "name": "Rage",
+          "description": "You can enter a rage, gaining advantage on Strength checks and saving throws, and dealing extra damage with Strength-based attacks."
+        },
+        {
+          "name": "Unarmored Defense",
+          "description": "While not wearing armor, your AC equals 10 + your Dexterity modifier + your Constitution modifier."
+        }
+      ],
+      "level_2": [
+        {
+          "name": "Reckless Attack",
+          "description": "You can choose to make a reckless attack on your turn, granting advantage on melee attack rolls using Strength but granting advantage to attackers against you until your next turn."
+        }
+      ],
+      "level_3": [
+        {
+          "name": "Primal Path",
+          "description": "Choose a primal path, which grants additional features. For example, Path of the Berserker grants Frenzy, allowing you to make a melee weapon attack as a bonus action when you take the Attack action."
+        }
+      ]
+    },
+    "wizard": {
+      "level_1": [
+        {
+          "name": "Spellcasting",
+          "description": "You can cast spells using Intelligence as your spellcasting ability. You have a spellbook that contains your known spells."
+        },
+        {
+          "name": "Arcane Recovery",
+          "description": "Once per day when you finish a short rest, you can recover spell slots up to a combined level of 3."
+        }
+      ],
+      "level_2": [
+        {
+          "name": "Arcane Tradition",
+          "description": "Choose an Arcane Tradition, such as School of Evocation, which grants you specific features like Sculpt Spells."
+        }
+      ]
+    },
+    "cleric": {
+      "level_1": [
+        {
+          "name": "Spellcasting",
+          "description": "You can cast spells using Wisdom as your spellcasting ability. You prepare a list of cleric spells that are available for you to cast."
+        },
+        {
+          "name": "Divine Domain",
+          "description": "Choose a Divine Domain, such as Life, which grants you additional spells and abilities related to healing and protection."
+        }
+      ],
+      "level_2": [
+        {
+          "name": "Channel Divinity",
+          "description": "As an action, you can use your Channel Divinity to channel divine energy for various effects depending on your Domain, such as Turn Undead."
+        }
+      ]
+    },
+    "rogue": {
+      "level_1": [
+        {
+          "name": "Sneak Attack",
+          "description": "Once per turn, you can deal extra damage when you hit with a finesse or ranged weapon, provided you have advantage on the attack or another enemy of the target is within 5 feet."
+        },
+        {
+          "name": "Cunning Action",
+          "description": "You can use your bonus action to Dash, Disengage, or Hide on each of your turns."
+        }
+      ],
+      "level_2": [
+        {
+          "name": "Sneak Attack Improvement",
+          "description": "At level 2, your Sneak Attack damage increases, allowing you to deal more damage with finesse or ranged weapons."
+        }
+      ]
+    }
+  }
+  

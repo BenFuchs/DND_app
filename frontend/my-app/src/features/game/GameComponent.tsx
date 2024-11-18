@@ -13,7 +13,6 @@ import CurrencyCalculator from "../game/components/CurrencyCalculator";
 import DiceRollsModal from "./components/DiceRollsModal";
 import styles from "./styleSheets/gamecomponent.module.css";
 import DiceRoll from "./components/DiceRoll";
-import TraitsComponent from "../traits/TraitsComponent";
 import "./styleSheets/gamecomponent.module.css"
 // TypeScript interfaces
 interface SheetData {
@@ -166,7 +165,7 @@ const GameComponent = () => {
 
     <div className={styles.thirdColumn}>
       <CurrencyCalculator onAdd={handleAddGold} onSubtract={handleSubtractGold} />
-      {sheetData && <TraitsComponent sheetID={sheetData.id} />}
+      {/* {sheetData && <TraitsComponent sheetID={sheetData.id} />} */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}

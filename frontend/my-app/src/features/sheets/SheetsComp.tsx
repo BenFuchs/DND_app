@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   getNum_of_sheetsAsync,
@@ -61,6 +61,7 @@ const SheetsComp = () => {
           stats,
         })
       );
+      window.location.reload();
     } else {
       alert("Please fill out all fields!");
     }
@@ -77,7 +78,7 @@ const SheetsComp = () => {
         if (result.payload) {
           // Store the fetched sheet data in local storage
           localStorage.setItem("SheetData", JSON.stringify(result.payload));
-  
+
           // Navigate to the GameComponent with the selected sheetID
           navigate(`/game/${sheetID}`);
         } else {
@@ -90,7 +91,7 @@ const SheetsComp = () => {
   const handleDeleteSheet = (sheetID: number) => {
     dispatch(deleteSheetAsync(sheetID))
       .then(() => {
-        console.log("Deleted Sheet ID: ", sheetID)
+        console.log("Deleted Sheet ID: ", sheetID);
         // After deletion, filter out the deleted sheet from the local state
         if (numSheets) {
           const updatedSheets = numSheets.sheets.filter(
@@ -126,33 +127,31 @@ const SheetsComp = () => {
   if (numSheets && typeof numSheets === "object") {
     const { username, sheet_count, sheets } = numSheets;
 
+
+console.log(sheets)
     return (
       <div>
         <h1>Username: {username}</h1>
         <h2>Number of Sheets: {sheet_count}</h2>
-
-        <div>
-        {/* Display buttons for each character sheet */}
-        {sheets.map((sheet: Sheet, index: number) => (
-          <ul key={index}>
-            <button
-              onClick={() => {
-                console.log(`Selected sheet: ${sheet.sheet_name}`);
-                handleGetSheetData(sheet.sheetID);
-              }}
-            >
-              {sheet.sheet_name || "Unnamed Character"}
-            </button>
-            {" -- "}
-            <button onClick={() => handleDeleteSheet(sheet.sheetID)}>
-              Delete character
-            </button>
-          </ul>
-        ))}
-      </div>
-
-      <Outlet /> {/* This renders GameComponent when navigating to /game/:sheetID */}
-
+        {Array.isArray(sheets) &&
+  sheets.map((sheet: Sheet, index: number) => (
+    <ul key={index}>
+      <button
+        onClick={() => {
+          console.log(`Selected sheet: ${sheet.sheet_name || "Unnamed Character"}`);
+          handleGetSheetData(sheet.sheetID);
+        }}
+      >
+        {sheet.sheet_name || "Unnamed Character"}
+      </button>
+      {" -- "}
+      <button onClick={() => handleDeleteSheet(sheet.sheetID)}>
+        Delete character
+      </button>
+    </ul>
+  ))}
+        <Outlet />{" "}
+        {/* This renders GameComponent when navigating to /game/:sheetID */}
         {sheet_count < 3 && (
           <div>
             <div>
