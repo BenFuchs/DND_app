@@ -147,3 +147,6 @@ An interactive D&D character management app, including features such as an inven
  - [ ] Learn how to create Group servers like in among us 
  - [ ] Learn how to make group chat 
  - [ ] Learn how to make interactions between players (sending gold/ sendinng items/ etc)
+
+ 19/11/24:
+- [X] Items are being saved globally, instead of being able to add 1 arrow to each user, only the first user it was added to gets the item in its inventory and then adding an item in another user adds to the QUANTITY of the FIRST USER (FIXED)

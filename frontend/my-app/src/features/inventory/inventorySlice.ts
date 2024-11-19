@@ -38,7 +38,7 @@ export const getInventoryAsync = createAsyncThunk(
   async ({ ID }: { ID: number }, { rejectWithValue }) => {
     try {
       const response = await getInventory(ID);
-      // console.log(response.data) 
+      console.log(response.data) 
       return response.data.inventory; // Assuming the response has an 'inventory' field
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to get inventory');
@@ -66,6 +66,7 @@ export const addItemToInventoryAsync = createAsyncThunk(
   async ({ itemID, ID }: { itemID: number; ID: number }, { rejectWithValue }) => {
     try {
       const response = await addItemToInventory(itemID, ID);
+      console.log(response.data.inventory);
       return response.data.inventory; // Assuming the response contains the updated inventory
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to add item to inventory');

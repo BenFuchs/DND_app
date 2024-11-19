@@ -40,7 +40,7 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
     if (selectedItemID !== null) {
       // Dispatch action to add the selected item to the user's inventory
       dispatch(addItemToInventoryAsync({ itemID: selectedItemID, ID }));
-
+      console.log(item) //prints the item name 
       // Re-fetch the inventory after adding the item
       dispatch(getInventoryAsync({ ID }));
       window.location.reload()

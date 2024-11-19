@@ -92,38 +92,44 @@ def sheet_creation(request):
 def sheet_delete(request):
     user = request.user
     sheet_id = request.data.get("Id")
-    
+
     if not sheet_id:
         return Response({"msg": "Sheet ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        #global sheet inactive
+        # Mark global sheet as inactive
         sheet = CharacterSheet.objects.get(id=sheet_id, owner=user, active=True)
         sheet.active = False
         sheet.save()
-        # race sheet inactive
+
+        # Fetch associated race sheet
         race = sheet.race
+        race_sheet = None
         if race == CharacterSheet.Race.HUMAN:
-            race_sheet = HumanSheets.objects.get(owner=user)
+            race_sheet = HumanSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
         elif race == CharacterSheet.Race.GNOME:
-            race_sheet = GnomeSheets.objects.get(owner=user)
+            race_sheet = GnomeSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
         elif race == CharacterSheet.Race.ELF:
-            race_sheet = ElfSheets.objects.get(owner=user)
+            race_sheet = ElfSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
         elif race == CharacterSheet.Race.HALFLING:
-            race_sheet = HalflingSheets.objects.get(owner=user)
+            race_sheet = HalflingSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
+
+        if race_sheet:
+            # Mark the race-specific sheet as inactive
+            race_sheet.active = False
+            race_sheet.save()
         else:
-            return Response({"msg": "Unknown race, cannot find associated race sheet."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"msg": "No active race-specific sheet found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Mark the race sheet as inactive
-        race_sheet.active = False
-        race_sheet.save()
-
-
-
-        return Response({"msg": f"Sheet with ID {sheet_id} marked as inactive for user {user.username}"}, status=status.HTTP_200_OK)
+        return Response({
+            "msg": f"Sheet with ID {sheet_id} marked as inactive for user {user.username}."
+        }, status=status.HTTP_200_OK)
 
     except CharacterSheet.DoesNotExist:
         return Response({"msg": "Character sheet not found or not owned by the user."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response({"msg": "An error occurred while deleting the sheet."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])

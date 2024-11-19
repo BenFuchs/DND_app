@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, ElfSheets, InventoryItem
+from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, ElfSheets, InventoryItem, CharacterInventory
 
 from ..helper.inventoryParse import inventorySearch
 from ..helper.inventoryDetails import get_inventory_details
@@ -14,46 +14,39 @@ from ..helper.inventoryDetails import get_inventory_details
 @permission_classes([IsAuthenticated])
 def addItemToPlayerInv(request):
     user = request.user
-    itemID = request.data.get("itemID")  # The ID of the item the user wants to add
+    itemID = request.data.get("itemID")
     sheetID = request.data.get("id")
     
     # Retrieve the item data from the CSV
-    item = inventorySearch(itemID)
-    if not item:
+    item_data = inventorySearch(itemID)
+    if not item_data:
         return Response({"msg": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
 
     try:
-        # Get the character sheet associated with the current user
+        # Get the character sheet
         character_sheet = CharacterSheet.objects.get(owner=user, id=sheetID)
-        charName = character_sheet.char_name
-
-        # Access the race-specific table based on `race`
-        if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        else:
-            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Retrieve or create the InventoryItem
-        item_obj, created = InventoryItem.objects.get_or_create(itemID=itemID)
+        item, _ = InventoryItem.objects.get_or_create(itemID=itemID, defaults={'name': item_data['name']})
 
-        if created:
-            # If the item was created, add it to the inventory
-            char_sheet.inventory.add(item_obj)
-        else:
-            # If the item already exists, increase the quantity
-            item_obj.quantity += 1
-            item_obj.save()
+        # Update or create CharacterInventory entry
+        char_inventory, created = CharacterInventory.objects.get_or_create(
+            character=character_sheet,
+            item=item,
+            defaults={'quantity': 1}
+        )
+        if not created:
+            char_inventory.quantity += 1
+            char_inventory.save()
 
-        # Save the updated character sheet
-        char_sheet.save()
+        # Return updated inventory
+        inventory_items = CharacterInventory.objects.filter(character=character_sheet).select_related('item')
+        response_inventory = [
+            {"itemID": inv.item.itemID, "quantity": inv.quantity, "name": inv.item.name}
+            for inv in inventory_items
+        ]
 
-        return Response({"msg": "Item added to inventory successfully.", "inventory": char_sheet.inventory.values('itemID', 'quantity')}, status=status.HTTP_200_OK)
+        return Response({"msg": "Item added to inventory successfully.", "inventory": response_inventory}, status=status.HTTP_200_OK)
 
     except CharacterSheet.DoesNotExist:
         return Response({"msg": "Character sheet not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -67,35 +60,14 @@ def getInventory(request):
     user = request.user
     sheetID = request.query_params.get("id")
     try:
-        # Retrieve the user's character sheet
         character_sheet = CharacterSheet.objects.get(owner=user, id=sheetID)
-        charName = character_sheet.char_name
+        inventory_items = CharacterInventory.objects.filter(character=character_sheet).select_related('item')
 
-        # Access the race-specific table based on `race`
-        if character_sheet.race == 1:
-            char_sheet = HumanSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        elif character_sheet.race == 2:
-            char_sheet = GnomeSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        elif character_sheet.race == 3:
-            char_sheet = ElfSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        elif character_sheet.race == 4:
-            char_sheet = HalflingSheets.objects.get(owner=character_sheet.owner, char_name=charName)
-        else:
-            return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Retrieve and process inventory
-        inventory_items = char_sheet.inventory.all()  # This will get the InventoryItem objects
-        
-        # Prepare a list of item details
-        item_details = []
-        for item in inventory_items:
-            item_data = {
-                'itemID': item.itemID,
-                'quantity': item.quantity,
-                'name': inventorySearch(item.itemID)['name'],  # Assuming you are using inventorySearch to get item details from CSV
-                # You can add more fields here if needed
-            }
-            item_details.append(item_data)
+        # Prepare a list of inventory details
+        item_details = [
+            {"itemID": inv.item.itemID, "quantity": inv.quantity, "name": inv.item.name}
+            for inv in inventory_items
+        ]
 
         return Response({"inventory": item_details}, status=status.HTTP_200_OK)
 

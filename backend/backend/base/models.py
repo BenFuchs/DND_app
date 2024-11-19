@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+class InventoryItem(models.Model):
+    itemID = models.IntegerField()  # The ID of the item
+    quantity = models.IntegerField(default=1)  # The quantity of the item
+    name= models.CharField(max_length=20, default='')
+
+    def __str__(self):
+        return f"Item ID: {self.itemID}, Quantity: {self.quantity}"
 
 class CharacterSheet(models.Model):
     class Race(models.IntegerChoices):
@@ -13,19 +20,22 @@ class CharacterSheet(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     creation_time = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
-
+    inventory = models.ManyToManyField(
+            InventoryItem,
+            through='CharacterInventory',
+            related_name='characters'
+        )
     #character information
     race = models.IntegerField(choices=Race.choices, default=1) #at first all will be set to human until they reach the race selection 
     char_name = models.CharField(max_length=10, unique=True, default='') # this is what we will connect 
     def __str__(self) -> str:
         return f"{self.owner} is the owner of {self.Sheet_name}, Race: {self.get_race_display()}"
     
-class InventoryItem(models.Model):
-    itemID = models.IntegerField()  # The ID of the item
-    quantity = models.IntegerField(default=1)  # The quantity of the item
 
-    def __str__(self):
-        return f"Item ID: {self.itemID}, Quantity: {self.quantity}"
+class CharacterInventory(models.Model):
+    character = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE)
+    item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
 
 class HumanSheets(models.Model):
     class CharClass(models.IntegerChoices):
@@ -39,7 +49,6 @@ class HumanSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=1)
-    inventory = models.ManyToManyField(InventoryItem)  
     level = models.IntegerField(default=1)
     hitpoints = models.IntegerField(default=0)
 
@@ -65,7 +74,6 @@ class GnomeSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=2)
-    inventory = models.ManyToManyField(InventoryItem)  
     level = models.IntegerField(default=1)
     hitpoints = models.IntegerField(default=0)
    
@@ -90,7 +98,6 @@ class ElfSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=3)
-    inventory = models.ManyToManyField(InventoryItem)  
     level = models.IntegerField(default=1)
     hitpoints = models.IntegerField(default=0)
  
@@ -115,7 +122,6 @@ class HalflingSheets(models.Model):
     char_gold = models.IntegerField(validators=[MinValueValidator(0)], default=0) # characters gold 
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=4)
-    inventory = models.ManyToManyField(InventoryItem)  
     level = models.IntegerField(default=1)
     hitpoints = models.IntegerField(default=0)
 
