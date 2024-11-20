@@ -7,9 +7,9 @@ const InventoryWrapper: React.FC = () => {
   
   // Convert sheetID to a number if necessary and provIDe a race value
   const ID = Number(sheetID);
-  const race = 1; // Set this to a default or retrieve it based on your application’s context
 
-  return <InventoryComponent ID={ID} race={race} />;
+
+  return <InventoryComponent ID={ID}  />;
 };
 
 export default InventoryWrapper;

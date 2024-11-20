@@ -15,6 +15,9 @@ import styles from "./styleSheets/gamecomponent.module.css";
 import DiceRoll from "./components/DiceRoll";
 import "./styleSheets/gamecomponent.module.css"
 import CharacterGold from "./components/CharacterGold";
+import CharacterHP from "./components/CharachterHp";
+import CharacterLevel from "./components/CharacterLevel";
+
 // TypeScript interfaces
 interface SheetData {
   id: number;
@@ -28,6 +31,8 @@ interface SheetData {
   stat_Wisdom: number;
   stat_Charisma: number;
   race: number;
+  level: number;
+  hitpoints: number;
 }
 
 interface Mods {
@@ -46,7 +51,8 @@ const GameComponent = () => {
     (state: RootState) => state.game
     
   );
-console.log(gold.gold)
+
+// console.log(gold.gold)
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
@@ -62,7 +68,7 @@ console.log(gold.gold)
       setSheetData(parsedData.data);
     }
   }, []);
-
+ 
   useEffect(() => {
     if (sheetData) {
       const { race, id: sheetID } = sheetData;
@@ -139,6 +145,8 @@ console.log(gold.gold)
           <CharacterName name={sheetData.char_name} />
           <CharacterClass charClass={charClassString()} />
           <CharacterRace race={charRaceString()} />
+          <CharacterLevel level={sheetData.level} />
+          <CharacterHP hitpoints={sheetData.hitpoints} />
           <CharacterGold gold={gold.gold} />
           <CharacterStats
             stats={Object.entries(sheetData)

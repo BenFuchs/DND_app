@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 interface InventoryComponentProps {
   ID: number;
-  race: number;
 }
 
 const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {

@@ -135,7 +135,7 @@ An interactive D&D character management app, including features such as an inven
  - [ ] Finish class traits section
 
  17/11/24:
- - [WIP] Add levels to the model + frontend view
+ - [X] Add levels to the model + frontend view
  - [X] set every classes health according to the correct hit die of their classes
  - [X] The order of stats being sent to the backend and being shown in the frontend during character creation are not the same (character creation shows a con roll of 10, but later con is set to 15 instead of some other stat that got that roll.)(FIXED)
 
@@ -150,3 +150,7 @@ An interactive D&D character management app, including features such as an inven
 
  19/11/24:
 - [X] Items are being saved globally, instead of being able to add 1 arrow to each user, only the first user it was added to gets the item in its inventory and then adding an item in another user adds to the QUANTITY of the FIRST USER (FIXED)
+
+20/11/24:
+- [X] in the inventory wrapper theres a weird race default (FIXED)
+- Class features frontend is fucked, try building it in a seperate component

@@ -15,7 +15,8 @@ const TraitsComponent = ({ sheetID }: TraitsProps) => {
   useEffect(() => {
     const fetchTraits = async () => {
       try {
-        const response = await dispatch(getRaceTraitsAsync(sheetID));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const response = await dispatch(getRaceTraitsAsync(sheetID)); 
         // console.log("Resolved traits:", response); // Log resolved traits
       } catch (error) {
         // console.error("Error fetching traits:", error);

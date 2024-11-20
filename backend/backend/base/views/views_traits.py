@@ -42,3 +42,61 @@ def getSheetRaceTraits(request):
     except Exception as e:
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def getClassFeats(request):
+    user = request.user
+    char_name = request.data.get('char_name')
+
+    try:
+        with open("misc/classFeats.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"JSON Decode Error: {e}")
+
+    class_features = {
+    class_name: details
+    for class_name, details in data["classes"].items()
+}
+    try:
+        # Get the character sheet associated with the current user
+        character_sheet = CharacterSheet.objects.get(owner=user, char_name=char_name)
+        char_race = character_sheet.race
+
+        # Map race to model class directly
+        race_sheet_model = {
+            1: HumanSheets,
+            2: GnomeSheets,
+            3: ElfSheets,
+            4: HalflingSheets
+        }.get(char_race)
+
+        if not race_sheet_model:
+            return Response({"msg": "Invalid race option"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the specific sheet
+        specific_sheet = race_sheet_model.objects.get(owner=user, char_name=char_name)
+
+        # Map char_class to class features
+        class_feature_map = {
+            1: "barbarian",
+            2: "wizard",
+            3: "cleric",
+            4: "rogue"
+        }
+        class_key = class_feature_map.get(specific_sheet.char_class)
+
+        if not class_key:
+            return Response({"msg": "Invalid char_class"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the class features and return
+        response_data = class_features.get(class_key, [])
+        print(response_data)  # Debugging
+        return Response(response_data)
+
+    except CharacterSheet.DoesNotExist:
+        return Response({"msg": "Character sheet not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

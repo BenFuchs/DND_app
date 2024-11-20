@@ -1,9 +1,10 @@
 // In your traitsSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getRaceTraits } from './traitsAPI';
+import { getRaceTraits, getClassFeatures } from './traitsAPI';
 
 const initialState = {
   features: [] as { name: string; description: string }[], // Update type to store name and description
+  classFeatures: [] as { name: string; description: string}[],
   loading: false,  // Add loading state
 };
 
@@ -15,6 +16,15 @@ export const getRaceTraitsAsync = createAsyncThunk(
     return response.data; // Assuming the backend returns the full features array with name and description
   }
 );
+
+export const getClassFeaturesAsync = createAsyncThunk(
+  "traits/getClassFeatures",
+  async (char_name: string) => {
+    const response = await getClassFeatures(char_name)
+    console.log(response.data); //debugging line
+    return response.data;
+  }
+)
 
 // Create the slice
 const traitsSlice = createSlice({
@@ -33,7 +43,12 @@ const traitsSlice = createSlice({
       })
       .addCase(getRaceTraitsAsync.rejected, (state) => {
         state.loading = false;  // Handle error and stop loading
-      });
+      })
+      .addCase(getClassFeaturesAsync.fulfilled, (state, action)=> {
+        state.classFeatures = action.payload;
+        state.loading = false;
+      })
+
   }
 });
 
