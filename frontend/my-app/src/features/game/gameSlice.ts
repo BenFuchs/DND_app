@@ -36,6 +36,7 @@ export const getGoldAsync = createAsyncThunk(
   'game/getGold',
   async({race, sheetID}: {race:number, sheetID:number}) => {
     const response = await getGold(race, sheetID);
+    // console.log(response.data)
     return response.data;
   }
 )

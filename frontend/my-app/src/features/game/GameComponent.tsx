@@ -52,7 +52,6 @@ const GameComponent = () => {
     
   );
 
-// console.log(gold.gold)
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
@@ -82,15 +81,17 @@ const GameComponent = () => {
 
   const handleAddGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
-      try {
-        await dispatch(
-          updateGold({ amount, action: "add", race: sheetData.race, id:sheetData.id })
-        );
-      } catch (err) {
-        console.error("Error adding gold:", err);
-      }
+        try {
+            await dispatch(
+                updateGold({ amount, action: "add", race: sheetData.race, id:sheetData.id })
+            );
+            // Fetch the updated gold
+            dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
+        } catch (err) {
+            console.error("Error adding gold:", err);
+        }
     }
-  };
+};
 
   const handleSubtractGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
@@ -98,6 +99,8 @@ const GameComponent = () => {
         await dispatch(
           updateGold({ amount, action: "subtract", race: sheetData.race, id:sheetData.id })
         );
+        // Fetch the updated gold
+        dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
       } catch (err) {
         console.error("Error subtracting gold:", err);
       }

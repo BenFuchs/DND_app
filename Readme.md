@@ -141,7 +141,7 @@ An interactive D&D character management app, including features such as an inven
 
  18/11/24:
  - [X] sheet.sheet_name  in the sheetsComp is grabbing the first character sheet of that race table and giving it that sheet name, instead of going through the racetable and getting the correct name (FIXED)
- - [ ] When adding/subtracting gold from a user, the gold becomes empty until thee page is refreshed, not sure why yet. (QOL)
+ - [X] When adding/subtracting gold from a user, the gold becomes empty until thee page is refreshed, not sure why yet. (QOL) (FIXED -> issue was with the rerendering of the component)
  - [ ] Get beta version of the website up on netlify for beta testing by friends
  - [ ] Learn how to connect users to each other (Private messages)
  - [ ] Learn how to create Group servers like in among us 

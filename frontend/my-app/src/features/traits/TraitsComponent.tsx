@@ -13,6 +13,7 @@ const TraitsComponent = ({ sheetID }: TraitsProps) => {
   const traits = useAppSelector((state: RootState) => state.raceTraits.features);
   const loading = useAppSelector((state: RootState) => state.raceTraits.loading);
   const [charName, setCharName] = useState<string | null>(null);
+  const [charLevel, setcharLevel] = useState<number>(0)
 
   // Extract `char_name` from localStorage
   useEffect(() => {
@@ -21,6 +22,7 @@ const TraitsComponent = ({ sheetID }: TraitsProps) => {
       try {
         const parsedData = JSON.parse(data);
         setCharName(parsedData.data.char_name || null);
+        setcharLevel(parsedData.data.level || null);
       } catch (error) {
         console.error("Failed to parse SheetData from localStorage:", error);
       }
@@ -59,7 +61,7 @@ const TraitsComponent = ({ sheetID }: TraitsProps) => {
       </ul>
 
       {/* Pass the extracted `charName` to ClassFeatsComp */}
-      {charName && <ClassFeatsComp charName={charName} />}
+      {charName && <ClassFeatsComp charName={charName} charLevel={charLevel} />}
     </div>
   );
 };
