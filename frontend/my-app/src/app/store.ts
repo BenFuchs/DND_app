@@ -3,13 +3,15 @@ import sheetReducer from '../features/sheets/sheetsSlice';
 import gameReducer from '../features/game/gameSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
 import traitsReducer from '../features/traits/traitsSlice'
+import classFeaturesReducer from '../features/classFeats/classFeatsSlice'
 
 export const store = configureStore({
   reducer: {
     sheets: sheetReducer,
     game: gameReducer,
     inventory: inventoryReducer,
-    traits: traitsReducer,
+    raceTraits: traitsReducer,
+    classTraits: classFeaturesReducer
   },
 });
 

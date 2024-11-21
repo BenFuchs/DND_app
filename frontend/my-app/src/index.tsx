@@ -29,7 +29,8 @@ root.render(
             <Route path="/sheets" element={<SheetsComp />} />
             <Route path="game/:sheetID" element={<GameComponent />} />
             <Route path="game/:sheetID/inventory" element={<InventoryWrapper />} /> 
-            <Route path="game/:sheetID/traits" element={<TraitsWrapper />} />            </Route>
+            <Route path="game/:sheetID/traits" element={<TraitsWrapper />} />         
+            </Route>
         </Routes>
       </Provider>
     </BrowserRouter>

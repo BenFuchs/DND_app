@@ -129,10 +129,10 @@ An interactive D&D character management app, including features such as an inven
 
 
  16/11/24: 
- - [ ] organizes the backend urls, split it into different sections like the views (QOL)
+ - [X] organizes the backend urls, split it into different sections like the views (QOL)
  - [X] In game component, both the race and class display numbers, set to display the actual names instead 
  - [X] Finish race traits section
- - [ ] Finish class traits section
+ - [X] Finish class traits section
 
  17/11/24:
  - [X] Add levels to the model + frontend view
@@ -153,4 +153,4 @@ An interactive D&D character management app, including features such as an inven
 
 20/11/24:
 - [X] in the inventory wrapper theres a weird race default (FIXED)
-- Class features frontend is fucked, try building it in a seperate component
+- [X] complete class features component and frontend view of it
