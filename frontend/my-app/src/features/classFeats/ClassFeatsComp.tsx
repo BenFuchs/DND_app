@@ -26,14 +26,14 @@ const ClassFeatsComp = ({ charName, charLevel }: FeatProps) => {
     }
 
     // Log the feat levels for debugging
-    console.log("Class Features Keys:", Object.keys(feats));
-    console.log("Character Level:", charLevel);
+    // console.log("Class Features Keys:", Object.keys(feats));
+    // console.log("Character Level:", charLevel);
 
     // Filter features based on character's level
     const filteredFeats = Object.entries(feats).filter(([levelKey]) => {
         // Normalize the levelKey to lowercase
         const level = parseInt(levelKey.toLowerCase().replace('level_', ''), 10);
-        console.log(`Checking levelKey: ${levelKey}, Parsed level: ${level}`); // Log the level comparison
+        // console.log(`Checking levelKey: ${levelKey}, Parsed level: ${level}`); // Log the level comparison
         return level <= charLevel;
     });
 

@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['*'] #While testing set to * later change!
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -109,6 +111,17 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = 'myproj.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
 
 WSGI_APPLICATION = 'myproj.wsgi.application'
 

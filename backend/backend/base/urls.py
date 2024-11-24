@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
+from . import consumers
 urlpatterns = [
     path('', views.test), #testing endpoint
 
@@ -31,3 +32,4 @@ urlpatterns = [
     path('getRaceFeatures/', views.getSheetRaceTraits),
     path('getClassFeatures/', views.getClassFeats),
 ]
+

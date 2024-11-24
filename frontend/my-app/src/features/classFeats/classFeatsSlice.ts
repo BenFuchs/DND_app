@@ -10,7 +10,7 @@ export const getClassFeaturesAsync = createAsyncThunk(
     "traits/getClassFeatures",
     async (char_name: string) => {
       const response = await getClassFeatures(char_name)
-      console.log(response.data); //debugging line
+    //   console.log(response.data); //debugging line
       return response.data;
     }
 );

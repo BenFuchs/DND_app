@@ -154,3 +154,9 @@ An interactive D&D character management app, including features such as an inven
 20/11/24:
 - [X] in the inventory wrapper theres a weird race default (FIXED)
 - [X] complete class features component and frontend view of it
+
+24/11/24:
+- [X] Basic websocket implementation
+- [ ] Let users create "Rooms" for the chat for them to connect
+- [ ] Learn how to make direct messages (DM's) between two users
+- [ ] Send data through (for example gold/items)
