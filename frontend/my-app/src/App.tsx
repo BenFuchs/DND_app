@@ -34,6 +34,7 @@ function App() {
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
+                alert("Incorrect Login credentials")
                 setLoading(false); // Stop loading if there's an error
             });
     };
@@ -42,9 +43,25 @@ function App() {
     const register = () => {
         console.log(username, password);
         axios.post(SERVER + 'register/', { username, password })
-            .then(res => console.log(res.data))
-            .catch(error => console.error('Error fetching data:', error));
-    }
+            .then(res => {
+                // Registration successful
+                console.log(res.data);
+                alert("Registration successful! Please log in.");
+            })
+            .catch(error => {
+                if (error.response) {
+                    // Handle specific error based on server response
+                    if (error.response.status === 500) { //technically wrong but works for now
+                        alert("Username taken, please select a different one.");
+                    } else {
+                        alert("An error occurred: " + error.response.data.message || "Please try again.");
+                    }
+                } else {
+                    console.error('Error fetching data:', error);
+                    alert("Unable to connect to the server. Please try again later.");
+                }
+            });
+    };
 
     const decodeJwt = (token: string): JwtPayload | null => {
         if (!token) return null;

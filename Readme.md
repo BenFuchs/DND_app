@@ -60,7 +60,7 @@ An interactive D&D character management app, including features such as an inven
   - [X] Race selection logic (requires frontend)
     |- [ ] change login into a component in the frontend (QOL)
     |- [X] change sheet creation flow (see notebook for information)
-  - [WIP] Fully interactive character traits(links to dndbeyond or something) (requires frontend)
+  - [X] Fully interactive character traits
   - [X] Partially interactive inventory and currency system 
   - [ ] Spell slot & selection based on class (requires frontend)
 
@@ -144,8 +144,8 @@ An interactive D&D character management app, including features such as an inven
  - [X] When adding/subtracting gold from a user, the gold becomes empty until thee page is refreshed, not sure why yet. (QOL) (FIXED -> issue was with the rerendering of the component)
  - [ ] Get beta version of the website up on netlify for beta testing by friends
  - [ ] Learn how to connect users to each other (Private messages)
- - [ ] Learn how to create Group servers like in among us 
- - [ ] Learn how to make group chat 
+ - [WIP] Learn how to create Group servers like in among us 
+ - [X] Learn how to make group chat 
  - [ ] Learn how to make interactions between players (sending gold/ sendinng items/ etc)
 
  19/11/24:
@@ -157,6 +157,10 @@ An interactive D&D character management app, including features such as an inven
 
 24/11/24:
 - [X] Basic websocket implementation
-- [ ] Let users create "Rooms" for the chat for them to connect
+- [X] Let users create "Rooms" for the chat for them to connect
 - [ ] Learn how to make direct messages (DM's) between two users
 - [ ] Send data through (for example gold/items)
+
+25/11/24:
+- [ ] Add "username taken" message in registration 
+- [ ] Add "incorrect login details" message in login 

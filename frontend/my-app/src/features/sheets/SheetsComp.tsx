@@ -128,7 +128,7 @@ const SheetsComp = () => {
     const { username, sheet_count, sheets } = numSheets;
 
 
-console.log(sheets)
+// console.log(sheets)
     return (
       <div>
         <h1>Username: {username}</h1>
