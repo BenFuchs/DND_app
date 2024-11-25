@@ -11,7 +11,7 @@ from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, E
 def getSheetRaceTraits(request):
     user = request.user
     sheetID = request.data.get('id')
-    traits_path = 'misc/traits.json'
+    traits_path = '/Users/benayah/Desktop/Code/dnd/misc/traits.json'
 
     # get traits.json data
     with open(traits_path, "r") as file:
@@ -48,9 +48,10 @@ def getSheetRaceTraits(request):
 def getClassFeats(request):
     user = request.user
     char_name = request.data.get('char_name')
+    feats_path = '/Users/benayah/Desktop/Code/dnd/misc/classFeats.json'
 
     try:
-        with open("misc/classFeats.json", "r", encoding="utf-8") as file:
+        with open(feats_path, "r", encoding="utf-8") as file:
             data = json.load(file)
     except json.JSONDecodeError as e:
         print(f"JSON Decode Error: {e}")

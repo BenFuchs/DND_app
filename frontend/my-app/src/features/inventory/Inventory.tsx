@@ -36,13 +36,14 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   };
 
   const handleAddToInventory = () => {
+    console.log('adding item to inventory')
     if (selectedItemID !== null) {
       // Dispatch action to add the selected item to the user's inventory
       dispatch(addItemToInventoryAsync({ itemID: selectedItemID, ID }));
       console.log(item) //prints the item name 
       // Re-fetch the inventory after adding the item
       dispatch(getInventoryAsync({ ID }));
-      window.location.reload()
+      // window.location.reload()
       // Clear input and selected item ID
       setItem('');
       setSelectedItemID(null);
@@ -56,7 +57,7 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
     window.location.reload()
   }
 
-  // console.log(inventory)
+  console.log(inventory)
 
   if (error) return <div>Error: {error}</div>;
 

@@ -4,11 +4,25 @@ interface ChatRoomProps {
   roomName: string;
 }
 
+interface ChatMessage {
+  sender: string; // The name of the sender
+  content: string; // The message content
+}
+
 const ChatRoom: React.FC<ChatRoomProps> = ({ roomName }) => {
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const messageInputRef = useRef<HTMLInputElement>(null);
   const chatSocketRef = useRef<WebSocket | null>(null);
-  const SERVER = 'ws://127.0.0.1:8000';  // Ensure WebSocket connection points to the correct server
+  const SERVER = 'ws://127.0.0.1:8000'; // Ensure WebSocket connection points to the correct server
+
+  // Retrieve charName from localStorage
+  const charData = localStorage.getItem('SheetData');
+  let charName = 'Anonymous'; // Default to Anonymous if not found
+  if (charData) {
+    const parsedData = JSON.parse(charData);
+    charName = parsedData.data.char_name || 'Anonymous';
+    console.log(charName)
+  }
 
   useEffect(() => {
     // Initialize WebSocket connection
@@ -18,7 +32,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ roomName }) => {
     // Handle incoming messages
     chatSocket.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      setMessages((prevMessages) => [...prevMessages, data.message]);
+      console.log(data)
+      const newMessage: ChatMessage = {
+        sender: data.sender, // Use the sender provided in the message payload
+        content: data.message,
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
     // Handle WebSocket closure
@@ -37,20 +56,28 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ roomName }) => {
   const handleSubmit = () => {
     const message = messageInputRef.current?.value || '';
     if (message.trim() && chatSocketRef.current) {
-      chatSocketRef.current.send(JSON.stringify({ message }));
+      // Send message with sender's name
+      chatSocketRef.current.send(
+        JSON.stringify({
+          sender: charName,
+          message,
+        })
+      );
       messageInputRef.current!.value = ''; // Clear input after sending message
     }
   };
 
   return (
     <div>
+      {/* Display messages */}
       <textarea
-        value={messages.join('\n')}
+        value={messages.map((msg) => `${msg.sender}: ${msg.content}`).join('\n')}
         cols={100}
         rows={20}
         readOnly
       />
       <br />
+      {/* Input field for new messages */}
       <input
         ref={messageInputRef}
         type="text"
@@ -62,11 +89,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ roomName }) => {
         }}
       />
       <br />
-      <input
-        type="button"
-        value="Send"
-        onClick={handleSubmit}
-      />
+      {/* Send button */}
+      <input type="button" value="Send" onClick={handleSubmit} />
     </div>
   );
 };

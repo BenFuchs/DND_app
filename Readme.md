@@ -85,7 +85,7 @@ An interactive D&D character management app, including features such as an inven
 - [X] Race selection
 - [X] Appending appropriate traits per selected race to the sheet 
 - [X] Class selection
-- [ ] Appending appropriate traits and requirements per selected class to the sheet 
+- [X] Appending appropriate traits and requirements per selected class to the sheet 
 - [X] Stat setting and saving 
 
 ## Installation
@@ -125,7 +125,7 @@ An interactive D&D character management app, including features such as an inven
 
  15/11/24:
  - [X] finish dice rolling tray modal
- - [WIP] start the race/class traits page -> will be a seperate component page like the inventory, a tab acccessible when youre in your character sheet
+ - [X] start the race/class traits page -> will be a seperate component page like the inventory, a tab acccessible when youre in your character sheet
 
 
  16/11/24: 

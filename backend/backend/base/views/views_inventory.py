@@ -28,6 +28,7 @@ def addItemToPlayerInv(request):
 
         # Retrieve or create the InventoryItem
         item, _ = InventoryItem.objects.get_or_create(itemID=itemID, defaults={'name': item_data['name']})
+        print(item)
 
         # Update or create CharacterInventory entry
         char_inventory, created = CharacterInventory.objects.get_or_create(
@@ -82,7 +83,7 @@ def getInventory(request):
 @permission_classes([IsAuthenticated])
 def searchItems(request):
     search_term = request.query_params.get("query", "").lower()
-    file_path = 'misc/NewItems.csv'
+    file_path = '/Users/benayah/Desktop/Code/dnd/misc/NewItems.csv'
     data = pd.read_csv(file_path)
 
     # Replace NaN values with an empty string or any other default value

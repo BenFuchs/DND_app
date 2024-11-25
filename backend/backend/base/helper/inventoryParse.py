@@ -3,7 +3,7 @@ import pandas as pd
 import csv 
 
 def inventorySearch(id):
-    filePath = 'misc/NewItems.csv'
+    filePath = '/Users/benayah/Desktop/Code/dnd/misc/NewItems.csv'
     data = pd.read_csv(filePath)
 
     # Ensure 'ID' column is treated as integer for precise matching

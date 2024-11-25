@@ -16,14 +16,17 @@ const Layout: React.FC = () => {
     // Determine the page and display relevant buttons
     const renderButtons = () => {
         switch (location.pathname) {
-            case '/sheets':
-                return <Link to="/" className="btn btn-secondary me-2">Home</Link>;
+            // case '/sheets':
+            //     // return <Link to="/" className="btn btn-secondary me-2">Home</Link>;
+                
+                
             case `/game/${sheetID}`:
                 return (
                     <>
                         <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                         <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
                         <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
+                        <Link to="/chat" className='btn btn-secondary'>Chat</Link>  {/* TESTING CHATROOM LINKING  */}
                     </>
                 );
             case `/game/${sheetID}/inventory`:
@@ -43,7 +46,11 @@ const Layout: React.FC = () => {
                     </>
                 )
             default:
-                return <Link to="/" className="btn btn-secondary">Home</Link>;
+                return 
+                    // <>
+                    // <Link to="/" className="btn btn-secondary">Home</Link>
+                    // </>
+                
         }
     };
 
