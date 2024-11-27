@@ -112,6 +112,7 @@ TEMPLATES = [
     },
 ]
 
+
 ASGI_APPLICATION = 'myproj.asgi.application'
 CHANNEL_LAYERS = {
     "default": {

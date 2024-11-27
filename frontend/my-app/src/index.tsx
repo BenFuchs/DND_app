@@ -10,6 +10,7 @@ import Layout from "./Layout"; // Import the Layout component
 import InventoryWrapper from "./InventoryWrapper";
 import TraitsWrapper from "./TraitsWrapper";
 import ChatWrapper from "./chatWrapper";
+import ChatRoomView from "./features/ChatRoom/ChatRoomView";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
@@ -29,6 +30,8 @@ root.render(
             />
             <Route path="game/:sheetID/traits" element={<TraitsWrapper />} />
             <Route path="/chat" element={<ChatWrapper />} />
+            <Route path="/chat/:roomName" element={<ChatRoomView />} />
+
           </Route>
         </Routes>
       </Provider>

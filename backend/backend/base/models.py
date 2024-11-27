@@ -133,4 +133,9 @@ class HalflingSheets(models.Model):
     stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
 
+class ChatRoom(models.Model):
+    room_name = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255)  # Store hashed passwords in production
 
+    def __str__(self):
+        return self.room_name

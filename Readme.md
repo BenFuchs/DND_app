@@ -58,7 +58,7 @@ An interactive D&D character management app, including features such as an inven
 - [ ] **Character Creation System**:
   - [X] Class selection logic (requires frontend)
   - [X] Race selection logic (requires frontend)
-    |- [ ] change login into a component in the frontend (QOL)
+    |- [X] change login into a component in the frontend (QOL)
     |- [X] change sheet creation flow (see notebook for information)
   - [X] Fully interactive character traits
   - [X] Partially interactive inventory and currency system 
@@ -106,7 +106,7 @@ An interactive D&D character management app, including features such as an inven
  - [X] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
  - [ ] whole lot of design to do (QOL)
  - [X] add logout functionality 
-  [WIP] Create component page for the character information for play, includes:
+  [X] Create component page for the character information for play, includes:
      - [X] stats
      - [X] Name
      - [X] Race
@@ -114,7 +114,6 @@ An interactive D&D character management app, including features such as an inven
      - [X] Race-Traits (connect to dnd explanation links)
      - [X] Gold Counter (ability to add, remove gold like a calculator)
      - [X] inventory (at first, keep simple, let user write in it)
-     - [ ] Backstory section? 
 
   12/11/24: 
   in my inventory functions there is an issue with the possibility of one user having multiple sheets that are of the same race, thus getting the inventory sheet selection confused.
@@ -162,5 +161,14 @@ An interactive D&D character management app, including features such as an inven
 - [ ] Send data through (for example gold/items)
 
 25/11/24:
-- [ ] Add "username taken" message in registration 
-- [ ] Add "incorrect login details" message in login 
+- [X] Add "username taken" message in registration 
+- [X] Add "incorrect login details" message in login 
+
+26/11/24:
+- [ ] When clicking on the chat button in the navbar, and then clicking on inventory/traits button, the ID for the sheet gets messed up for some reason?
+- [WIP] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
+    | - [ ] fix the ws route for the individual chat rooms
+    | - [ ] add an option to delete rooms only if you have the password to them 
+    
+27/11/24: 
+- [ ] genuinly no idea whats going on with the websocket errors 

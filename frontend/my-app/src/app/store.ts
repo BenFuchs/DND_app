@@ -4,14 +4,17 @@ import gameReducer from '../features/game/gameSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
 import traitsReducer from '../features/traits/traitsSlice'
 import classFeaturesReducer from '../features/classFeats/classFeatsSlice'
-
+import chatRoomReducer from '../features/ChatRoom/chatRoomSlice';
+import authReducer from '../features/login_register/loginregisterSlice'
 export const store = configureStore({
   reducer: {
     sheets: sheetReducer,
     game: gameReducer,
     inventory: inventoryReducer,
     raceTraits: traitsReducer,
-    classTraits: classFeaturesReducer
+    classTraits: classFeaturesReducer,
+    chatRoom: chatRoomReducer,
+    login_register: authReducer,
   },
 });
 

@@ -31,5 +31,11 @@ urlpatterns = [
     #Traits endpoints
     path('getRaceFeatures/', views.getSheetRaceTraits),
     path('getClassFeatures/', views.getClassFeats),
-]
+
+    #ChatRoom endpoints
+    path('createChatRoom/', views.CreateRoom),
+    path('getChatRooms/', views.GetRooms),
+    path('verifyRoomPassword/', views.verify_room_password),
+
+]   
 
