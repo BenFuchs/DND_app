@@ -53,7 +53,7 @@ An interactive D&D character management app, including features such as an inven
 - [ ] **Backend Setup**:
   - [X] User authentication
   - [X] Character sheet creation & deletion
-  - [ ] Payment system for unlocking more sheets
+  - [X] Payment system for unlocking more sheets
 
 - [ ] **Character Creation System**:
   - [X] Class selection logic (requires frontend)
