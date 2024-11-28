@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from ..serializers import MyTokenObtainPairSerializer
-from ..models import CharacterSheet
+from ..models import CharacterSheet, UserProfile
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -29,6 +29,8 @@ def register(request):
     user.is_active = True
     user.is_staff = False
     user.save()
+
+    UserProfile.objects.create(user=user)
     return Response("new user registered")
 
 @api_view(['POST'])

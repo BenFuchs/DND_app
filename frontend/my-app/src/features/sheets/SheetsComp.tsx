@@ -21,6 +21,7 @@ export interface Sheet {
 export interface SheetData {
   username: string;
   sheet_count: number;
+  max_sheets: number;
   sheets: Sheet[];
 }
 
@@ -125,8 +126,9 @@ const SheetsComp = () => {
   }
 
   if (numSheets && typeof numSheets === "object") {
-    const { username, sheet_count, sheets } = numSheets;
-
+    const { username, sheet_count, sheets, max_sheets } = numSheets;
+    
+// console.log(max_sheets)
 
 // console.log(sheets)
     return (
@@ -152,7 +154,7 @@ const SheetsComp = () => {
   ))}
         <Outlet />{" "}
         {/* This renders GameComponent when navigating to /game/:sheetID */}
-        {sheet_count < 3 && (
+        {sheet_count < max_sheets && (
           <div>
             <div>
               <label>Select Race: </label>

@@ -2,6 +2,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import *
 
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['paypal_id', 'total_amount']
+
+
 # login
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

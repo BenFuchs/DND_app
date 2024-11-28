@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+class Order(models.Model):
+    paypal_id = models.CharField(max_length=255, unique=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.paypal_id} - ${self.total_amount}"
+        
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    extra_sheets = models.IntegerField(default=0)
+
 class InventoryItem(models.Model):
     itemID = models.IntegerField()  # The ID of the item
     quantity = models.IntegerField(default=1)  # The quantity of the item
@@ -29,7 +41,7 @@ class CharacterSheet(models.Model):
     race = models.IntegerField(choices=Race.choices, default=1) #at first all will be set to human until they reach the race selection 
     char_name = models.CharField(max_length=10, unique=True, default='') # this is what we will connect 
     def __str__(self) -> str:
-        return f"{self.owner} is the owner of {self.Sheet_name}, Race: {self.get_race_display()}"
+        return f"{self.owner} is the owner of {self.char_name}, Race: {self.get_race_display()}"
     
 
 class CharacterInventory(models.Model):

@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from ..models import CharacterSheet
+from ..models import CharacterSheet, UserProfile
 from ..helper.raceSheets import * 
 from ..serializers import HumanSheetsSerializer, GnomeSheetsSerializer, ElfSheetsSerializer, HalflingSheetsSerializer
 
@@ -15,6 +15,12 @@ def logged_sheetNum_check(request):
     user = request.user
     character_sheets = CharacterSheet.objects.filter(owner=user, active=True)
     sheet_data = []
+    max_sheets = 3
+    user_profile = UserProfile.objects.filter(user=user).first()
+    extra_sheets = user_profile.extra_sheets
+    if extra_sheets: 
+        max_sheets += extra_sheets
+
 
     for sheet in character_sheets:
         sheet_name = "Unnamed"
@@ -48,6 +54,7 @@ def logged_sheetNum_check(request):
         'username': user.username,
         'sheet_count': character_sheets.count(),
         'sheets': sheet_data,
+        'max_sheets': max_sheets,
     })
 
 #Endpoint to create a sheet for the logged user / requires logged in user and sending statBlocks
@@ -57,14 +64,22 @@ def sheet_creation(request):
     print(request.data)
     user = request.user
     data = request.data.get('data', {}) #use data to get information 
+    max_sheets = 3 #defualt max sheets per user
     #info from data
     user_stats = data.get('stats')  
     user_Name = data.get('characterName')
     user_Class = data.get('charClass')
     # Check if the user already has 3 character sheets
     sheet_count = CharacterSheet.objects.filter(owner=user, active=True).count()
-    if sheet_count >= 3:
-        return Response({"msg": "You have reached the maximum of 3 character sheets."}, status=status.HTTP_400_BAD_REQUEST)
+    # Check if the user has purchased any extra sheets
+    user_profile = UserProfile.objects.filter(user=user).first()
+    extra_sheet_count = user_profile.extra_sheets
+    if extra_sheet_count:
+        print(extra_sheet_count)
+        max_sheets += extra_sheet_count
+        print(max_sheets) # New max sheets for this user
+    if sheet_count >= max_sheets:
+        return Response({"msg": "You have reached the maximum number of character sheets, if you would like more please purchase one."}, status=status.HTTP_400_BAD_REQUEST)
 
     # Get the race selection from the request data
     race = data.get('race')

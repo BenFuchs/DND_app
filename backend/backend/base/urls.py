@@ -37,5 +37,7 @@ urlpatterns = [
     path('getChatRooms/', views.GetRooms),
     path('verifyRoomPassword/', views.verify_room_password),
 
+    #Paypal endpoints
+    path('orders/', views.orderView),
 ]   
 

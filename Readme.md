@@ -166,6 +166,8 @@ An interactive D&D character management app, including features such as an inven
 
 26/11/24:
 - [ ] When clicking on the chat button in the navbar, and then clicking on inventory/traits button, the ID for the sheet gets messed up for some reason?
+   | - Error when this happens is:
+    Error: Field 'id' expected a number but got 'NaN'.
 - [WIP] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
     | - [ ] fix the ws route for the individual chat rooms
     | - [ ] add an option to delete rooms only if you have the password to them 

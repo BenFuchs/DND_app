@@ -4,7 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 
 const ChatRoomView: React.FC = () => {
   const { roomName } = useParams<{ roomName: string }>();
-  const { socketUrl, socketStatus } = useAppSelector((state) => state.chatRoom);
+  const { socketStatus } = useAppSelector((state) => state.chatRoom);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
   const [newMessage, setNewMessage] = useState('');
