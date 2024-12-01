@@ -157,8 +157,6 @@ An interactive D&D character management app, including features such as an inven
 24/11/24:
 - [X] Basic websocket implementation
 - [X] Let users create "Rooms" for the chat for them to connect
-- [ ] Learn how to make direct messages (DM's) between two users
-- [ ] Send data through (for example gold/items)
 
 25/11/24:
 - [X] Add "username taken" message in registration 
@@ -169,8 +167,6 @@ An interactive D&D character management app, including features such as an inven
    | - Error when this happens is:
     Error: Field 'id' expected a number but got 'NaN'.
 - [WIP] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
-    | - [ ] fix the ws route for the individual chat rooms
-    | - [ ] add an option to delete rooms only if you have the password to them 
+- [X] fix the ws route for the individual chat rooms
+- [ ] add an option to delete rooms only if you have the password to them 
     
-27/11/24: 
-- [ ] genuinly no idea whats going on with the websocket errors 

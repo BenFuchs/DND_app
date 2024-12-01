@@ -1,6 +1,8 @@
 import json
+import jwt
+from django.contrib.auth.models import User
+from django.conf import settings
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.contrib.sessions.models import Session
 from asgiref.sync import sync_to_async
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -8,48 +10,72 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'chat_{self.room_name}'
 
-        # Check session for room access
-        session = self.scope.get('session', {})
-        room_access_key = f'room_{self.room_name}_access_granted'
+        # Extract token from query parameters
+        token = self.scope.get('query_string', b'').decode().split('=')[-1]
 
-        if session.get(room_access_key):
-            # User has access to the room
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name,
+        # Retrieve the user from the token
+        user = await self.get_user_from_token(token)
 
-            )
+        if user:
+            self.scope['user'] = user
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
             await self.accept()
         else:
-            # Close connection if no access
             await self.close()
 
+    async def get_user_from_token(self, token: str):
+        try:
+            # Decode the JWT token using the secret key
+            decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+
+            # Get user id or username from decoded token
+            user_id = decoded_token.get('user_id')  # Assuming 'user_id' is in the token
+            
+            if not user_id:
+                return None  # Return None if there's no user_id in the token
+
+            # Look up the user in the database
+            user = await sync_to_async(User.objects.get)(id=user_id)
+            return user
+        
+        except jwt.ExpiredSignatureError:
+            # Handle expired token
+            print("Token has expired")
+            return None
+        
+        except jwt.InvalidTokenError:
+            # Handle invalid token
+            print("Invalid token")
+            return None
+
     async def disconnect(self, close_code):
-        # Leave the room group on disconnect
+        # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
 
     async def receive(self, text_data):
-        # Receive a message from WebSocket
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        username = self.scope.get('user', None).username if self.scope.get('user') else 'Anonymous'
 
-        # Send message to the room group
+        # Send message to room group, including the sender's username
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
                 'message': message,
+                'username': username  # Add the username of the sender here
             }
         )
 
     async def chat_message(self, event):
-        # Receive a message from the room group
         message = event['message']
+        username = event['username']  # Extract the sender's username from the event
 
-        # Send message to WebSocket
+        # Send message to WebSocket with the correct sender's username
         await self.send(text_data=json.dumps({
-            'message': message,
+            'username': username,  # Use the username of the sender here
+            'message': message
         }))

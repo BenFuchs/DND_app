@@ -16,9 +16,13 @@ const Layout: React.FC = () => {
     // Determine the page and display relevant buttons
     const renderButtons = () => {
         switch (location.pathname) {
-            // case '/sheets':
+            case '/sheets':
             //     // return <Link to="/" className="btn btn-secondary me-2">Home</Link>;
-                
+                return (
+                    <>
+                    <Link to="/orders" className='btn btn-secondary me-2'>Extra Sheets!</Link>
+                    </>
+                )
                 
             case `/game/${sheetID}`:
                 return (
@@ -54,6 +58,12 @@ const Layout: React.FC = () => {
                     <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
                     <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
                     <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
+                    </>
+                )
+            case '/orders':
+                return (
+                    <>
+                    <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                     </>
                 )
             default:

@@ -33,7 +33,7 @@ const ChatWrapper: React.FC = () => {
   
           socket.onerror = (err) => {
             console.error('WebSocket error:', err);
-            alert('Failed to connect to the chat room.');
+            // alert('Failed to connect to the chat room.');
             dispatch(setSocketData({ socketUrl: '', socketStatus: 'disconnected' }));
             // Retry logic if connection fails
             setTimeout(createWebSocket, 2000); // Retry after 2 seconds

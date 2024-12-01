@@ -10,7 +10,7 @@ const Paypal: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const paypalOptions = {
-    clientId: 'AZ2I4WzcSOelYkwG3R2wNa_1kEYlATy7N_WD8hrxSIK8n0FBiZ5N_04ZcCZooQFli4oYLhJmN7C-kDJB', // Replace with actual PayPal Client ID
+    clientId: 'AZ2I4WzcSOelYkwG3R2wNa_1kEYlATy7N_WD8hrxSIK8n0FBiZ5N_04ZcCZooQFli4oYLhJmN7C-kDJB', 
     currency: 'USD',
   };
 
@@ -19,7 +19,7 @@ const Paypal: React.FC = () => {
       purchase_units: [
         {
           amount: {
-            value: '10.00', 
+            value: '5.00', 
           },
         },
       ],
@@ -32,7 +32,7 @@ const Paypal: React.FC = () => {
       console.log(details)
       const paypal_id = details.id;
       console.log(paypal_id)
-      dispatch(sendOrderAsync({ paypal_id, total_amount: '10.00' })); // Use `total_amount` here
+      dispatch(sendOrderAsync({ paypal_id, total_amount: '5.00' })); // Use `total_amount` here
       
       toast.success('Payment successful!');
       dispatch(clearCart());

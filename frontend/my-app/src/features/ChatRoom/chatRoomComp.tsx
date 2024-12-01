@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getChatRoomsAsync } from './chatRoomSlice';
-import { setSocketData } from '../ChatRoom/chatRoomSlice';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const SERVER = 'http://127.0.0.1:8000'; // Backend URL
+const SERVER = 'http://127.0.0.1:8000/';
 
 interface ChatRoomCompProps {
   room_names: string[];
@@ -14,17 +13,15 @@ interface ChatRoomCompProps {
 
 const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction }) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const roomNames = useAppSelector((state) => state.chatRoom.room_names);
-
+  const navigate = useNavigate();
   const [roomName, setRoomName] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [joinError, setJoinError] = useState<string | null>(null);
-  const [roomJoined, setRoomJoined] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Fetch chat rooms when the component mounts
+  // Fetch available chat rooms on mount
   useEffect(() => {
     dispatch(getChatRoomsAsync());
   }, [dispatch]);
@@ -35,97 +32,47 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       return;
     }
     try {
-      await axios.post(`${SERVER}/createChatRoom/`, { room_name: roomName, password });
+      await axios.post(`${SERVER}createChatRoom/`, { room_name: roomName, password });
       alert('Room created successfully!');
       setRoomName('');
       setPassword('');
-      dispatch(getChatRoomsAsync()); // Re-fetch rooms
-    } catch (err: any) {
-      alert(err.response?.data?.error || 'Error creating room.');
+      dispatch(getChatRoomsAsync());
+    } catch (error: any) {
+      // alert(error.response?.data?.error || 'Error creating room.');
     }
   };
 
-  const handleJoinRoom = async () => {
-    if (!selectedRoom || !passwordInput) {
-      setJoinError('Please provide a password.');
+  const handleRoomLogin = () => {
+    if (!selectedRoom || !inputPassword) {
+      alert('Please select a room and enter a password.');
       return;
     }
-    try {
-      const response = await axios.post(`${SERVER}/verifyRoomPassword/`, {
+    axios
+      .post(`${SERVER}verifyRoomPassword/`, {
         room_name: selectedRoom,
-        password: passwordInput,
+        password: inputPassword,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setIsLoggedIn(true);
+
+        // Navigate to ChatRoomView with room details
+        navigate(`/chat/${selectedRoom}/`, {
+          state: { roomName: selectedRoom, password: inputPassword },
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoggedIn(false);
+        alert('Invalid password or failed to join the room.');
       });
-
-      if (response.data.valid) {
-        alert('Successfully joined the room!');
-        setRoomJoined(true);
-
-        // Create a new WebSocket connection and dispatch to Redux
-        const socketUrl = `ws://127.0.0.1:8000/ws/chat/${selectedRoom}/`;
-        const socket = new WebSocket(socketUrl);
-
-        dispatch(setSocketData({ socketUrl, socketStatus: 'connecting' }));
-
-        socket.onopen = () => {
-          dispatch(setSocketData({ socketUrl, socketStatus: 'connected' }));
-        };
-
-        socket.onclose = () => {
-          dispatch(setSocketData({ socketUrl, socketStatus: 'disconnected' }));
-        };
-
-        socket.onerror = () => {
-          dispatch(setSocketData({ socketUrl, socketStatus: 'disconnected' }));
-        };
-
-        // Navigate to the chat room view
-        navigate(`/chat/${selectedRoom}`);
-      } else {
-        setJoinError('Invalid password. Please try again.');
-      }
-    } catch (err) {
-      console.error('Error joining the room:', err);
-      setJoinError('Error verifying password.');
-    }
   };
-
-  const connectToRoom = (room: string, password: string) => {
-  const socketUrl = `ws://127.0.0.1:8000/ws/chat/${room}/`;
-
-  // Function to create WebSocket connection
-  const createWebSocket = () => {
-    const socket = new WebSocket(socketUrl);
-    
-    socket.onopen = () => {
-      dispatch(setSocketData({ socketUrl, socketStatus: 'connected' }));
-      console.log('Connected to chat room!');
-      navigate(`/chat/${room}?password=${encodeURIComponent(password)}`);
-    };
-    
-    socket.onerror = (err) => {
-      console.error('WebSocket error:', err);
-      alert('Failed to connect to the chat room.');
-      dispatch(setSocketData({ socketUrl: '', socketStatus: 'disconnected' }));
-      // Retry logic if needed
-      setTimeout(createWebSocket, 2000); // Retry after 2 seconds
-    };
-    
-    socket.onclose = (event) => {
-      if (!event.wasClean) {
-        console.log('WebSocket closed unexpectedly, retrying...');
-        setTimeout(createWebSocket, 2000); // Retry after 2 seconds
-      }
-    };
-  };
-
-  createWebSocket(); // Initial connection attempt
-};
 
   return (
     <div>
-      {/* Create Room Section */}
+      {/* Room Creation */}
       <div>
-        <h2>Create Room</h2>
+        <h2>Create a Room</h2>
         <input
           type="text"
           placeholder="Room Name"
@@ -141,7 +88,7 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
         <button onClick={handleCreateRoom}>Create Room</button>
       </div>
 
-      {/* Join Room Section */}
+      {/* Available Rooms */}
       <div>
         <h2>Available Rooms</h2>
         {roomNames.length > 0 ? (
@@ -153,21 +100,21 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
         ) : (
           <p>No rooms available. Create one to get started!</p>
         )}
-
-        {selectedRoom && !roomJoined && (
-          <div>
-            <h3>Join Room: {selectedRoom}</h3>
-            <input
-              type="password"
-              placeholder="Enter Password"
-              value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-            />
-            {joinError && <p style={{ color: 'red' }}>{joinError}</p>}
-            <button onClick={handleJoinRoom}>Join Room</button>
-          </div>
-        )}
       </div>
+
+      {/* Join Selected Room */}
+      {selectedRoom && !isLoggedIn && (
+        <div>
+          <h3>Join Room: {selectedRoom}</h3>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={inputPassword}
+            onChange={(e) => setInputPassword(e.target.value)}
+          />
+          <button onClick={handleRoomLogin}>Join Room</button>
+        </div>
+      )}
     </div>
   );
 };
