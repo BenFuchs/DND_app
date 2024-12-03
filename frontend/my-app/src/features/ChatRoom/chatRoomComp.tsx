@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getChatRoomsAsync } from './chatRoomSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+
 import axios from 'axios';
 
 const SERVER = 'http://127.0.0.1:8000/';
@@ -20,6 +21,7 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [inputPassword, setInputPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {sheetID} = useParams();
 
   // Fetch available chat rooms on mount
   useEffect(() => {
@@ -57,7 +59,7 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
         setIsLoggedIn(true);
 
         // Navigate to ChatRoomView with room details
-        navigate(`/chat/${selectedRoom}/`, {
+        navigate(`/game/${sheetID}/chat/${selectedRoom}/`, {
           state: { roomName: selectedRoom, password: inputPassword },
         });
       })

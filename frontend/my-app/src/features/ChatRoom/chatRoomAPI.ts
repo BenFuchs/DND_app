@@ -36,7 +36,7 @@ export function verifyRoomPassword(roomName: string, password: string) {
 
   return axios.post(
     `${SERVER}verifyRoomPassword/`,
-    { room_name: roomName, password },
+    { room_name: roomName, password: password },
     {
       headers: { Authorization: `Bearer ${access}` },
     }

@@ -1,8 +1,10 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 from django.contrib.auth.hashers import make_password, check_password
-from ..models import ChatRoom
+from ..models import ChatRoom, CharacterSheet
 
 @api_view(['POST'])
 def CreateRoom(request):
@@ -35,7 +37,10 @@ def verify_room_password(request):
 
     try:
         room = ChatRoom.objects.get(room_name=room_name)
-        if check_password(entered_password, room.password):  # Compares the entered password with the hashed one
+        if check_password(entered_password, room.password): 
+            user = request.user
+            # parentSheet = CharacterSheet.objects.filter(owner=user)
+            # print(parentSheet.char_name)
             return Response({"valid": True})
         else:
             return Response({"valid": False}, status=400)

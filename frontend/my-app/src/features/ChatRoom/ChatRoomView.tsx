@@ -1,98 +1,177 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+
+interface User {
+  username: string;
+  user_id: string;
+}
 
 const ChatRoomView: React.FC = () => {
   const { roomName } = useParams<{ roomName: string }>();
-
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
+  const [privateMessage, setPrivateMessage] = useState<string>("");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null); // User selected for private message
 
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);  // Reference to the chat container
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!roomName) return;
-    const token = localStorage.getItem('Access');
-    const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${roomName}/?token=${token}`);
-  
+    const token = localStorage.getItem("Access");
+    const ws = new WebSocket(
+      `ws://127.0.0.1:8000/ws/chat/${roomName}/?token=${token}`
+    );
+
     setSocket(ws);
-  
+
     ws.onopen = () => {
-      console.log('Connected to the chat room');
-      setError(null);  // Reset any previous connection errors
+      console.log("Connected to the chat room");
+      setError(null); // Reset any previous connection errors
     };
-  
+
     ws.onmessage = (event) => {
       try {
         const messageData = JSON.parse(event.data);
-        const username = messageData.username;
-        const messageContent = messageData.message || event.data;
 
-        setMessages((prev) => [...prev, `${username}: ${messageContent}`]);
+        if (messageData.type === "user_list") {
+          setConnectedUsers(messageData.users);
+        } else if (messageData.type === "private_message") {
+          const sender = messageData.sender;
+          const privateMsg = messageData.message;
+          setMessages((prev) => [...prev, `Private from ${sender}: ${privateMsg}`]);
+        } else {
+          const username = messageData.username;
+          const messageContent = messageData.message || event.data;
+
+          setMessages((prev) => [...prev, `${username}: ${messageContent}`]);
+        }
       } catch (error) {
-        console.error('Error parsing message data', error);
-        setMessages((prev) => [...prev, event.data]); // Handle non-JSON messages
+        console.error("Error parsing message data", error);
+        setMessages((prev) => [...prev, event.data]);
       }
     };
-  
+
     ws.onclose = (event) => {
-      console.log(`WebSocket closed: ${event.code}, Reason: ${event.reason || 'No reason'}`);
-      setError('Connection closed unexpectedly.');
+      console.log(
+        `WebSocket closed: ${event.code}, Reason: ${
+          event.reason || "No reason"
+        }`
+      );
+      setError("Connection closed unexpectedly.");
     };
-  
+
     ws.onerror = (ev: Event) => {
       const err = ev as ErrorEvent;
-      console.error('WebSocket error:', err.message || err);
-      setError('Failed to connect to the chat room. Please check the server and try again.');
+      console.error("WebSocket error:", err.message || err);
+      setError(
+        "Failed to connect to the chat room. Please check the server and try again."
+      );
     };
-  
-    // Cleanup the WebSocket connection when the component is unmounted
+
     return () => {
-      ws.close(1000, 'Component unmounted');
-      console.log('WebSocket closed');
+      ws.close(1000, "Component unmounted");
+      console.log("WebSocket closed");
     };
   }, [roomName]);
 
   useEffect(() => {
-    // Scroll to the bottom of the chat container when messages change
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
-  }, [messages]);  // Triggered whenever messages change
+  }, [messages]);
 
   const sendMessage = () => {
-    if (socket && socket.readyState === WebSocket.OPEN && newMessage.trim() !== '') {
-      const message = { message: newMessage };
-      socket.send(JSON.stringify(message)); // Send JSON to backend
-      setNewMessage('');
+    if (
+      socket &&
+      socket.readyState === WebSocket.OPEN &&
+      newMessage.trim() !== ""
+    ) {
+      const message = { type: "group_message", message: newMessage };
+      socket.send(JSON.stringify(message));
+      setNewMessage("");
+    }
+  };
+
+  const sendPrivateMessage = () => {
+    if (
+      socket &&
+      socket.readyState === WebSocket.OPEN &&
+      privateMessage.trim() !== "" &&
+      selectedUser
+    ) {
+      const message = {
+        type: "private_message",
+        recipient_id: selectedUser.user_id,
+        message: privateMessage,
+      };
+      socket.send(JSON.stringify(message));
+      setMessages((prev) => [
+        ...prev,
+        `Private to ${selectedUser.username}: ${privateMessage}`,
+      ]);
+      setPrivateMessage("");
     }
   };
 
   return (
     <div>
       <h2>Chat Room: {roomName}</h2>
-      
-      {/* Display any connection errors */}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <div 
-        ref={chatContainerRef}  // Set the ref to the chat container
-        style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #ccc', padding: '10px' }}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <div
+        ref={chatContainerRef}
+        style={{
+          maxHeight: "300px",
+          overflowY: "auto",
+          border: "1px solid #ccc",
+          padding: "10px",
+        }}
       >
         {messages.map((msg, idx) => (
           <p key={idx}>{msg}</p>
         ))}
       </div>
-      
+
       <input
         type="text"
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
         placeholder="Type a message..."
-        style={{ width: '80%' }}
+        style={{ width: "80%" }}
       />
       <button onClick={sendMessage}>Send</button>
+      <hr />
+
+      <div>
+        <h3>Connected Users:</h3>
+        <ul>
+          {connectedUsers.map((user, idx) => (
+            <li key={idx}>
+              {user.username} -{" "}
+              <button onClick={() => setSelectedUser(user)}>Send DM</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {selectedUser && (
+        <div style={{ marginTop: "10px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
+          <h4>Send Private Message to {selectedUser.username}</h4>
+          <input
+            type="text"
+            value={privateMessage}
+            onChange={(e) => setPrivateMessage(e.target.value)}
+            placeholder={`Message for ${selectedUser.username}`}
+            style={{ width: "80%" }}
+          />
+          <button onClick={sendPrivateMessage}>Send</button>
+        </div>
+      )}
     </div>
   );
 };

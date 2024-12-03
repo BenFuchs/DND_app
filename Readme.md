@@ -142,8 +142,8 @@ An interactive D&D character management app, including features such as an inven
  - [X] sheet.sheet_name  in the sheetsComp is grabbing the first character sheet of that race table and giving it that sheet name, instead of going through the racetable and getting the correct name (FIXED)
  - [X] When adding/subtracting gold from a user, the gold becomes empty until thee page is refreshed, not sure why yet. (QOL) (FIXED -> issue was with the rerendering of the component)
  - [ ] Get beta version of the website up on netlify for beta testing by friends
- - [ ] Learn how to connect users to each other (Private messages)
- - [WIP] Learn how to create Group servers like in among us 
+ - [X] Learn how to connect users to each other (Private messages)
+ - [X] Learn how to create Group servers like in among us 
  - [X] Learn how to make group chat 
  - [ ] Learn how to make interactions between players (sending gold/ sendinng items/ etc)
 
@@ -164,9 +164,12 @@ An interactive D&D character management app, including features such as an inven
 
 26/11/24:
 - [ ] When clicking on the chat button in the navbar, and then clicking on inventory/traits button, the ID for the sheet gets messed up for some reason?
-   | - Error when this happens is:
+    Error when this happens is:
     Error: Field 'id' expected a number but got 'NaN'.
 - [WIP] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
 - [X] fix the ws route for the individual chat rooms
 - [ ] add an option to delete rooms only if you have the password to them 
     
+3/12/24:
+- [ ] QoL change: Set DM's into a seperate modal, show them seperatly from the major group chat
+- [ ] QoL change: in connected users, the logged user should not see his own name/ be able to send things to himself

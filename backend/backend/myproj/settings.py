@@ -123,7 +123,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-
 WSGI_APPLICATION = 'myproj.wsgi.application'
 
 # Database

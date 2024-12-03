@@ -6,6 +6,7 @@ const Layout: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { sheetID } = useParams();
+    const { roomName } = useParams();
 
     // Logout function
     const logout = () => {
@@ -30,7 +31,7 @@ const Layout: React.FC = () => {
                         <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                         <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
                         <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
-                        <Link to="/chat" className='btn btn-secondary'>Chat</Link>  
+                        <Link to={`/game/${sheetID}/chat`} className='btn btn-secondary'>Chat</Link>  
                     </>
                 );
             case `/game/${sheetID}/inventory`:
@@ -39,7 +40,7 @@ const Layout: React.FC = () => {
                     <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                     <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
                     <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
-                    <Link to="/chat" className='btn btn-secondary'>Chat</Link>  
+                    <Link to={`/game/${sheetID}/chat`} className='btn btn-secondary'>Chat</Link>  
                     </>
                 )
             case `/game/${sheetID}/traits`:
@@ -48,10 +49,10 @@ const Layout: React.FC = () => {
                     <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
                     <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
                     <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
-                    <Link to="/chat" className='btn btn-secondary'>Chat</Link>  
+                    <Link to={`/game/${sheetID}/chat`} className='btn btn-secondary'>Chat</Link>  
                     </>
                 )
-            case '/chat':
+            case `/game/${sheetID}/chat`:
                 return (
                     <>
                     <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
@@ -64,6 +65,16 @@ const Layout: React.FC = () => {
                 return (
                     <>
                     <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
+                    </>
+                )
+            case `/game/${sheetID}/chat/${roomName}/`:
+                return (
+                    <>
+                    <Link to="/sheets" className="btn btn-secondary me-2">Sheets</Link>
+                    <Link to={`/game/${sheetID}`} className="btn btn-secondary me-2">Main Sheet</Link>
+                    <Link to={`/game/${sheetID}/inventory`} className="btn btn-secondary me-2">Inventory</Link>
+                    <Link to={`/game/${sheetID}/traits`} className="btn btn-secondary me-2">Traits</Link>
+                    <Link to={`/game/${sheetID}/chat`} className='btn btn-secondary'>Chat</Link>  
                     </>
                 )
             default:

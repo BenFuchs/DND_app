@@ -30,8 +30,8 @@ root.render(
               element={<InventoryWrapper />}
             />
             <Route path="game/:sheetID/traits" element={<TraitsWrapper />} />
-            <Route path="/chat" element={<ChatWrapper />} />
-            <Route path="/chat/:roomName" element={<ChatRoomView />} />
+            <Route path="game/:sheetID/chat" element={<ChatWrapper />} />
+            <Route path="game/:sheetID/chat/:roomName" element={<ChatRoomView />} />
             <Route path="/orders" element={   <Paypal />} />
           </Route>
         </Routes>

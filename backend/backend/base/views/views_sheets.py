@@ -94,8 +94,10 @@ def sheet_creation(request):
         createGnomeSheet(user, user_stats, user_Name, user_Class)
     elif race == 3:
         createElfSheet(user, user_stats, user_Name, user_Class)
-    else:
+    elif race == 4:
         createHalflingSheet(user, user_stats, user_Name, user_Class)
+    else:
+        return Response({"Error":"Invalid race selection"})
 
     return Response({
         "msg": f"New character sheet created for {user.username} with race {CharacterSheet.Race(race).label}."
