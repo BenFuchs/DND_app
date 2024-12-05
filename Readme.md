@@ -163,9 +163,7 @@ An interactive D&D character management app, including features such as an inven
 - [X] Add "incorrect login details" message in login 
 
 26/11/24:
-- [ ] When clicking on the chat button in the navbar, and then clicking on inventory/traits button, the ID for the sheet gets messed up for some reason?
-    Error when this happens is:
-    Error: Field 'id' expected a number but got 'NaN'.
+- [X] When clicking on the chat button in the navbar, and then clicking on inventory/traits button, the ID for the sheet gets messed up for some reason
 - [WIP] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
 - [X] fix the ws route for the individual chat rooms
 - [ ] add an option to delete rooms only if you have the password to them 
@@ -174,3 +172,6 @@ An interactive D&D character management app, including features such as an inven
 - [ ] QoL change: Set DM's into a seperate modal, show them seperatly from the major group chat
 - [ ] QoL change: in connected users, the logged user should not see his own name/ be able to send things to himself
 - [ ] if a room name has a SPACE in it, it will fuck with the url
+
+5/12/24:
+- [X] name shown in chat room should be of the character not the parent user
