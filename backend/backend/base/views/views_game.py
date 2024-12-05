@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, ElfSheets
-
+from ..helper.generateToken import generate_user_token
 from ..helper.modifiers import modifiers
 from ..helper.inventoryParse import inventorySearch
 
@@ -209,3 +209,15 @@ def addItemToPlayerInv(request):
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(["POST"])
+def create_sheet_token(request):
+    user = request.user
+    sheet_data = request.data.get("sheet_data")
+    if not sheet_data:
+        return Response({"error": "Sheet data is required"}, status=400)
+
+    token = generate_user_token(user, sheet_data)
+    if token:
+        return Response({"token": token}, status=200)
+    else:
+        return Response({"error": "Failed to generate token"}, status=500)

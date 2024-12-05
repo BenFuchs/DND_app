@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 interface User {
+  char_name: string;
   username: string;
   user_id: string;
 }
@@ -17,19 +18,23 @@ const ChatRoomView: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null); // User selected for private message
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-
+  console.log(connectedUsers)
   useEffect(() => {
     if (!roomName) return;
-    const token = localStorage.getItem("Access");
+    const token = localStorage.getItem("SDT");
+  
     const ws = new WebSocket(
       `ws://127.0.0.1:8000/ws/chat/${roomName}/?token=${token}`
     );
-
+  
     setSocket(ws);
-
+  
     ws.onopen = () => {
       console.log("Connected to the chat room");
-      setError(null); // Reset any previous connection errors
+      setError(null);
+  
+      // Send the character name to the server
+      ws.send(JSON.stringify({ type: "connect" }));
     };
 
     ws.onmessage = (event) => {
@@ -43,10 +48,10 @@ const ChatRoomView: React.FC = () => {
           const privateMsg = messageData.message;
           setMessages((prev) => [...prev, `Private from ${sender}: ${privateMsg}`]);
         } else {
-          const username = messageData.username;
+          const charName = messageData.char_name; // Change from username to char_name
           const messageContent = messageData.message || event.data;
 
-          setMessages((prev) => [...prev, `${username}: ${messageContent}`]);
+          setMessages((prev) => [...prev, `${charName}: ${messageContent}`]); // Use char_name
         }
       } catch (error) {
         console.error("Error parsing message data", error);
@@ -152,8 +157,9 @@ const ChatRoomView: React.FC = () => {
         <ul>
           {connectedUsers.map((user, idx) => (
             <li key={idx}>
-              {user.username} -{" "}
-              <button onClick={() => setSelectedUser(user)}>Send DM</button>
+              {user.char_name} - {/* Change from username to char_name */}
+              <button onClick={() => setSelectedUser(user)}>Send DM</button> -{" "}
+              <button onClick={() => console.log(user.user_id)}>Send Item</button>
             </li>
           ))}
         </ul>
@@ -161,12 +167,12 @@ const ChatRoomView: React.FC = () => {
 
       {selectedUser && (
         <div style={{ marginTop: "10px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
-          <h4>Send Private Message to {selectedUser.username}</h4>
+          <h4>Send Private Message to {selectedUser.char_name}</h4> 
           <input
             type="text"
             value={privateMessage}
             onChange={(e) => setPrivateMessage(e.target.value)}
-            placeholder={`Message for ${selectedUser.username}`}
+            placeholder={`Message for ${selectedUser.char_name}`} 
             style={{ width: "80%" }}
           />
           <button onClick={sendPrivateMessage}>Send</button>

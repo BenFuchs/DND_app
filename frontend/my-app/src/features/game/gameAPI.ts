@@ -69,3 +69,16 @@ export function rollDice(diceType: number, amount: number) {
     }
   });
 }
+
+export function getSheetDataToken() {
+  const SD = localStorage.getItem('SheetData');
+  // console.log(SD)
+  const token = localStorage.getItem('Access'); // Example auth token
+  return axios.post(SERVER + 'SDT/', {
+    sheet_data: SD
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}

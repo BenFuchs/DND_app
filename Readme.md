@@ -173,3 +173,4 @@ An interactive D&D character management app, including features such as an inven
 3/12/24:
 - [ ] QoL change: Set DM's into a seperate modal, show them seperatly from the major group chat
 - [ ] QoL change: in connected users, the logged user should not see his own name/ be able to send things to himself
+- [ ] if a room name has a SPACE in it, it will fuck with the url

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { currencyCalc, getGold, getMods, rollDice } from './gameAPI'; 
+import { currencyCalc, getGold, getMods, getSheetDataToken, rollDice } from './gameAPI'; 
 
 // Define the initial state
 interface GameState {
@@ -54,6 +54,15 @@ export const rollDiceAsync = createAsyncThunk(
   async ({ diceType, amount }: { diceType: number; amount: number }) => {
     const response = await rollDice(diceType, amount);
     // console.log(response.data)
+    return response.data;
+  }
+)
+
+export const getSheetDataTokenAsync = createAsyncThunk(
+  'game/getSDT',
+  async()=> {
+    const response = await getSheetDataToken();
+    // console.log(response.data);
     return response.data;
   }
 )

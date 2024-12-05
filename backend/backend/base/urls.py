@@ -21,6 +21,7 @@ urlpatterns = [
     path('getGold/', views.getGold),
     path('getMods/', views.getMods),
     path('diceRoll/', views.nSidedDice),
+    path('SDT/', views.create_sheet_token),
 
     #Inventory endpoints
     path('getInventory/', views.getInventory),

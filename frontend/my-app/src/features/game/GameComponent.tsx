@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { updateGold, getGoldAsync, getModsAsync } from "../game/gameSlice";
+import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync } from "../game/gameSlice";
 import { RootState } from "../../app/store";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,7 +13,7 @@ import CurrencyCalculator from "../game/components/CurrencyCalculator";
 import DiceRollsModal from "./components/DiceRollsModal";
 import styles from "./styleSheets/gamecomponent.module.css";
 import DiceRoll from "./components/DiceRoll";
-import "./styleSheets/gamecomponent.module.css"
+import "./styleSheets/gamecomponent.module.css";
 import CharacterGold from "./components/CharacterGold";
 import CharacterHP from "./components/CharachterHp";
 import CharacterLevel from "./components/CharacterLevel";
@@ -49,7 +49,6 @@ const GameComponent = () => {
   const dispatch = useAppDispatch();
   const { gold, loading, error } = useAppSelector(
     (state: RootState) => state.game
-    
   );
 
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
@@ -67,37 +66,60 @@ const GameComponent = () => {
       setSheetData(parsedData.data);
     }
   }, []);
- 
+  
   useEffect(() => {
     if (sheetData) {
       const { race, id: sheetID } = sheetData;
+  
+      // Fetch gold and mods
       dispatch(getGoldAsync({ race, sheetID }));
       dispatch(getModsAsync({ race, sheetID }))
         .unwrap()
         .then(setMods)
         .catch((err) => console.error("Error fetching mods:", err));
+  
+      // Get and store the token using the async thunk
+      dispatch(getSheetDataTokenAsync())
+        .unwrap()
+        .then((data) => {
+          const { token } = data;
+          if (token) {
+            localStorage.setItem("SDT", token); // Save the token to localStorage
+          }
+        })
+        .catch((err) => console.error("Error fetching sheet data token:", err));
     }
   }, [sheetData, dispatch]);
 
   const handleAddGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
-        try {
-            await dispatch(
-                updateGold({ amount, action: "add", race: sheetData.race, id:sheetData.id })
-            );
-            // Fetch the updated gold
-            dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
-        } catch (err) {
-            console.error("Error adding gold:", err);
-        }
+      try {
+        await dispatch(
+          updateGold({
+            amount,
+            action: "add",
+            race: sheetData.race,
+            id: sheetData.id,
+          })
+        );
+        // Fetch the updated gold
+        dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
+      } catch (err) {
+        console.error("Error adding gold:", err);
+      }
     }
-};
+  };
 
   const handleSubtractGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
       try {
         await dispatch(
-          updateGold({ amount, action: "subtract", race: sheetData.race, id:sheetData.id })
+          updateGold({
+            amount,
+            action: "subtract",
+            race: sheetData.race,
+            id: sheetData.id,
+          })
         );
         // Fetch the updated gold
         dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
@@ -142,66 +164,66 @@ const GameComponent = () => {
 
   return (
     <div className={styles.container}>
-    <div className={styles.firstColumn}>
-      {sheetData ? (
-        <>
-          <CharacterName name={sheetData.char_name} />
-          <CharacterClass charClass={charClassString()} />
-          <CharacterRace race={charRaceString()} />
-          <CharacterLevel level={sheetData.level} />
-          <CharacterHP hitpoints={sheetData.hitpoints} />
-          <CharacterGold gold={gold.gold} />
-          <CharacterStats
-            stats={Object.entries(sheetData)
-              .filter(([key]) => key.startsWith("stat"))
-              .map(([key, value]) => ({ name: key, value }))}
-          />
-        </>
-      ) : (
-        <p>Loading sheet data...</p>
-      )}
-    </div>
-
-    <div className={styles.secondColumn}>
-      {sheetData ? (
-        !Mods ? (
-          <p>Loading skills...</p>
+      <div className={styles.firstColumn}>
+        {sheetData ? (
+          <>
+            <CharacterName name={sheetData.char_name} />
+            <CharacterClass charClass={charClassString()} />
+            <CharacterRace race={charRaceString()} />
+            <CharacterLevel level={sheetData.level} />
+            <CharacterHP hitpoints={sheetData.hitpoints} />
+            <CharacterGold gold={gold.gold} />
+            <CharacterStats
+              stats={Object.entries(sheetData)
+                .filter(([key]) => key.startsWith("stat"))
+                .map(([key, value]) => ({ name: key, value }))}
+            />
+          </>
         ) : (
-          <Skills skills={skills} />
-        )
-      ) : (
-        <p>Loading sheet data...</p>
-      )}
-    </div>
-
-    <div className={styles.thirdColumn}>
-      <CurrencyCalculator onAdd={handleAddGold} onSubtract={handleSubtractGold} />
-      {/* {sheetData && <TraitsComponent sheetID={sheetData.id} />} */}
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => (modal ? close() : open())}
-      >
-        Open Dice Tray
-      </motion.button>
-      <AnimatePresence>
-        {modal && (
-          <DiceRollsModal
-            handleClose={close}
-            modal={modal}
-            backdropClass={styles.backdrop}
-            modalClass={styles.modal}
-          >
-            <DiceRoll />
-          </DiceRollsModal>
+          <p>Loading sheet data...</p>
         )}
-      </AnimatePresence>
-    </div>
+      </div>
 
-    {loading && <p>Loading...</p>}
-    {error && <p>Error: {error}</p>}
-  </div>
-);
+      <div className={styles.secondColumn}>
+        {sheetData ? (
+          !Mods ? (
+            <p>Loading skills...</p>
+          ) : (
+            <Skills skills={skills} />
+          )
+        ) : (
+          <p>Loading sheet data...</p>
+        )}
+      </div>
+
+      <div className={styles.thirdColumn}>
+        <CurrencyCalculator onAdd={handleAddGold} onSubtract={handleSubtractGold} />
+        {/* {sheetData && <TraitsComponent sheetID={sheetData.id} />} */}
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => (modal ? close() : open())}
+        >
+          Open Dice Tray
+        </motion.button>
+        <AnimatePresence>
+          {modal && (
+            <DiceRollsModal
+              handleClose={close}
+              modal={modal}
+              backdropClass={styles.backdrop}
+              modalClass={styles.modal}
+            >
+              <DiceRoll />
+            </DiceRollsModal>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+    </div>
+  );
 };
 
 export default GameComponent;
