@@ -77,6 +77,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def handle_private_message(self, data):
         recipient_id = data.get('recipient_id')
+        print(recipient_id)
         message = data.get('message')
         sender_char_name = self.scope['user'].char_name  # Use char_name instead of username
 

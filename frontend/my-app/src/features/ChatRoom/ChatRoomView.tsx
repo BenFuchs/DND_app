@@ -18,7 +18,7 @@ const ChatRoomView: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null); // User selected for private message
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  console.log(connectedUsers)
+
   useEffect(() => {
     if (!roomName) return;
     const token = localStorage.getItem("SDT");
@@ -116,7 +116,7 @@ const ChatRoomView: React.FC = () => {
       socket.send(JSON.stringify(message));
       setMessages((prev) => [
         ...prev,
-        `Private to ${selectedUser.username}: ${privateMessage}`,
+        `Private to ${selectedUser.char_name}: ${privateMessage}`,
       ]);
       setPrivateMessage("");
     }
