@@ -210,6 +210,7 @@ def addItemToPlayerInv(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def create_sheet_token(request):
     user = request.user
     sheet_data = request.data.get("sheet_data")
@@ -221,3 +222,18 @@ def create_sheet_token(request):
         return Response({"token": token}, status=200)
     else:
         return Response({"error": "Failed to generate token"}, status=500)
+    
+# @api_view(["POST"])
+# @permission_classes([IsAuthenticated])
+# def update_SDT_GOLD(request): #Currently GOLD ONLY, WIP 
+#     user = request.user
+#     current_sheet_data = request.data.get("sheet_data")
+#     if not current_sheet_data:
+#         return Response({"Error": "Sheet data is required"}, status=400)
+    
+
+#     newSDT = generate_user_token(user, current_sheet_data)
+#     if newSDT:
+#         return Response({"New SDT": newSDT}, status=200)
+#     else:
+#         return Response({"Error": "Failed to generate token"}, status=500)

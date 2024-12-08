@@ -4,7 +4,15 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.hashers import make_password, check_password
-from ..models import ChatRoom, CharacterSheet
+from ..models import ChatRoom, CharacterSheet, HumanSheets, HalflingSheets, ElfSheets, GnomeSheets
+from enum import Enum
+
+class RaceSheets(Enum):
+    HumanSheets = 1
+    GnomeSheets = 2
+    ElfSheets = 3
+    HalflingSheets = 3
+
 
 @api_view(['POST'])
 def CreateRoom(request):
@@ -46,3 +54,40 @@ def verify_room_password(request):
             return Response({"valid": False}, status=400)
     except ChatRoom.DoesNotExist:
         return Response({"error": "Room not found"}, status=404)
+    
+@api_view(['POST'])
+def WIP(request):
+    user_id = request.data.get('Id')
+    userName = request.data.get('username')
+    
+    user_char = CharacterSheet.objects.get(id=user_id, char_name=userName)
+    user_race_num = user_char.race  # Assume this is an integer (1 for Human, 2 for Gnome, etc.)
+    
+    # Map race enum to the corresponding model class
+    race_models = {
+        'HumanSheets': HumanSheets,
+        'GnomeSheets': GnomeSheets,
+        'ElfSheets': ElfSheets,
+        'HalflingSheets': HalflingSheets,
+    }
+    
+    try:
+        user_race_sheet_data = RaceSheets(user_race_num)  
+        user_race_sheet = user_race_sheet_data.name  # Get the enum name (e.g., "HumanSheets")
+        
+        # Get the model class corresponding to the race
+        race_model = race_models.get(user_race_sheet)
+        if not race_model:
+            return Response({"error": "Race model not found"}, status=400)
+        
+        # Fetch the race sheet data for the user
+        raceSheet = race_model.objects.get(char_name=userName)
+        userGold = raceSheet.char_gold
+        print(userGold)
+
+    except ValueError:
+        return Response({"error": "Invalid race number"}, status=400)
+    except race_model.DoesNotExist:
+        return Response({"error": "Character sheet not found for the user"}, status=404)
+
+    return Response({userGold})

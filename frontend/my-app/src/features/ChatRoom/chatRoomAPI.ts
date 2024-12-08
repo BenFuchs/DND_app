@@ -42,3 +42,19 @@ export function verifyRoomPassword(roomName: string, password: string) {
     }
   );
 }
+
+export function WIP(Id: number, username: string) {
+  const access = localStorage.getItem("Access");
+  if (!access) {
+    return Promise.reject(new Error("No access token found"));
+  }
+
+  return axios.post(SERVER + 'WIP/', {
+    Id: Id,
+    username: username
+  }, {
+    headers: {
+      Authorization: `Bearer ${access}`
+    }
+  })
+}

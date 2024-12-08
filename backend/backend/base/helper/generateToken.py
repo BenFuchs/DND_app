@@ -25,29 +25,33 @@ def generate_user_token(user, sheet_data):
     """
     Generates a JWT token for a user with the given sheet data.
     """
+    
     # Ensure sheet_data is a dictionary
     if isinstance(sheet_data, str):
         sheet_data = json.loads(sheet_data)  # Parse the JSON string into a dictionary
     
     # Access the 'data' key inside the parsed JSON
     sheet_data = sheet_data.get("data", {})  # Use .get() to avoid key errors if 'data' is missing
-
     print(sheet_data['race'])  # Now you should see the correct data dictionary
     charRace = sheet_data['race']
     charName = sheet_data['char_name']
     if charRace == 1:
         charID = HumanSheets.objects.filter(race=1, char_name=charName).values_list('id', flat=True).first()
+        charGold = HumanSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
         print(charID)
     elif charRace == 2:
         charID = GnomeSheets.objects.filter(race=2, char_name=charName).values_list('id', flat=True).first()
+        charGold = GnomeSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
     elif charRace == 3:
         charID = ElfSheets.objects.filter(race=3, char_name=charName).values_list('id', flat=True).first()
+        charGold = ElfSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
     elif charRace == 4:
         charID = HalflingSheets.objects.filter(charRace=4, char_name=charName).values_list('id', flat=True).first()
+        charGold = HalflingSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
     else:
         return "ERROR"
 
-
+    
     
     payload = {
         "id": charID,
@@ -64,6 +68,7 @@ def generate_user_token(user, sheet_data):
         "stat_Charisma": sheet_data["stat_Charisma"],
         "owner": user.id,
         "race": sheet_data["race"],
+        "gold": charGold,
         "exp": datetime.utcnow() + timedelta(hours=1),  # Token expires in 1 hour
     }
     return create_jwt(payload)

@@ -82,3 +82,19 @@ export function getSheetDataToken() {
     }
   });
 }
+
+export function updateSheetDataToken() {
+  const oldSDT = localStorage.getItem('SDT')
+  const SD = localStorage.getItem('SheetData');
+  const token = localStorage.getItem('Access'); // Example auth token
+  if (oldSDT) {
+    return axios.post(SERVER + 'updateSDT/', {
+      current_sheet_data: SD
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
+  }
+}

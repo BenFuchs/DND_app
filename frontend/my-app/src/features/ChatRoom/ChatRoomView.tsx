@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { WIP } from "./chatRoomAPI";
 
 interface User {
   char_name: string;
   username: string;
-  user_id: string;
+  user_id: number;
 }
 
 const ChatRoomView: React.FC = () => {
@@ -159,7 +160,7 @@ const ChatRoomView: React.FC = () => {
             <li key={idx}>
               {user.char_name} - {/* Change from username to char_name */}
               <button onClick={() => setSelectedUser(user)}>Send DM</button> -{" "}
-              <button onClick={() => console.log(user.user_id)}>Send Item</button>
+              <button onClick={() => WIP(user.user_id, user.char_name)}>Send Item</button>
             </li>
           ))}
         </ul>
