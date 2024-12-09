@@ -68,7 +68,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.handle_group_message(text_data_json)
         elif message_type == 'gold_transfer':
             await self.handle_gold_transfer(text_data_json)
-
+        elif message_type == 'handle_gold_transfer_error':  # Fix here: match the correct type name
+            await self.handle_gold_transfer_error(text_data_json)
+      
     async def handle_private_message(self, data):
         recipient_id = data.get('recipient_id')
         message = data.get('message')
@@ -102,12 +104,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+    async def handle_gold_transfer_error(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'handle_gold_transfer_error',  # Fix here to ensure the message type matches
+            'error_message': event,
+        }))
+
     async def handle_gold_transfer(self, data):
         sender_id = self.scope['user'].id
         recipient_id = data.get('recipient_id')
         amount = data.get('amount')
 
         if not recipient_id or not amount or amount <= 0:
+            await self.channel_layer.send(self.channel_name, {
+                'type': 'handle_gold_transfer_error',  # Fix here: match the correct type name
+                'error_message': 'Invalid transfer data. Please check the recipient and amount.',
+            })
             return
 
         sender = ChatConsumer.connected_users[self.room_name].get(sender_id)
@@ -116,11 +128,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if sender and recipient:
             sender_race = sender.get('race')  # e.g., 1 for HumanSheets, 2 for GnomeSheets
             sender_char_name = sender.get('char_name')
-            # print(sender_char_name)
             recipient_race = recipient.get('race')
             recipient_char_name = recipient.get('char_name')
-            # print(recipient_char_name)
-            # Ensure that sender_race and recipient_race are valid integers corresponding to the Enum values
+
             race_models = {
                 'HumanSheets': HumanSheets,
                 'GnomeSheets': GnomeSheets,
@@ -135,11 +145,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 if recipient_race not in [race.value for race in RaceSheets]:
                     raise ValueError(f"Invalid recipient race: {recipient_race}")
 
-                # Access the Enum value and retrieve the race name
                 sender_race_model_name = RaceSheets(sender_race).name
                 recipient_race_model_name = RaceSheets(recipient_race).name
 
-                # Get the correct race model
                 sender_race_model = race_models.get(sender_race_model_name)
                 recipient_race_model = race_models.get(recipient_race_model_name)
 
@@ -151,6 +159,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
                 sender_gold = sender_race_sheet.char_gold
                 recipient_gold = recipient_race_sheet.char_gold
+                
+                if sender_gold < amount:
+                    await self.handle_gold_transfer_error(event={'error_message': 'Not enough gold'})
 
                 if sender_gold >= amount:
                     await self.update_race_sheet_gold(sender_race_sheet, sender_gold - amount)
@@ -182,12 +193,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await self.channel_layer.send(
                         sender['channel_name'],
                         {
-                            'type': 'gold_transfer_error',
+                            'type': 'handle_gold_transfer_error',  # Fix here: match the correct type name
                             'message': 'Not enough gold to complete the transfer.',
                         }
                     )
             except Exception as e:
-                # Improved error logging
                 print(f"Error in gold handle: {str(e)}")
 
     async def private_message(self, event):

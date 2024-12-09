@@ -19,8 +19,18 @@ const ChatRoomView: React.FC = () => {
   const [privateMessage, setPrivateMessage] = useState<string>("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null); // User selected for private message
   const [goldAmount, setGoldAmount] = useState<string>(""); // For storing the amount of gold to send
+  const [loggedCharName, setloggedCharName] = useState<string>("")
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
+
+  // get the logged username for the connected list later
+  useEffect(() => {
+    const SheetData = localStorage.getItem("SheetData")
+    if (SheetData){
+      const parsedData = JSON.parse(SheetData)
+      setloggedCharName(parsedData.data.char_name)
+      }
+  }, [loggedCharName])
 
   useEffect(() => {
     if (!roomName) return;
@@ -44,28 +54,37 @@ const ChatRoomView: React.FC = () => {
       try {
         const messageData = JSON.parse(event.data);
     
-        if (messageData.type === "user_list") {
-          setConnectedUsers(messageData.users);
-        } else if (messageData.type === "private_message") {
-          const sender = messageData.sender;
-          const privateMsg = messageData.message;
-          setMessages((prev) => [...prev, `Private from ${sender}: ${privateMsg}`]);
-
-        } else if (messageData.type === "gold_transfer") {
-          const { sender_char_name, recipient_char_name, amount, balance } = messageData;
-          console.log(sender_char_name, recipient_char_name);  // Check values here
-
-          const isRecipient = recipient_char_name === selectedUser?.char_name;
-          const msg = !isRecipient
-            ? `You sent ${amount} gold to ${recipient_char_name}. Your new balance is ${balance}.`
-            : `${sender_char_name} sent you ${amount} gold. Your new balance is ${balance}.`;
+        switch (messageData.type) {
+          case "user_list":
+            setConnectedUsers(messageData.users);
+            break;
     
-          setMessages((prev) => [...prev, msg]);  // Show transfer status to users
-        } else {
-          const charName = messageData.char_name;
-          const messageContent = messageData.message || event.data;
+          case "private_message":
+            const sender = messageData.sender;
+            const privateMsg = messageData.message;
+            setMessages((prev) => [...prev, `Private from ${sender}: ${privateMsg}`]);
+            break;
     
-          setMessages((prev) => [...prev, `${charName}: ${messageContent}`]); // Use char_name
+          case "gold_transfer":
+            const { sender_char_name, recipient_char_name, amount, balance } = messageData;
+            const isSender = sender_char_name === loggedCharName;
+            const msg = isSender
+              ? `You sent ${amount} gold to ${recipient_char_name}. Your new balance is ${balance}.`
+              : `${sender_char_name} sent you ${amount} gold. Your new balance is ${balance}.`;
+            // both recipient and sender are getting the same message (the sender message in this case) <----
+            setMessages((prev) => [...prev, msg]);
+            break;
+    
+          case "gold_transfer_error": // Add this case
+            const { error_message } = messageData;
+            setMessages((prev) => [...prev, `Error: ${error_message}`]);
+            break;
+    
+          default:
+            const charName = messageData.char_name || "System";
+            const messageContent = messageData.message || event.data;
+            setMessages((prev) => [...prev, `${charName}: ${messageContent}`]);
+            break;
         }
       } catch (error) {
         console.error("Error parsing message data", error);
@@ -158,6 +177,8 @@ const ChatRoomView: React.FC = () => {
     }
   };
 
+
+
   return (
     <div>
       <h2>Chat Room: {roomName}</h2>
@@ -191,11 +212,13 @@ const ChatRoomView: React.FC = () => {
       <div>
         <h3>Connected Users:</h3>
         <ul>
-          {connectedUsers.map((user, idx) => (
+          {connectedUsers
+          .filter((user) => user.char_name !== loggedCharName)
+          .map((user, idx) => (
             <li key={idx}>
-              {user.char_name} - {/* Change from username to char_name */}
-              <button onClick={() => setSelectedUser(user)}>Send DM</button> -{" "}
-              <button onClick={() => dispatch(WIP_Async())}>Send Item</button>
+              {user.char_name} - 
+              <button onClick={() => setSelectedUser(user)}>Send DM/Gold</button> 
+
             </li>
           ))}
         </ul>
