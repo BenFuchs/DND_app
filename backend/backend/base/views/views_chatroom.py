@@ -4,14 +4,16 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.hashers import make_password, check_password
+from django.conf import settings
 from ..models import ChatRoom, CharacterSheet, HumanSheets, HalflingSheets, ElfSheets, GnomeSheets
 from enum import Enum
+import jwt
 
 class RaceSheets(Enum):
     HumanSheets = 1
     GnomeSheets = 2
     ElfSheets = 3
-    HalflingSheets = 3
+    HalflingSheets = 4
 
 
 @api_view(['POST'])
@@ -57,37 +59,51 @@ def verify_room_password(request):
     
 @api_view(['POST'])
 def WIP(request):
-    user_id = request.data.get('Id')
-    userName = request.data.get('username')
+    # Get the JWT token from the request body (assuming the token is sent in the request body)
+    token = request.data.get('SDT')  # Adjust if you pass the token differently, e.g., as URL parameter
     
-    user_char = CharacterSheet.objects.get(id=user_id, char_name=userName)
-    user_race_num = user_char.race  # Assume this is an integer (1 for Human, 2 for Gnome, etc.)
-    
-    # Map race enum to the corresponding model class
-    race_models = {
-        'HumanSheets': HumanSheets,
-        'GnomeSheets': GnomeSheets,
-        'ElfSheets': ElfSheets,
-        'HalflingSheets': HalflingSheets,
-    }
-    
+    if not token:
+        return Response({"error": "Token is required"}, status=400)
+
     try:
-        user_race_sheet_data = RaceSheets(user_race_num)  
-        user_race_sheet = user_race_sheet_data.name  # Get the enum name (e.g., "HumanSheets")
-        
-        # Get the model class corresponding to the race
-        race_model = race_models.get(user_race_sheet)
-        if not race_model:
-            return Response({"error": "Race model not found"}, status=400)
-        
-        # Fetch the race sheet data for the user
-        raceSheet = race_model.objects.get(char_name=userName)
-        userGold = raceSheet.char_gold
-        print(userGold)
+        # Decode the JWT token
+        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
 
-    except ValueError:
-        return Response({"error": "Invalid race number"}, status=400)
-    except race_model.DoesNotExist:
-        return Response({"error": "Character sheet not found for the user"}, status=404)
+        # Extract user data from the payload
+        logged_in_user_id = decoded_token.get('id')
+        logged_in_user_name = decoded_token.get('char_name')
+        logged_in_user_race = decoded_token.get('race')
 
-    return Response({userGold})
+        race_models = {
+            'HumanSheets': HumanSheets,
+            'GnomeSheets': GnomeSheets,
+            'ElfSheets': ElfSheets,
+            'HalflingSheets': HalflingSheets,
+        }
+
+        # Check if the user data is valid
+        if not logged_in_user_id or not logged_in_user_name:
+            return Response({"error": "Invalid token data"}, status=400)
+
+        # Optionally, you can fetch the character sheet from the database if needed
+        # user_char = CharacterSheet.objects.get(id=logged_in_user_id, char_name=logged_in_user_name)
+        try:
+            user_race_sheet_data = RaceSheets(logged_in_user_race)  
+            user_race_sheet = user_race_sheet_data.name  # Get the enum name (e.g., "HumanSheets")
+
+            race_model = race_models.get(user_race_sheet)
+            RaceSheet = race_model.objects.get(char_name = logged_in_user_name)
+            logged_in_user_gold = RaceSheet.char_gold
+            print(logged_in_user_gold)
+        except ValueError:
+            return Response({"error": "Invalid race number"}, status=400)
+        except race_model.DoesNotExist:
+            return Response({"error": "Character sheet not found for the user"}, status=404)
+
+        # Return the user's gold (from the token)
+        return Response({"gold": logged_in_user_gold})
+
+    except jwt.ExpiredSignatureError:
+        return Response({"error": "Token has expired"}, status=400)
+    except jwt.InvalidTokenError:
+        return Response({"error": "Invalid token"}, status=400)

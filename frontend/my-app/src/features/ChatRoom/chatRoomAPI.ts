@@ -43,15 +43,14 @@ export function verifyRoomPassword(roomName: string, password: string) {
   );
 }
 
-export function WIP(Id: number, username: string) {
+export function WIP() {
   const access = localStorage.getItem("Access");
   if (!access) {
     return Promise.reject(new Error("No access token found"));
   }
-
+  const SheetDataToken = localStorage.getItem("SDT")
   return axios.post(SERVER + 'WIP/', {
-    Id: Id,
-    username: username
+    SDT : SheetDataToken
   }, {
     headers: {
       Authorization: `Bearer ${access}`

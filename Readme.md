@@ -180,3 +180,6 @@ An interactive D&D character management app, including features such as an inven
 - [ ] Started the gold sending function in the chatroom, currently displays in the terminal the gold from the backend of the logged user. Still needs testing over multiple users, and front end GUI 
 - [ ] GUI should include: [ ] Your current gold [ ] How much you want to send 
 - [ ] i think that it also needs to check whos sending since the button gives you the username and the id of the recipient not the sender. ?
+
+9/12/24:
+- [ ] Gold sending itself works, but the sender and recipient name are undefined in the frontend ?
