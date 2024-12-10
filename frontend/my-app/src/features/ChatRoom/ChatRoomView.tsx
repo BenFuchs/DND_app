@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { WIP_Async } from "./chatRoomSlice"; // Assuming WIP_Async is your action
-import { useAppDispatch } from "../../app/hooks";
 
 interface User {
   char_name: string;
@@ -19,18 +17,17 @@ const ChatRoomView: React.FC = () => {
   const [privateMessage, setPrivateMessage] = useState<string>("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null); // User selected for private message
   const [goldAmount, setGoldAmount] = useState<string>(""); // For storing the amount of gold to send
-  const [loggedCharName, setloggedCharName] = useState<string>("")
+  const [loggedCharName, setloggedCharName] = useState<string>("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const dispatch = useAppDispatch();
 
   // get the logged username for the connected list later
   useEffect(() => {
-    const SheetData = localStorage.getItem("SheetData")
-    if (SheetData){
-      const parsedData = JSON.parse(SheetData)
-      setloggedCharName(parsedData.data.char_name)
-      }
-  }, [loggedCharName])
+    const SheetData = localStorage.getItem("SheetData");
+    if (SheetData) {
+      const parsedData = JSON.parse(SheetData);
+      setloggedCharName(parsedData.data.char_name);
+    }
+  }, [loggedCharName]);
 
   useEffect(() => {
     if (!roomName) return;
@@ -53,38 +50,61 @@ const ChatRoomView: React.FC = () => {
     ws.onmessage = (event) => {
       try {
         const messageData = JSON.parse(event.data);
-    
+        const sender = messageData.sender;
+
         switch (messageData.type) {
           case "user_list":
             setConnectedUsers(messageData.users);
             break;
-    
+
           case "private_message":
-            const sender = messageData.sender;
             const privateMsg = messageData.message;
-            setMessages((prev) => [...prev, `Private from ${sender}: ${privateMsg}`]);
+            setMessages((prev) => [
+              ...prev,
+              `Private from ${sender}: ${privateMsg}`,
+            ]);
             break;
-    
+
           case "gold_transfer":
-            const { sender_char_name, recipient_char_name, amount, balance } = messageData;
-            const isSender = sender_char_name === loggedCharName;
+            const { amount, balance } = messageData;
+            const isSender = sender === loggedCharName;
             const msg = isSender
-              ? `You sent ${amount} gold to ${recipient_char_name}. Your new balance is ${balance}.`
-              : `${sender_char_name} sent you ${amount} gold. Your new balance is ${balance}.`;
-            // both recipient and sender are getting the same message (the sender message in this case) <----
+              ? `You sent ${amount} gold to ${selectedUser?.char_name}. Your new balance is ${balance}.`
+              : `${sender} sent you ${amount} gold. Your new balance is ${balance}.`;
             setMessages((prev) => [...prev, msg]);
             break;
-    
-          case "gold_transfer_error": // Add this case
+
+          case "handle_gold_transfer_error": // Handle gold transfer errors
             const { error_message } = messageData;
-            setMessages((prev) => [...prev, `Error: ${error_message}`]);
+            // Extract the meaningful error message
+            const errorText =
+              typeof error_message === "string"
+                ? error_message
+                : error_message?.message || "An unknown error occurred.";
+
+            setMessages((prev) => [...prev, `Error: ${errorText}`]);
             break;
-    
-          default:
-            const charName = messageData.char_name || "System";
-            const messageContent = messageData.message || event.data;
-            setMessages((prev) => [...prev, `${charName}: ${messageContent}`]);
-            break;
+
+          // default:
+          //   try {
+          //     const charName = messageData.char_name || "System";
+          //     const messageType = messageData.type; // Extract the type for debugging
+
+          //     // Only append unhandled types; avoid raw JSON error duplication
+          //     if (
+          //       !["gold_transfer_error", "gold_transfer"].includes(messageType)
+          //     ) {
+          //       const messageContent = messageData.message || event.data;
+          //       setMessages((prev) => [
+          //         ...prev,
+          //         `${charName}: ${messageContent}`,
+          //       ]);
+          //     }
+          //   } catch (error) {
+          //     console.error("Error parsing message data", error);
+          //     setMessages((prev) => [...prev, "An unknown error occurred."]);
+          //   }
+          //   break;
         }
       } catch (error) {
         console.error("Error parsing message data", error);
@@ -113,7 +133,7 @@ const ChatRoomView: React.FC = () => {
       ws.close(1000, "Component unmounted");
       console.log("WebSocket closed");
     };
-  }, [roomName, selectedUser?.char_name]);
+  }, [roomName, selectedUser?.char_name, loggedCharName]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -161,23 +181,22 @@ const ChatRoomView: React.FC = () => {
       socket.readyState === WebSocket.OPEN &&
       selectedUser &&
       goldAmount.trim() !== "" &&
-      !isNaN(Number(goldAmount)) && Number(goldAmount) > 0
+      !isNaN(Number(goldAmount)) &&
+      Number(goldAmount) > 0
     ) {
       const message = {
         type: "gold_transfer",
         recipient_id: selectedUser.user_id,
-        amount: Number(goldAmount),  // Gold amount as a number
+        amount: Number(goldAmount), // Gold amount as a number
       };
       socket.send(JSON.stringify(message));
       // console.log("Socket ready:", socket?.readyState === WebSocket.OPEN);
       // console.log("Selected user:", selectedUser);
       // console.log("Gold amount:", goldAmount);
       // console.log("Message sent:", message);
-      setGoldAmount("");  // Clear the input
+      setGoldAmount(""); // Clear the input
     }
   };
-
-
 
   return (
     <div>
@@ -213,19 +232,26 @@ const ChatRoomView: React.FC = () => {
         <h3>Connected Users:</h3>
         <ul>
           {connectedUsers
-          .filter((user) => user.char_name !== loggedCharName)
-          .map((user, idx) => (
-            <li key={idx}>
-              {user.char_name} - 
-              <button onClick={() => setSelectedUser(user)}>Send DM/Gold</button> 
-
-            </li>
-          ))}
+            .filter((user) => user.char_name !== loggedCharName)
+            .map((user, idx) => (
+              <li key={idx}>
+                {user.char_name} -
+                <button onClick={() => setSelectedUser(user)}>
+                  Send DM/Gold
+                </button>
+              </li>
+            ))}
         </ul>
       </div>
 
       {selectedUser && (
-        <div style={{ marginTop: "10px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
+        <div
+          style={{
+            marginTop: "10px",
+            borderTop: "1px solid #ccc",
+            paddingTop: "10px",
+          }}
+        >
           <h4>Send Private Message to {selectedUser.char_name}</h4>
           <input
             type="text"
@@ -239,7 +265,13 @@ const ChatRoomView: React.FC = () => {
       )}
 
       {selectedUser && (
-        <div style={{ marginTop: "10px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
+        <div
+          style={{
+            marginTop: "10px",
+            borderTop: "1px solid #ccc",
+            paddingTop: "10px",
+          }}
+        >
           <h4>Send Gold to {selectedUser.char_name}</h4>
           <input
             type="number"

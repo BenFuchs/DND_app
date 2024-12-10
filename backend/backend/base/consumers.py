@@ -105,9 +105,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
 
     async def handle_gold_transfer_error(self, event):
+        print(event)
         await self.send(text_data=json.dumps({
             'type': 'handle_gold_transfer_error',  # Fix here to ensure the message type matches
-            'error_message': event,
+            'error_message': event['error_message'],
         }))
 
     async def handle_gold_transfer(self, data):
@@ -162,6 +163,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 
                 if sender_gold < amount:
                     await self.handle_gold_transfer_error(event={'error_message': 'Not enough gold'})
+                    return 
 
                 if sender_gold >= amount:
                     await self.update_race_sheet_gold(sender_race_sheet, sender_gold - amount)
@@ -190,13 +192,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         }
                     )
                 else:
-                    await self.channel_layer.send(
+                   await self.channel_layer.send(
                         sender['channel_name'],
                         {
-                            'type': 'handle_gold_transfer_error',  # Fix here: match the correct type name
-                            'message': 'Not enough gold to complete the transfer.',
+                            'type': 'handle_gold_transfer_error',  
+                            'error_message': 'Not enough gold to complete the transfer.',
                         }
                     )
+                    
             except Exception as e:
                 print(f"Error in gold handle: {str(e)}")
 
