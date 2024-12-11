@@ -1,10 +1,11 @@
 import React from 'react'
 
 interface CharacterHPProps {
-    hitpoints: number;
+  CharClass: number;
+  hitpoints: number;
 }
 
-const CharacterHP = ({ hitpoints }: CharacterHPProps) => {
+const CharacterHP = ({ hitpoints, CharClass }: CharacterHPProps) => {
   return (
     <div>
         <strong>HP:</strong> {hitpoints}

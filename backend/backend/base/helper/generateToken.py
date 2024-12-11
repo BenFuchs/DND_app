@@ -46,7 +46,7 @@ def generate_user_token(user, sheet_data):
         charID = ElfSheets.objects.filter(race=3, char_name=charName).values_list('id', flat=True).first()
         charGold = ElfSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
     elif charRace == 4:
-        charID = HalflingSheets.objects.filter(charRace=4, char_name=charName).values_list('id', flat=True).first()
+        charID = HalflingSheets.objects.filter(race=4, char_name=charName).values_list('id', flat=True).first()
         charGold = HalflingSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
     else:
         return "ERROR"

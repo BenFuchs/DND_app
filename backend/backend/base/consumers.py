@@ -5,14 +5,8 @@ from django.conf import settings
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import *
+from .helper.RaceSheetEnum import RaceSheets
 import traceback
-
-
-class RaceSheets(Enum):
-    HumanSheets = 1
-    GnomeSheets = 2
-    ElfSheets = 3
-    HalflingSheets = 4
 
 class ChatConsumer(AsyncWebsocketConsumer):
     # Connected users structure: {room_name: {user_id: {char_name, race, channel_name}}}

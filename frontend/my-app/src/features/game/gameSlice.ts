@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { currencyCalc, getGold, getMods, getSheetDataToken, rollDice } from './gameAPI'; 
+import { currencyCalc, getGold, getMods, getSheetDataToken, LevelUp, rollDice } from './gameAPI'; 
 
 // Define the initial state
 interface GameState {
   gold: any;
   loading: boolean;
   error: string;
+  level: number;
   mods: []
   rolls: []
 }
@@ -14,6 +15,7 @@ const initialState: GameState = {
   gold: 0,
   loading: false,
   error: '',
+  level: 1,
   mods: [],
   rolls: []
 };
@@ -67,6 +69,15 @@ export const getSheetDataTokenAsync = createAsyncThunk(
   }
 )
 
+export const levelUpAsync = createAsyncThunk(
+  'game/levelUp',
+  async ({race, id, charClass}: {race:number; id: number, charClass: number}) => {
+    const response = await LevelUp(race, id, charClass);
+    console.log(response.data); //debugging line
+    return response.data;
+  }
+)
+
 // Create the slice
 const gameSlice = createSlice({
   name: 'game',
@@ -99,6 +110,17 @@ const gameSlice = createSlice({
       .addCase(rollDiceAsync.fulfilled, (state, action)=> {
         state.loading = false;
         state.rolls = action.payload;
+      })
+      .addCase(levelUpAsync.fulfilled, (state,action)=> {
+        state.loading = false;
+        state.level = action.payload;
+      })
+      .addCase(levelUpAsync.rejected, (state, action)=> {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(levelUpAsync.pending, (state)=> {
+        state.loading = true;
       })
   },
 });

@@ -192,6 +192,10 @@ List of things to do before prod push
 - [ ] Ability to look up chatroom specific by name (medium)
 - [ ] test cookie saving access token option? (medium) 
 - [ ] change paypal from sandbox to real (?)
-- [ ] add level up option and auto update new HP (easy)
+- [WIP] add level up option and auto update new HP (easy) -> last thing left is to update the front end HP 
 - [ ] radio buttons for proficiencies (easy)
 - [ ] proficiency calculation by level, and how it affects skills (easy)
+
+11/12/24:
+  NOT FOR PROD, could be cool tho
+- [ ] The website the item csv is from has pages specific to eaach item (url goes https://mythical.ink/rpg-tools/dnd-item-list/ (item ID)). item id in the website is the the item Id in the csv - 1 (they start from id 0)

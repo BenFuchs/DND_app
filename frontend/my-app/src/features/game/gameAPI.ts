@@ -1,4 +1,3 @@
-import axios from "axios";
 import apiClient from '../../axiosInstance';
 const SERVER = "http://127.0.0.1:8000/";
 
@@ -73,12 +72,12 @@ export function rollDice(diceType: number, amount: number) {
 export function getSheetDataToken() {
   const SD = localStorage.getItem('SheetData');
   // console.log(SD)
-  const token = localStorage.getItem('Access'); // Example auth token
+  const access = localStorage.getItem('Access'); // Example auth access
   return apiClient.post(SERVER + 'SDT/', {
     sheet_data: SD
   }, {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${access}`
     }
   });
 }
@@ -86,15 +85,32 @@ export function getSheetDataToken() {
 export function updateSheetDataToken() {
   const oldSDT = localStorage.getItem('SDT')
   const SD = localStorage.getItem('SheetData');
-  const token = localStorage.getItem('Access'); // Example auth token
+  const access = localStorage.getItem('Access'); // Example auth access
   if (oldSDT) {
     return apiClient.post(SERVER + 'updateSDT/', {
       current_sheet_data: SD
     }, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${access}`
       }
     }
   )
   }
+}
+
+export function LevelUp(race: number, id:number, charClass: number) {
+  const access = localStorage.getItem("Access"); // Get the access token from localStorage
+
+  if (!access) {
+    return Promise.reject("No access token found");
+  }
+  return apiClient.post(SERVER + 'levelUp/', {
+    id: id,
+    race: race,
+    charClass: charClass
+  }, {
+    headers: {
+      Authorization: `Bearer ${access}`
+    }
+  })
 }

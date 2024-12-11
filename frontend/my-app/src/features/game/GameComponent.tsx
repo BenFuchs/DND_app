@@ -170,8 +170,8 @@ const GameComponent = () => {
             <CharacterName name={sheetData.char_name} />
             <CharacterClass charClass={charClassString()} />
             <CharacterRace race={charRaceString()} />
-            <CharacterLevel level={sheetData.level} />
-            <CharacterHP hitpoints={sheetData.hitpoints} />
+            <CharacterLevel level={sheetData.level} id={sheetData.id} race={sheetData.race} charClass={sheetData.char_class}/>
+            <CharacterHP hitpoints={sheetData.hitpoints} CharClass={sheetData.char_class} />
             <CharacterGold gold={gold.gold} />
             <CharacterStats
               stats={Object.entries(sheetData)

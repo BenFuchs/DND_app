@@ -7,6 +7,8 @@ from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, E
 from ..helper.generateToken import generate_user_token
 from ..helper.modifiers import modifiers
 from ..helper.inventoryParse import inventorySearch
+from ..helper.RaceSheetEnum import RaceSheets
+from ..helper.lvlOneHealth import LevelOneHealth
 
 
 @api_view(['POST'])
@@ -223,3 +225,43 @@ def create_sheet_token(request):
     else:
         return Response({"error": "Failed to generate token"}, status=500)
     
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def levelUp(request):
+    race = request.data.get('race')
+    sheetID = request.data.get('id')
+    charClass = request.data.get('charClass')
+    print(charClass)
+    race_models = {
+        'HumanSheets': HumanSheets,
+        'GnomeSheets': GnomeSheets,
+        'ElfSheets': ElfSheets,
+        'HalflingSheets': HalflingSheets,
+    }
+    user_race_name = RaceSheets(race).name
+    user_race_sheet = race_models.get(user_race_name)
+
+    try:
+        userSheet = user_race_sheet.objects.get(id=sheetID)
+    except user_race_sheet.DoesNotExist:
+        return Response({'error': 'Sheet not found'}, status=404)
+
+    userSheet.level += 1
+    ConMod = (userSheet.stat_Constitution - 10)/2
+    print(ConMod)
+    level_health = LevelOneHealth(charClass)
+    new_hitpoints = level_health.getLevelXHP() + ConMod
+    if new_hitpoints is None:
+        raise ValueError("new_hitpoints cannot be None")
+    print(f"Hitpoints to add: {new_hitpoints}")
+
+    userSheet.hitpoints += new_hitpoints
+    print(f'New total hitpoints: {userSheet.hitpoints}')
+    userSheet.save()
+    
+    # Return the updated hitpoints along with the success message
+    return Response({
+        'Level up!': f'{userSheet.char_name} has leveled up to level {userSheet.level}',
+        'hitpoints': userSheet.hitpoints
+    })
+

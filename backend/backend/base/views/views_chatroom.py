@@ -6,14 +6,9 @@ from rest_framework.decorators import permission_classes
 from django.contrib.auth.hashers import make_password, check_password
 from django.conf import settings
 from ..models import ChatRoom, CharacterSheet, HumanSheets, HalflingSheets, ElfSheets, GnomeSheets
-from enum import Enum
+from ..helper.RaceSheetEnum import RaceSheets
 import jwt
 
-class RaceSheets(Enum):
-    HumanSheets = 1
-    GnomeSheets = 2
-    ElfSheets = 3
-    HalflingSheets = 4
 
 
 @api_view(['POST'])

@@ -50,3 +50,6 @@ Lucky: When you roll a 1 on an attack roll, ability check, or saving throw, you 
 Brave: You have advantage on saving throws against being frightened.
 Halfling Nimbleness: You can move through the space of any creature that is larger than you.
 Languages: You can speak, read, and write Common and Halfling.
+
+inventory comes from this website: 
+https://mythical.ink/en/rpg-tools/dnd-item-list
