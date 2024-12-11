@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getChatRooms, WIP } from './chatRoomAPI'; // Assuming you have this API function for fetching rooms.
+import { getChatRooms, deleteRoom } from './chatRoomAPI'; // Assuming you have this API function for fetching rooms.
 
 interface ChatRoomState {
   loading: boolean;
@@ -26,14 +26,18 @@ export const getChatRoomsAsync = createAsyncThunk(
   }
 );
 
-export const WIP_Async = createAsyncThunk(
-  'chatRoom/WIP',
-  async()=> {
-    const response = await WIP();
-    console.log(response.data.gold); // Debugging line
-    return response.data;
+export const deleteChatRoomAsync = createAsyncThunk(
+  'chatRoom/deleteChatRoom',
+  async ({ roomName, password }: { roomName: string; password: string }, { rejectWithValue }) => {
+    try {
+      const response = await deleteRoom(roomName, password);
+      return response.data; 
+    } catch (error: any) {
+      // console.error('Delete room error:', error.response?.data || error.message); // debugging line
+      return rejectWithValue(error.response?.data || 'Error deleting room');
+    }
   }
-)
+);
 
 // Redux slice for managing chat rooms and WebSocket connection
 const chatRoomSlice = createSlice({
@@ -57,9 +61,15 @@ const chatRoomSlice = createSlice({
       .addCase(getChatRoomsAsync.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(WIP_Async.fulfilled, (state, action) => {
+      .addCase(deleteChatRoomAsync.fulfilled, (state, action)=> {
         state.loading = false;
-        state.WIP = action.payload;
+        state.room_names = action.payload;
+      })
+      .addCase(deleteChatRoomAsync.rejected, (state)=> {
+        state.loading = false;
+      })
+      .addCase(deleteChatRoomAsync.pending, (state)=> {
+        state.loading = true;
       })
   }
 });

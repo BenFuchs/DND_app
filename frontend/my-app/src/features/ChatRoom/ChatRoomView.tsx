@@ -84,6 +84,12 @@ const ChatRoomView: React.FC = () => {
 
             setMessages((prev) => [...prev, `Error: ${errorText}`]);
             break;
+          
+          case "chat_message":
+            const charName = messageData.char_name; // Change from username to char_name
+            const messageContent = messageData.message || event.data;
+            setMessages((prev) => [...prev, `${charName}: ${messageContent}`]); 
+            break;
 
           // default:
           //   try {

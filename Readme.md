@@ -65,7 +65,7 @@ An interactive D&D character management app, including features such as an inven
   - [ ] Spell slot & selection based on class (requires frontend)
 
 - [ ] **Party System** *(optional)*:
-  - [ ] Server-hosted party system with room creation
+  - [X] Server-hosted party system with room creation
   - [ ] DM tools for managing player items
 
 - [ ] **Frontend Development**:
@@ -145,7 +145,7 @@ An interactive D&D character management app, including features such as an inven
  - [X] Learn how to connect users to each other (Private messages)
  - [X] Learn how to create Group servers like in among us 
  - [X] Learn how to make group chat 
- - [ ] Learn how to make interactions between players (sending gold/ sendinng items/ etc)
+ - [X] Learn how to make interactions between players (sending gold/ sendinng items/ etc) (Alpha version will include sending gold only)
 
  19/11/24:
 - [X] Items are being saved globally, instead of being able to add 1 arrow to each user, only the first user it was added to gets the item in its inventory and then adding an item in another user adds to the QUANTITY of the FIRST USER (FIXED)
@@ -170,16 +170,28 @@ An interactive D&D character management app, including features such as an inven
     
 3/12/24:
 - [ ] QoL change: Set DM's into a seperate modal, show them seperatly from the major group chat
-- [ ] QoL change: in connected users, the logged user should not see his own name/ be able to send things to himself
-- [ ] if a room name has a SPACE in it, it will fuck with the url
+- [X] QoL change: in connected users, the logged user should not see his own name/ be able to send things to himself
+- [X] if a room name has a SPACE in it, it will fuck with the url
 
 5/12/24:
 - [X] name shown in chat room should be of the character not the parent user
 
 8/12/24: 
-- [ ] Started the gold sending function in the chatroom, currently displays in the terminal the gold from the backend of the logged user. Still needs testing over multiple users, and front end GUI 
-- [ ] GUI should include: [ ] Your current gold [ ] How much you want to send 
-- [ ] i think that it also needs to check whos sending since the button gives you the username and the id of the recipient not the sender. ?
+- [X] Started the gold sending function in the chatroom, currently displays in the terminal the gold from the backend of the logged user. Still needs testing over multiple users, and front end GUI 
+- [WIP] GUI should include: [ ] Your current gold [X] How much you want to send 
 
 9/12/24:
-- [ ] Gold sending itself works, but the sender and recipient name are undefined in the frontend ?
+- [X] Gold sending itself works, but the sender and recipient name are undefined in the frontend (FIXED)
+
+10/12/24:
+List of things to do before prod push
+- [X] Fix room name with a space bug (check for spaces and just add a set character for it)
+- [X] add auto refresh of token and auto logout when token expires
+- [X] deletion of chat rooms (simple crud style deletion)
+- [ ] Design pages and program the design (hard)
+- [ ] Ability to look up chatroom specific by name (medium)
+- [ ] test cookie saving access token option? (medium) 
+- [ ] change paypal from sandbox to real (?)
+- [ ] add level up option and auto update new HP (easy)
+- [ ] radio buttons for proficiencies (easy)
+- [ ] proficiency calculation by level, and how it affects skills (easy)

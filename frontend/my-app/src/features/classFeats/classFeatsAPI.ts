@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import apiClient from '../../axiosInstance';
 const SERVER = 'http://127.0.0.1:8000/';
 
 export function getClassFeatures(char_name: string) {
@@ -8,7 +8,7 @@ export function getClassFeatures(char_name: string) {
         return Promise.reject(new Error("No access token found"));
     }
 
-    return axios.post(
+    return apiClient.post(
         SERVER + 'getClassFeatures/',
         {char_name},
         {

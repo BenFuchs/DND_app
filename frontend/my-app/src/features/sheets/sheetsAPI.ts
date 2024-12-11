@@ -1,10 +1,11 @@
 import axios from 'axios';
+import apiClient from '../../axiosInstance';
 
 const SERVER = 'http://127.0.0.1:8000/';
 
 export function num_of_sheets() {
     const access = localStorage.getItem('Access'); // Get the access from localStorage
-    return axios.get(SERVER + 'sheetNum/', {
+    return apiClient.get(SERVER + 'sheetNum/', {
         headers: {
             'Authorization': `Bearer ${access}`  // Send the access in the header
         }
@@ -13,7 +14,7 @@ export function num_of_sheets() {
 
 export function create_new_sheet(characterName: string, charClass: number, race: number, stats: number[]) {
     const access = localStorage.getItem('Access'); // Get the access token from localStorage
-    return axios.post(SERVER + 'sheetCreation/', {
+    return apiClient.post(SERVER + 'sheetCreation/', {
         data: { 
             characterName: characterName,  // Send character name
             charClass: charClass,          // Send character class
@@ -29,7 +30,7 @@ export function create_new_sheet(characterName: string, charClass: number, race:
 
 export function rollStats() {
     const access = localStorage.getItem('Access'); // Get the access token from localStorage
-    return axios.get(SERVER + 'statRoll/', {
+    return apiClient.get(SERVER + 'statRoll/', {
         headers: {
             'Authorization': `Bearer ${access}`,  // Send the access token in the header
         }
@@ -38,7 +39,7 @@ export function rollStats() {
 
 export function sheet_delete(id: number) {
     const access = localStorage.getItem('Access');
-    return axios.post(
+    return apiClient.post(
         SERVER + 'sheet_delete/',
         { Id: id },  // Pass ID in the request body directly
         {
@@ -50,7 +51,7 @@ export function sheet_delete(id: number) {
 }
 
 export function getSheetData(sheetID: number) {
-    return axios.get(SERVER + `getSheetData/${sheetID}/`, {  // Adjust API URL if necessary
+    return apiClient.get(SERVER + `getSheetData/${sheetID}/`, {  // Adjust API URL if necessary
         headers: {
             Authorization: `Bearer ${localStorage.getItem('Access')}`, // Assumes JWT is stored in localStorage
         },

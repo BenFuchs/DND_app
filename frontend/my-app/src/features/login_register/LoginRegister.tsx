@@ -29,8 +29,10 @@ const LoginRegister: React.FC = () => {
     
                 // Assuming the response contains the access token in `response.payload.access`
                 const token = response.payload.access;
-                if (token) {
+                const refresh = response.payload.refresh
+                if (token && refresh) {
                     localStorage.setItem('Access', token); // Save token to localStorage
+                    localStorage.setItem('Refresh', refresh)
                     console.log('Login successful, token saved to localStorage');
                     navigate(`/sheets`); // Redirect to sheets after login
                 } else {

@@ -1,5 +1,7 @@
 // actions/inventoryActions.ts
 import axios from 'axios';
+import apiClient from '../../axiosInstance';
+
 const SERVER = 'http://127.0.0.1:8000/';
 
 
@@ -9,7 +11,7 @@ export function getInventory(id:number){
         return Promise.reject("No access token found");
       } // Get the access token from localStorage
 
-    return axios.get(SERVER + 'getInventory/', {
+    return apiClient.get(SERVER + 'getInventory/', {
         params: {id},
         headers: {
             Authorization: `Bearer ${access}`, // Send the access token in the header
@@ -23,7 +25,7 @@ export function searchItems(query:string) {
         return Promise.reject("No access token found");
       } // Get the access token from localStorage
 
-    return axios(SERVER + 'searchItems/',{
+    return apiClient(SERVER + 'searchItems/',{
         params: {query},
         headers: {
             Authorization: `Bearer ${access}`, // Send the access token in the header
@@ -40,7 +42,7 @@ export function addItemToInventory(
         return Promise.reject("No access token found")
     }
 
-    return axios.post(SERVER + 'addToInventory/', {
+    return apiClient.post(SERVER + 'addToInventory/', {
         itemID,
         id
     }, {
@@ -59,7 +61,7 @@ export function removeItemFromInventory(
         return Promise.reject("No access token found")
     }
 
-    return axios.post(SERVER + 'removeItem/', {
+    return apiClient.post(SERVER + 'removeItem/', {
         itemID,
         id
     }, {

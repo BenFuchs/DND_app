@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { getChatRoomsAsync } from './chatRoomSlice';
+import { deleteChatRoomAsync, getChatRoomsAsync } from './chatRoomSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import axios from 'axios';
@@ -16,8 +16,8 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
   const dispatch = useAppDispatch();
   const roomNames = useAppSelector((state) => state.chatRoom.room_names);
   const navigate = useNavigate();
-  const [roomName, setRoomName] = useState('');
-  const [password, setPassword] = useState('');
+  const [roomName, setRoomName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [inputPassword, setInputPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,6 +33,13 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       alert('Please provide both a room name and password.');
       return;
     }
+    if (roomName.includes(' ')) {
+      alert("Room Names may not include spaces in them")
+      setRoomName('')
+      setPassword('')
+      return;
+    }
+    
     try {
       await axios.post(`${SERVER}createChatRoom/`, { room_name: roomName, password });
       alert('Room created successfully!');
@@ -70,6 +77,22 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       });
   };
 
+  const handleDeleteRoom = async (roomName: string) => {
+    const selectedRoomPassword = prompt('Please enter the room password to delete:');
+    if (!selectedRoomPassword) {
+      alert('Password is required to delete the room.');
+      return;
+    }
+  
+    try {
+      await dispatch(deleteChatRoomAsync({ roomName, password: selectedRoomPassword }));
+      alert(`Room '${roomName}' deleted successfully.`);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to delete the room. Please check the password and try again.');
+    }
+  };
+  
   return (
     <div>
       {/* Room Creation */}
@@ -95,9 +118,14 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
         <h2>Available Rooms</h2>
         {roomNames.length > 0 ? (
           roomNames.map((room, index) => (
+            <ul key={index}>
+              <li>
             <button key={index} onClick={() => setSelectedRoom(room)}>
               {room || 'Unnamed Room'}
-            </button>
+            </button> - {' '}
+            <button onClick={() => handleDeleteRoom(room)}>Delete Room</button>
+            </li>
+            </ul>
           ))
         ) : (
           <p>No rooms available. Create one to get started!</p>

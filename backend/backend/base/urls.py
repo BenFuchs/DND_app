@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.urls import path
+from rest_framework_simplejwt.views import  TokenRefreshView
 from . import views
 from . import consumers
+
 urlpatterns = [
     path('', views.test), #testing endpoint
 
@@ -9,6 +11,7 @@ urlpatterns = [
     path('login/', views.MyTokenObtainPairView.as_view()),
     path('register/', views.register),
     path('logout/', views.logout),
+    path('refresh/', TokenRefreshView.as_view()),
     #Sheet endpoints
     path('sheetNum/', views.logged_sheetNum_check),
     path('sheetCreation/', views.sheet_creation),
@@ -38,6 +41,7 @@ urlpatterns = [
     path('createChatRoom/', views.CreateRoom),
     path('getChatRooms/', views.GetRooms),
     path('verifyRoomPassword/', views.verify_room_password),
+    path('deleteChatRoom/', views.delete_chatroom),
 
     #Paypal endpoints
     path('orders/', views.orderView),

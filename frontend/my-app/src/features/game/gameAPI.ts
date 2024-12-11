@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import apiClient from '../../axiosInstance';
 const SERVER = "http://127.0.0.1:8000/";
 
 export function currencyCalc(
@@ -14,7 +14,7 @@ export function currencyCalc(
     return Promise.reject("No access token found");
   }
 
-  return axios.post(
+  return apiClient.post(
     SERVER + "currencyCalc/",
     {
       amount, // The amount to add or subtract
@@ -37,7 +37,7 @@ export function getGold(race: number, id:number) {
     return Promise.reject("No access token found");
   }
 
-  return axios.get(SERVER + "getGold/", {
+  return apiClient.get(SERVER + "getGold/", {
     params: { race, id },
     headers: {
       Authorization: `Bearer ${access}`, // Send the access token in the header
@@ -53,7 +53,7 @@ export function getMods(race: number, id:number) {
     return Promise.reject("No access token found");
   }
 
-  return axios.get(SERVER + "getMods/", {
+  return apiClient.get(SERVER + "getMods/", {
     params: { race, id },
     headers: {
       Authorization: `Bearer ${access}`, // Send the access token in the header
@@ -62,7 +62,7 @@ export function getMods(race: number, id:number) {
 }
 
 export function rollDice(diceType: number, amount: number) {
-  return axios.get(SERVER + 'diceRoll/', {
+  return apiClient.get(SERVER + 'diceRoll/', {
     params: {
       diceType: diceType,
       amount: amount
@@ -74,7 +74,7 @@ export function getSheetDataToken() {
   const SD = localStorage.getItem('SheetData');
   // console.log(SD)
   const token = localStorage.getItem('Access'); // Example auth token
-  return axios.post(SERVER + 'SDT/', {
+  return apiClient.post(SERVER + 'SDT/', {
     sheet_data: SD
   }, {
     headers: {
@@ -88,7 +88,7 @@ export function updateSheetDataToken() {
   const SD = localStorage.getItem('SheetData');
   const token = localStorage.getItem('Access'); // Example auth token
   if (oldSDT) {
-    return axios.post(SERVER + 'updateSDT/', {
+    return apiClient.post(SERVER + 'updateSDT/', {
       current_sheet_data: SD
     }, {
       headers: {

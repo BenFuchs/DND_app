@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiClient from '../../axiosInstance';
 
 const SERVER = 'http://127.0.0.1:8000/';
 
@@ -9,7 +10,7 @@ export function getRaceTraits(id: number) {
         return Promise.reject(new Error("No access token found"));
     }
 
-    return axios.post(
+    return apiClient.post(
         SERVER + 'getRaceFeatures/',
         { id },
         {

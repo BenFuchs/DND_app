@@ -1,5 +1,4 @@
-import axios from "axios";
-
+import apiClient from '../../axiosInstance';
 const SERVER = "http://127.0.0.1:8000/";
 
 export function getChatRooms() {
@@ -8,7 +7,7 @@ export function getChatRooms() {
     return Promise.reject(new Error("No access token found"));
   }
 
-  return axios.get(`${SERVER}getChatRooms/`, {
+  return apiClient.get(`${SERVER}getChatRooms/`, {
     headers: { Authorization: `Bearer ${access}` },
   });
 }
@@ -19,7 +18,7 @@ export function createChatRoom(roomName: string, password: string) {
     return Promise.reject(new Error("No access token found"));
   }
 
-  return axios.post(
+  return apiClient.post(
     `${SERVER}createChatRoom/`,
     { room_name: roomName, password },
     {
@@ -34,7 +33,7 @@ export function verifyRoomPassword(roomName: string, password: string) {
     return Promise.reject(new Error("No access token found"));
   }
 
-  return axios.post(
+  return apiClient.post(
     `${SERVER}verifyRoomPassword/`,
     { room_name: roomName, password: password },
     {
@@ -43,17 +42,17 @@ export function verifyRoomPassword(roomName: string, password: string) {
   );
 }
 
-export function WIP() {
+export function deleteRoom(roomName: string, password: string) {
   const access = localStorage.getItem("Access");
   if (!access) {
     return Promise.reject(new Error("No access token found"));
   }
-  const SheetDataToken = localStorage.getItem("SDT")
-  return axios.post(SERVER + 'WIP/', {
-    SDT : SheetDataToken
-  }, {
-    headers: {
-      Authorization: `Bearer ${access}`
+
+  return apiClient.post(
+    `${SERVER}deleteChatRoom/`,
+    { room_name: roomName, password: password },
+    {
+      headers: { Authorization: `Bearer ${access}` },
     }
-  })
+  );
 }

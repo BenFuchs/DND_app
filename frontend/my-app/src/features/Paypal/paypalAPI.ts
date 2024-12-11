@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiClient from '../../axiosInstance';
 
 const SERVER = 'http://127.0.0.1:8000/'
 
@@ -14,7 +15,7 @@ export const sendOrder = async (orderData: OrderData) => {
     }
 
   try {
-    const response = await axios.post(SERVER + 'orders/', orderData, {
+    const response = await apiClient.post(SERVER + 'orders/', orderData, {
         headers: {
             Authorization: `Bearer ${access}`,
         }
