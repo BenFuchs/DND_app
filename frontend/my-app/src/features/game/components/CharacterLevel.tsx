@@ -1,34 +1,15 @@
-import { useState } from "react";
-import { levelUpAsync } from "../gameSlice";
-import { useAppDispatch } from "../../../app/hooks";
-
 interface CharacterLevelProps {
   level: number;
   id: number;
   race: number;
   charClass: number;
+  handleLevelUp: () => void; // Add handleLevelUp as a prop
 }
 
-const CharacterLevel = ({ level, id, race, charClass }: CharacterLevelProps) => {
-  const dispatch = useAppDispatch();
-  const [currentLevel, setCurrentLevel] = useState<number>(level);
-
-  const handleLevelUp = async () => {
-    const newLevel = currentLevel + 1;
-    setCurrentLevel(newLevel); // Update local state
-    console.log("New level is:", newLevel);
-
-    try {
-      await dispatch(levelUpAsync({ race, id, charClass}));
-    } catch (error) {
-      console.error("Error leveling up:", error);
-      setCurrentLevel(currentLevel); // Revert local state if dispatch fails
-    }
-  };
-
+const CharacterLevel = ({ level, id, race, charClass, handleLevelUp }: CharacterLevelProps) => {
   return (
     <div>
-      <strong>Level:</strong> {currentLevel}{" "}
+      <strong>Level:</strong> {level}{" "}
       <button onClick={handleLevelUp}>Level up!</button>
     </div>
   );

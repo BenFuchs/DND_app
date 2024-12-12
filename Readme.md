@@ -164,9 +164,9 @@ An interactive D&D character management app, including features such as an inven
 
 26/11/24:
 - [X] When clicking on the chat button in the navbar, and then clicking on inventory/traits button, the ID for the sheet gets messed up for some reason
-- [WIP] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
+- [X] chatRoom component is being generated inside of the room creation/selection component, needs to navigate to it 
 - [X] fix the ws route for the individual chat rooms
-- [ ] add an option to delete rooms only if you have the password to them 
+- [X] add an option to delete rooms only if you have the password to them 
     
 3/12/24:
 - [ ] QoL change: Set DM's into a seperate modal, show them seperatly from the major group chat
@@ -178,7 +178,6 @@ An interactive D&D character management app, including features such as an inven
 
 8/12/24: 
 - [X] Started the gold sending function in the chatroom, currently displays in the terminal the gold from the backend of the logged user. Still needs testing over multiple users, and front end GUI 
-- [WIP] GUI should include: [ ] Your current gold [X] How much you want to send 
 
 9/12/24:
 - [X] Gold sending itself works, but the sender and recipient name are undefined in the frontend (FIXED)

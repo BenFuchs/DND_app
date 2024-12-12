@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync } from "../game/gameSlice";
+import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync, levelUpAsync } from "../game/gameSlice";
 import { RootState } from "../../app/store";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -91,6 +91,29 @@ const GameComponent = () => {
     }
   }, [sheetData, dispatch]);
 
+  const reloadSheetData = () => {
+    const storedSheetData = localStorage.getItem("SheetData");
+    if (storedSheetData) {
+      const parsedData = JSON.parse(storedSheetData);
+      setSheetData(parsedData.data); // Update sheetData with the latest from localStorage
+    }
+  };
+
+  const handleLevelUp = async () => {
+    try {
+      // Dispatch the level-up action
+      if (sheetData) {
+      await dispatch(levelUpAsync({ race:sheetData.race , id: sheetData.id, charClass: sheetData.char_class }));
+
+      // Reload the sheet data after level-up
+      reloadSheetData();
+      }
+    } catch (error) {
+      console.error("Error leveling up:", error);
+    }
+  };
+
+
   const handleAddGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
       try {
@@ -170,8 +193,13 @@ const GameComponent = () => {
             <CharacterName name={sheetData.char_name} />
             <CharacterClass charClass={charClassString()} />
             <CharacterRace race={charRaceString()} />
-            <CharacterLevel level={sheetData.level} id={sheetData.id} race={sheetData.race} charClass={sheetData.char_class}/>
-            <CharacterHP hitpoints={sheetData.hitpoints} CharClass={sheetData.char_class} />
+            <CharacterLevel
+              level={sheetData.level}
+              id={sheetData.id}
+              race={sheetData.race}
+              charClass={sheetData.char_class}
+              handleLevelUp={handleLevelUp} // Pass handleLevelUp as a prop
+            />            <CharacterHP hitpoints={sheetData.hitpoints} CharClass={sheetData.char_class} />
             <CharacterGold gold={gold.gold} />
             <CharacterStats
               stats={Object.entries(sheetData)
