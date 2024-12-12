@@ -61,7 +61,7 @@ def logged_sheetNum_check(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sheet_creation(request):
-    print(request.data)
+    # print(request.data)
     user = request.user
     data = request.data.get('data', {}) #use data to get information 
     max_sheets = 3 #defualt max sheets per user
@@ -75,9 +75,9 @@ def sheet_creation(request):
     user_profile = UserProfile.objects.filter(user=user).first()
     extra_sheet_count = user_profile.extra_sheets
     if extra_sheet_count:
-        print(extra_sheet_count)
+        # print(extra_sheet_count)
         max_sheets += extra_sheet_count
-        print(max_sheets) # New max sheets for this user
+        # print(max_sheets) # New max sheets for this user
     if sheet_count >= max_sheets:
         return Response({"msg": "You have reached the maximum number of character sheets, if you would like more please purchase one."}, status=status.HTTP_400_BAD_REQUEST)
 

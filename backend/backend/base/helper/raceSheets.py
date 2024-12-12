@@ -46,6 +46,10 @@ def createGnomeSheet(user, user_Stats, user_Name, user_Class):
     stat_Constitution = int(stats[2]) # Index 4 = Constitution
     stat_Charisma = int(stats[5])    # Index 5 = Charisma
 
+    level_health = LevelOneHealth(user_Class)
+    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {hitpoints}")
+
     GnomeSheets.objects.create(
         owner=user, 
         char_name=user_Name, 
@@ -55,7 +59,9 @@ def createGnomeSheet(user, user_Stats, user_Name, user_Class):
         stat_Dexterity=stat_Dexterity,
         stat_Intelligence=stat_Intelligence,
         stat_Constitution=stat_Constitution,
-        stat_Charisma=stat_Charisma
+        stat_Charisma=stat_Charisma,
+        level=1,
+        hitpoints=hitpoints
     )    
     return {"msg": f"Gnome character sheet created for {user.username} with name {user_Name} and class {GnomeSheets.CharClass(user_Class).label}."}
 
@@ -70,6 +76,9 @@ def createElfSheet(user, user_Stats, user_Name, user_Class):
     stat_Intelligence = int(stats[3])  # 
     stat_Constitution = int(stats[2]) # 
     stat_Charisma = int(stats[5])    # 
+    level_health = LevelOneHealth(user_Class)
+    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {hitpoints}")
 
     ElfSheets.objects.create(
         owner=user, 
@@ -80,7 +89,9 @@ def createElfSheet(user, user_Stats, user_Name, user_Class):
         stat_Dexterity=stat_Dexterity,
         stat_Intelligence=stat_Intelligence,
         stat_Constitution=stat_Constitution,
-        stat_Charisma=stat_Charisma
+        stat_Charisma=stat_Charisma,
+        level=1,
+        hitpoints=hitpoints
     )    
     return {"msg": f"Elf character sheet created for {user.username} with name {user_Name} and class {ElfSheets.CharClass(user_Class).label}."}
 
@@ -94,6 +105,9 @@ def createHalflingSheet(user, user_Stats, user_Name, user_Class):
     stat_Intelligence = int(stats[3])  # Index 3 = Intelligence
     stat_Constitution = int(stats[2]) # Index 4 = Constitution
     stat_Charisma = int(stats[5])    # Index 5 = Charisma
+    level_health = LevelOneHealth(user_Class)
+    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {hitpoints}")
 
     HalflingSheets.objects.create(
         owner=user, 
@@ -104,6 +118,8 @@ def createHalflingSheet(user, user_Stats, user_Name, user_Class):
         stat_Dexterity=stat_Dexterity,
         stat_Intelligence=stat_Intelligence,
         stat_Constitution=stat_Constitution,
-        stat_Charisma=stat_Charisma
+        stat_Charisma=stat_Charisma,
+        level=1,
+        hitpoints=hitpoints
     )    
     return {"msg": f"Halfling character sheet created for {user.username} with name {user_Name} and class {HalflingSheets.CharClass(user_Class).label}."}
