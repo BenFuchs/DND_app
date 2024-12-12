@@ -191,7 +191,7 @@ List of things to do before prod push
 - [ ] Ability to look up chatroom specific by name (medium)
 - [ ] test cookie saving access token option? (medium) 
 - [ ] change paypal from sandbox to real (?)
-- [WIP] add level up option and auto update new HP (easy) -> last thing left is to update the front end HP 
+- [X] add level up option and auto update new HP (easy) 
 - [ ] radio buttons for proficiencies (easy)
 - [ ] proficiency calculation by level, and how it affects skills (easy)
 

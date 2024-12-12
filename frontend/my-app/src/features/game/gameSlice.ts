@@ -7,6 +7,7 @@ interface GameState {
   loading: boolean;
   error: string;
   level: number;
+  HP: number;
   mods: []
   rolls: []
 }
@@ -16,6 +17,7 @@ const initialState: GameState = {
   loading: false,
   error: '',
   level: 1,
+  HP: 0,
   mods: [],
   rolls: []
 };
@@ -69,14 +71,18 @@ export const getSheetDataTokenAsync = createAsyncThunk(
   }
 )
 
-export const levelUpAsync = createAsyncThunk(
+export const levelUpAsync = createAsyncThunk<
+  { NewLevel: number; Newhitpoints: number }, // Return type for the payload
+  { race: number; id: number; charClass: number } // Argument type
+>(
   'game/levelUp',
-  async ({race, id, charClass}: {race:number; id: number, charClass: number}) => {
+  async ({ race, id, charClass }) => {
     const response = await LevelUp(race, id, charClass);
-    console.log(response.data); //debugging line
-    return response.data;
+    const NewLevel = response.data.Level;
+    const Newhitpoints = response.data.Newhitpoints;
+    return { NewLevel, Newhitpoints };
   }
-)
+);
 
 // Create the slice
 const gameSlice = createSlice({
@@ -111,9 +117,10 @@ const gameSlice = createSlice({
         state.loading = false;
         state.rolls = action.payload;
       })
-      .addCase(levelUpAsync.fulfilled, (state,action)=> {
+      .addCase(levelUpAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.level = action.payload;
+        state.level = action.payload.NewLevel;
+        state.HP = action.payload.Newhitpoints;
       })
       .addCase(levelUpAsync.rejected, (state, action)=> {
         state.loading = false;

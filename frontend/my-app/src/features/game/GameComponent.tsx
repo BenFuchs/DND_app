@@ -17,6 +17,7 @@ import "./styleSheets/gamecomponent.module.css";
 import CharacterGold from "./components/CharacterGold";
 import CharacterHP from "./components/CharachterHp";
 import CharacterLevel from "./components/CharacterLevel";
+import { PayloadAction } from "@reduxjs/toolkit";
 
 // TypeScript interfaces
 interface SheetData {
@@ -101,18 +102,42 @@ const GameComponent = () => {
 
   const handleLevelUp = async () => {
     try {
-      // Dispatch the level-up action
       if (sheetData) {
-      await dispatch(levelUpAsync({ race:sheetData.race , id: sheetData.id, charClass: sheetData.char_class }));
-
-      // Reload the sheet data after level-up
-      reloadSheetData();
+        // Dispatch the level-up action and explicitly cast the result
+        const level_up_data = await dispatch(
+          levelUpAsync({ race: sheetData.race, id: sheetData.id, charClass: sheetData.char_class })
+        ) as PayloadAction<{ NewLevel: number; Newhitpoints: number }>;
+  
+        // Access the payload correctly after casting
+        const { NewLevel, Newhitpoints } = level_up_data.payload;
+  
+        // Update the sheetData state directly
+        setSheetData((prevSheetData) => {
+          if (!prevSheetData) return prevSheetData;
+          return {
+            ...prevSheetData,
+            level: NewLevel,
+            hitpoints: Newhitpoints,
+          };
+        });
+  
+        console.log("new level: ", NewLevel);
+        console.log("new hitpoints: ", Newhitpoints);
+  
+        // After updating the state, save it to localStorage
+        localStorage.setItem(
+          "SheetData",
+          JSON.stringify({ data: { ...sheetData, level: NewLevel, hitpoints: Newhitpoints } })
+        );
+  
+        // Reload the sheet data to ensure the front-end updates
+        reloadSheetData();
       }
     } catch (error) {
       console.error("Error leveling up:", error);
     }
   };
-
+  // console.log(sheetData?.level)  
 
   const handleAddGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
