@@ -34,6 +34,7 @@ interface SheetData {
   race: number;
   level: number;
   hitpoints: number;
+  proficiency: number;
 }
 
 interface Mods {
@@ -55,6 +56,7 @@ const GameComponent = () => {
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
+  const [proficiencyBonus, setproficiencyBonus] = useState<number>(2)
 
   // Toggles for modal
   const open = () => setModal(true);
@@ -98,6 +100,22 @@ const GameComponent = () => {
       const parsedData = JSON.parse(storedSheetData);
       setSheetData(parsedData.data); // Update sheetData with the latest from localStorage
     }
+  };
+
+  useEffect(() => {
+    if (sheetData) {
+      const newProficiencyBonus = getProficiencyBonus(sheetData.level);
+      setproficiencyBonus(newProficiencyBonus); // Update the state
+      // console.log("Proficiency Bonus Updated:", newProficiencyBonus);
+    }
+  }, [sheetData]);
+
+  const getProficiencyBonus = (level: number): number => {
+    if (level >= 17) return 6;
+    if (level >= 13) return 5;
+    if (level >= 9) return 4;
+    if (level >= 5) return 3;
+    return 2; // Default for levels 1-4
   };
 
   const handleLevelUp = async () => {
@@ -242,7 +260,10 @@ const GameComponent = () => {
           !Mods ? (
             <p>Loading skills...</p>
           ) : (
-            <Skills skills={skills} />
+            <div>
+            <label>Proficiency Bonus:</label> {proficiencyBonus}
+            <Skills skills={skills} proficiency={proficiencyBonus} />
+            </div>
           )
         ) : (
           <p>Loading sheet data...</p>

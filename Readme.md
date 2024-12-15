@@ -188,12 +188,12 @@ List of things to do before prod push
 - [X] add auto refresh of token and auto logout when token expires
 - [X] deletion of chat rooms (simple crud style deletion)
 - [ ] Design pages and program the design (hard)
-- [ ] Ability to look up chatroom specific by name (medium)
+- [X] Ability to look up chatroom specific by name 
 - [ ] test cookie saving access token option? (medium) 
 - [ ] change paypal from sandbox to real (?)
-- [X] add level up option and auto update new HP (easy) 
-- [ ] radio buttons for proficiencies (easy)
-- [ ] proficiency calculation by level, and how it affects skills (easy)
+- [X] add level up option and auto update new HP 
+- [X] radio buttons for proficiencies 
+- [X] proficiency calculation by level, and how it affects skills 
 
 11/12/24:
   NOT FOR PROD, could be cool tho

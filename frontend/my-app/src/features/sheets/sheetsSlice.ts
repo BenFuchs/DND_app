@@ -29,7 +29,7 @@ export const getNum_of_sheetsAsync = createAsyncThunk(
   'sheets/num_of_sheets',
   async () => {
     const response = await num_of_sheets();
-    console.log("API Response:", response.data); // Debugging line
+    // console.log("API Response:", response.data); // Debugging line
     return response.data; // Ensure the data structure matches SheetData
   }
 );
@@ -50,7 +50,7 @@ export const rollStatsAsync = createAsyncThunk(
   'sheets/rollStats',
   async()=> {
     const response = await rollStats();
-    console.log(response.data); //debug line 
+    // console.log(response.data); //debug line 
     return response.data.stats;
   }
 )
@@ -68,7 +68,7 @@ export const getSheetDataAsync = createAsyncThunk(
   'sheets/getSheetData',
   async(sheetID:number)=> {
     const response = await getSheetData(sheetID);
-    console.log(response.data); // debugging line
+    // console.log(response.data); // debugging line
     return response.data;
   }
 )

@@ -9,6 +9,10 @@
         {
           "name": "Unarmored Defense",
           "description": "While not wearing armor, your AC equals 10 + your Dexterity modifier + your Constitution modifier."
+        },
+        {
+          "name": "Skills",
+          "description": "Choose two skills from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival to add your proficiency bonus to"
         }
       ],
       "Level_2": [
@@ -33,6 +37,10 @@
         {
           "name": "Arcane Recovery",
           "description": "Once per day when you finish a short rest, you can recover spell slots up to a combined Level of 3."
+        },
+        {
+          "name": "Skills",
+          "description": "Choose two skills from Arcana, History, Insight, Investigation, Medicine, and Religion to add your proficiency bonus to"
         }
       ],
       "Level_2": [
@@ -51,6 +59,10 @@
         {
           "name": "Divine Domain",
           "description": "Choose a Divine Domain, such as Life, which grants you additional spells and abilities related to healing and protection."
+        },
+        {
+          "name": "Skills",
+          "description": "Choose two skills from from History, Insight, Medicine, Persuasion, and Religion to add your proficiency bonus to"
         }
       ],
       "Level_2": [
@@ -69,6 +81,10 @@
         {
           "name": "Cunning Action",
           "description": "You can use your bonus action to Dash, Disengage, or Hide on each of your turns."
+        },
+        {
+          "name": "Skills",
+          "description": "Choose four skills from Acrobatics, Athletics, Deception, Insight, Intimidation, Investigation, Perception, Performance, Persuasion, Sleight of Hand, and Stealth to add your proficiency bonus to"
         }
       ],
       "Level_2": [
