@@ -11,6 +11,8 @@ import {
   deleteSheetAsync,
   getSheetDataAsync,
 } from "../sheets/sheetsSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Define types for Sheets data
 export interface Sheet {
@@ -48,7 +50,7 @@ const SheetsComp = () => {
     if (selectedRace !== null) {
       setShowForm(true);
     } else {
-      alert("Please select a race first!");
+      toast.error("Please select a race first!");
     }
   };
 
@@ -64,7 +66,7 @@ const SheetsComp = () => {
       );
       window.location.reload();
     } else {
-      alert("Please fill out all fields!");
+      toast.error("Please fill out all fields!");
     }
   };
 
@@ -93,18 +95,17 @@ const SheetsComp = () => {
     dispatch(deleteSheetAsync(sheetID))
       .then(() => {
         console.log("Deleted Sheet ID: ", sheetID);
-        // After deletion, filter out the deleted sheet from the local state
         if (numSheets) {
           const updatedSheets = numSheets.sheets.filter(
             (sheet: Sheet) => sheet.sheetID !== sheetID
           );
-          // Dispatch an action to update the state after deletion
           dispatch({ type: "UPDATE_SHEETS", payload: updatedSheets });
         }
+        toast.success("Character sheet deleted successfully!");
       })
       .catch((error) => {
         console.error("Failed to delete sheet:", error);
-        alert("Error deleting sheet.");
+        toast.error("Error deleting sheet.");
       });
   };
 
@@ -127,33 +128,31 @@ const SheetsComp = () => {
 
   if (numSheets && typeof numSheets === "object") {
     const { username, sheet_count, sheets, max_sheets } = numSheets;
-    
-// console.log(max_sheets)
 
-// console.log(sheets)
     return (
       <div>
         <h1>Username: {username}</h1>
         <h2>Number of Sheets: {sheet_count}</h2>
         {Array.isArray(sheets) &&
-  sheets.map((sheet: Sheet, index: number) => (
-    <ul key={index}>
-      <button
-        onClick={() => {
-          console.log(`Selected sheet: ${sheet.sheet_name || "Unnamed Character"}`);
-          handleGetSheetData(sheet.sheetID);
-        }}
-      >
-        {sheet.sheet_name || "Unnamed Character"}
-      </button>
-      {" -- "}
-      <button onClick={() => handleDeleteSheet(sheet.sheetID)}>
-        Delete character
-      </button>
-    </ul>
-  ))}
-        <Outlet />{" "}
-        {/* This renders GameComponent when navigating to /game/:sheetID */}
+          sheets.map((sheet: Sheet, index: number) => (
+            <ul key={index}>
+              <button
+                onClick={() => {
+                  console.log(
+                    `Selected sheet: ${sheet.sheet_name || "Unnamed Character"}`
+                  );
+                  handleGetSheetData(sheet.sheetID);
+                }}
+              >
+                {sheet.sheet_name || "Unnamed Character"}
+              </button>
+              {" -- "}
+              <button onClick={() => handleDeleteSheet(sheet.sheetID)}>
+                Delete character
+              </button>
+            </ul>
+          ))}
+        <Outlet />
         {sheet_count < max_sheets && (
           <div>
             <div>

@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { getChatRoomsAsync, setSocketData } from './features/ChatRoom/chatRoomSlice';
-import ChatRoomComp from './features/ChatRoom/ChatRoomComp'; //works just a weird error
+import "react-toastify/dist/ReactToastify.css";
+import ChatRoomComp from './features/ChatRoom/ChatRoomComp'; 
+import { toast } from 'react-toastify';
 
 const ChatWrapper: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const ChatWrapper: React.FC = () => {
   
           socket.onerror = (err) => {
             console.error('WebSocket error:', err);
-            // alert('Failed to connect to the chat room.');
+            toast.error('Failed to connect to the chat room.');
             dispatch(setSocketData({ socketUrl: '', socketStatus: 'disconnected' }));
             // Retry logic if connection fails
             setTimeout(createWebSocket, 2000); // Retry after 2 seconds
@@ -50,7 +52,7 @@ const ChatWrapper: React.FC = () => {
         createWebSocket(); // Initial WebSocket connection attempt
   
       } else {
-        alert('Please provide both a room name and password.');
+        toast.error('Please provide both a room name and password.');
       }
     } else if (action === 'create') {
       dispatch(getChatRoomsAsync());

@@ -19,7 +19,7 @@ const Skills = ({ skills, proficiency = 0 }: SkillsProps) => {
     return <p>No skills data available.</p>;
   }
 
-  console.log("Proficiency Bonus:", proficiency); // Debugging
+  // console.log("Proficiency Bonus:", proficiency); // Debugging
 
   return (
     <div>

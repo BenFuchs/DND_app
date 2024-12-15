@@ -3,6 +3,8 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { deleteChatRoomAsync, getChatRoomsAsync } from './chatRoomSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const SERVER = 'http://127.0.0.1:8000/';
 
@@ -43,11 +45,11 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
 
   const handleCreateRoom = async () => {
     if (!roomName || !password) {
-      alert('Please provide both a room name and password.');
+      toast.error('Please provide both a room name and password.');
       return;
     }
     if (roomName.includes(' ')) {
-      alert('Room Names may not include spaces in them');
+      toast.error('Room Names may not include spaces in them');
       setRoomName('');
       setPassword('');
       return;
@@ -55,18 +57,18 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
 
     try {
       await axios.post(`${SERVER}createChatRoom/`, { room_name: roomName, password });
-      alert('Room created successfully!');
+      toast.success('Room created successfully!');
       setRoomName('');
       setPassword('');
       dispatch(getChatRoomsAsync());
     } catch (error: any) {
-      alert(error.response?.data?.error || 'Error creating room.');
+      toast.error(error.response?.data?.error || 'Error creating room.');
     }
   };
 
   const handleRoomLogin = () => {
     if (!selectedRoom || !inputPassword) {
-      alert('Please select a room and enter a password.');
+      toast.error('Please select a room and enter a password.');
       return;
     }
     axios
@@ -86,28 +88,29 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       .catch((error) => {
         console.error(error);
         setIsLoggedIn(false);
-        alert('Invalid password or failed to join the room.');
+        toast.error('Invalid password or failed to join the room.');
       });
   };
 
   const handleDeleteRoom = async (roomName: string) => {
     const selectedRoomPassword = prompt('Please enter the room password to delete:');
     if (!selectedRoomPassword) {
-      alert('Password is required to delete the room.');
+      toast.error('Password is required to delete the room.');
       return;
     }
 
     try {
       await dispatch(deleteChatRoomAsync({ roomName, password: selectedRoomPassword }));
-      alert(`Room '${roomName}' deleted successfully.`);
+      toast.success(`Room '${roomName}' deleted successfully.`);
     } catch (error) {
       console.error(error);
-      alert('Failed to delete the room. Please check the password and try again.');
+      toast.error('Failed to delete the room. Please check the password and try again.');
     }
   };
 
   return (
     <div>
+      <ToastContainer />
       {/* Room Creation */}
       <div>
         <h2>Create a Room</h2>
