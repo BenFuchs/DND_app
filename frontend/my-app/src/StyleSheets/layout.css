@@ -1,0 +1,64 @@
+/* Body styles */
+body {
+    background-color: grey;
+    color: black;
+    font-size: 25px;
+  }
+  
+  .dark-mode {
+    background-color: rgb(46, 44, 44);
+    color: rgb(187, 187, 187);
+  }
+  
+  .light-mode {
+    background-color: rgb(187, 187, 187);
+    color: rgb(46, 44, 44);
+  }
+  .d-flex {
+    display: flex;
+    align-items: center; /* Vertically aligns the buttons */
+    gap: 2px; /* Adds consistent spacing between buttons */
+}
+  
+  /* Navbar styles */
+
+  .navbar-dark {
+    background-color: rgb(23, 22, 22) !important;
+  }
+  
+  .navbar-dark .navbar-brand,
+  .navbar-dark .nav-link {
+    color: rgb(187, 187, 187) !important;
+  }
+  
+  .navbar-light {
+    background-color: rgb(154, 151, 151) !important;
+  }
+  
+  .navbar-light .navbar-brand,
+  .navbar-light .nav-link {
+    color: rgb(46, 44, 44) !important;
+  }
+  
+  /* Button styles */
+  /* Custom styles for buttons */
+button.btn-light, a.btn-light {
+    background-color: rgb(187, 187, 187) !important;
+    color: rgb(46, 44, 44) !important;
+    border: 1px solid rgb(170, 170, 170) !important;
+  }
+  
+  button.btn-dark, a.btn-dark {
+    background-color: rgb(46, 44, 44) !important;
+    color: rgb(187, 187, 187) !important;
+    border: 1px solid rgb(60, 60, 60) !important;
+  }
+  
+  button.btn-light:hover, a.btn-light:hover {
+    background-color: rgb(170, 170, 170) !important;
+  }
+  
+  button.btn-dark:hover, a.btn-dark:hover {
+    background-color: rgb(60, 60, 60) !important;
+  }
+  

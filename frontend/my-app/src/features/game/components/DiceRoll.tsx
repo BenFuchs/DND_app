@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import '../styleSheets/diceTray.css'; // Adjust the path if necessary
+// import '../styleSheets/diceTray.css'; // Adjust the path if necessary
+import '../../../StyleSheets/diceTray.css';
 import { rollDiceAsync } from '../gameSlice';
 import { useAppDispatch } from "../../../app/hooks";
-import DiceRollsModal from './DiceRollsModal'; // Import the modal component
+// import DiceRollsModal from './DiceRollsModal'; // Import the modal component
 
 const DiceRoll = () => {
   const dispatch = useAppDispatch();
@@ -39,9 +40,9 @@ const DiceRoll = () => {
   };
 
   // Handle modal close
-  const handleCloseModal = () => {
-    setModalOpen(false); // Close the modal
-  };
+  // const handleCloseModal = () => {
+  //   setModalOpen(false); // Close the modal
+  // };
 
   return (
     <div>

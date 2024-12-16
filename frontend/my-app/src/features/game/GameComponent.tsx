@@ -11,9 +11,8 @@ import CharacterStats from "../game/components/CharacterStats";
 import Skills from "../game/components/Skills";
 import CurrencyCalculator from "../game/components/CurrencyCalculator";
 import DiceRollsModal from "./components/DiceRollsModal";
-import styles from "./styleSheets/gamecomponent.module.css";
 import DiceRoll from "./components/DiceRoll";
-import "./styleSheets/gamecomponent.module.css";
+import styles from '../../StyleSheets/gamecomponent.css'
 import CharacterGold from "./components/CharacterGold";
 import CharacterHP from "./components/CharachterHp";
 import CharacterLevel from "./components/CharacterLevel";

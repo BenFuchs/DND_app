@@ -12,6 +12,8 @@ import TraitsWrapper from "./TraitsWrapper";
 import ChatWrapper from "./chatWrapper";
 import ChatRoomView from "./features/ChatRoom/ChatRoomView";
 import Paypal from "./features/Paypal/Paypal";
+import './StyleSheets/layout.css'
+
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
