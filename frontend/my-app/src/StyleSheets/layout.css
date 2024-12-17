@@ -1,18 +1,19 @@
 /* Body styles */
 body {
-    background-color: grey;
-    color: black;
+    margin: 0;
     font-size: 25px;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+
   }
   
   .dark-mode {
-    background-color: rgb(46, 44, 44);
-    color: rgb(187, 187, 187);
+    background-color: rgb(46, 44, 44) !important;
+    color: rgb(187, 187, 187) !important;
   }
   
   .light-mode {
-    background-color: rgb(187, 187, 187);
-    color: rgb(46, 44, 44);
+    background-color: rgb(187, 187, 187) !important;
+    color: rgb(46, 44, 44) !important;
   }
   .d-flex {
     display: flex;

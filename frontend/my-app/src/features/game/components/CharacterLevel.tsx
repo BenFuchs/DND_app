@@ -1,3 +1,5 @@
+import styles from '../../../StyleSheets/gamecomponent.module.css'
+
 interface CharacterLevelProps {
   level: number;
   id: number;
@@ -10,7 +12,7 @@ const CharacterLevel = ({ level, id, race, charClass, handleLevelUp }: Character
   return (
     <div>
       <strong>Level:</strong> {level}{" "}
-      <button onClick={handleLevelUp}>Level up!</button>
+      <button onClick={handleLevelUp} className={styles.button}>Level up!</button>
     </div>
   );
 };

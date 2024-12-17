@@ -5,7 +5,6 @@ import { store } from "./app/store";
 import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SheetsComp from "./features/sheets/SheetsComp";
-import GameComponent from "./features/game/GameComponent";
 import Layout from "./Layout"; // Import the Layout component
 import InventoryWrapper from "./InventoryWrapper";
 import TraitsWrapper from "./TraitsWrapper";
@@ -13,6 +12,7 @@ import ChatWrapper from "./chatWrapper";
 import ChatRoomView from "./features/ChatRoom/ChatRoomView";
 import Paypal from "./features/Paypal/Paypal";
 import './StyleSheets/layout.css'
+import GameComponent from "./features/game/GameComponent";
 
 
 const container = document.getElementById("root")!;

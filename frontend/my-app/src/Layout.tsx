@@ -7,6 +7,7 @@ import {
   useParams,
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -212,9 +213,12 @@ const Layout: React.FC = () => {
     if (isDarkMode) {
       element.classList.add("dark-mode");
       element.classList.remove("light-mode");
+      console.log(element.classList); // To check if the classes are toggled correctly
     } else {
       element.classList.add("light-mode");
       element.classList.remove("dark-mode");
+      console.log(element.classList); // To check if the classes are toggled correctly
+
     }
   };
 
@@ -227,10 +231,13 @@ const Layout: React.FC = () => {
       >
         <div className="container-fluid">
           <Link
-            className="navbar-brand"
+            className="navbar-brand disabled-link"
             to="/"
+            onClick={(e) => e.preventDefault()} // Prevent default navigation
             style={{
+              pointerEvents: "none", // Prevents interaction
               color: isDarkMode ? "rgb(187, 187, 187)" : "rgb(46, 44, 44)",
+              cursor: "not-allowed", // Indicate it's disabled
             }}
           >
             MyApp
@@ -262,6 +269,7 @@ const Layout: React.FC = () => {
                   Home
                 </Link>
               </li>
+              {/* You can add other nav items here if needed */}
             </ul>
             <div className="d-flex align-items-center" style={{ gap: "3px" }}>
               {renderButtons()}

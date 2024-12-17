@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 // import '../styleSheets/diceTray.css'; // Adjust the path if necessary
-import '../../../StyleSheets/diceTray.css';
+import '../../../StyleSheets/diceTray.module.css';
+import styles from '../../../StyleSheets/gamecomponent.module.css'
 import { rollDiceAsync } from '../gameSlice';
 import { useAppDispatch } from "../../../app/hooks";
 // import DiceRollsModal from './DiceRollsModal'; // Import the modal component
@@ -79,11 +80,12 @@ const DiceRoll = () => {
         </select>
       </div>
 
-      <div className="centerButton">
+      <div>
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleDiceRoll}
+          className={styles.centerButton}
         >
           Roll!
         </motion.button>

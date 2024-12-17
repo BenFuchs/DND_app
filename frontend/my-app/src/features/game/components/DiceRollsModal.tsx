@@ -8,6 +8,7 @@ interface DiceRollsModalProps {
   backdropClass: string;
   modalClass: string;
   children: React.ReactNode; // Accept children as props
+  isDarkMode: boolean;
 }
 
 const dropIn = {
@@ -35,19 +36,20 @@ const DiceRollsModal: React.FC<DiceRollsModalProps> = ({
   handleClose,
   backdropClass,
   modalClass,
-  children,  // Render children here
+  children,
+  isDarkMode,
 }) => {
   return (
     <Backdrop onClick={handleClose} className={backdropClass}>
       <motion.div
         onClick={(e) => e.stopPropagation()}
-        className={modalClass}
+        className={`${modalClass} ${isDarkMode ? "dark-modal" : "light-modal"}`}
         variants={dropIn}
         initial="hidden"
         animate="visible"
         exit="exit"
       >
-        {children}  {/* Render children inside the modal */}
+        {children}
         <button onClick={handleClose} className="modal-btn">
           Close
         </button>
@@ -55,5 +57,6 @@ const DiceRollsModal: React.FC<DiceRollsModalProps> = ({
     </Backdrop>
   );
 };
+
 
 export default DiceRollsModal;

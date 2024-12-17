@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync, levelUpAsync } from "../game/gameSlice";
+import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync, levelUpAsync } from "./gameSlice";
 import { RootState } from "../../app/store";
 import { motion, AnimatePresence } from "framer-motion";
-
-import CharacterName from "../game/components/CharacterName";
-import CharacterClass from "../game/components/CharacterClass";
-import CharacterRace from "../game/components/CharacterRace";
-import CharacterStats from "../game/components/CharacterStats";
-import Skills from "../game/components/Skills";
-import CurrencyCalculator from "../game/components/CurrencyCalculator";
-import DiceRollsModal from "./components/DiceRollsModal";
+import CharacterName from "./components/CharacterName";
+import CharacterClass from "./components/CharacterClass";
+import CharacterRace from "./components/CharacterRace";
+import CharacterStats from "./components/CharacterStats";
+import Skills from "./components/Skills";
+import CurrencyCalculator from "./components/CurrencyCalculator";
 import DiceRoll from "./components/DiceRoll";
-import styles from '../../StyleSheets/gamecomponent.css'
+import styles from '../../StyleSheets/gamecomponent.module.css'
 import CharacterGold from "./components/CharacterGold";
 import CharacterHP from "./components/CharachterHp";
 import CharacterLevel from "./components/CharacterLevel";
 import { PayloadAction } from "@reduxjs/toolkit";
+import DiceRollsModal from "./components/DiceRollsModal";
+import { ToastContainer, toast } from "react-toastify";
 
 // TypeScript interfaces
 interface SheetData {
@@ -56,6 +56,7 @@ const GameComponent = () => {
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
   const [proficiencyBonus, setproficiencyBonus] = useState<number>(2)
+  const [currencyAmount, setcurrencyAmount] = useState<number>(0);
 
   // Toggles for modal
   const open = () => setModal(true);
@@ -167,8 +168,8 @@ const GameComponent = () => {
             id: sheetData.id,
           })
         );
-        // Fetch the updated gold
         dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
+        setcurrencyAmount(0);
       } catch (err) {
         console.error("Error adding gold:", err);
       }
@@ -177,6 +178,11 @@ const GameComponent = () => {
 
   const handleSubtractGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
+      if(amount > gold.gold) {
+        toast.error("Not enough gold for this action");
+        setcurrencyAmount(0);
+        return; 
+      }
       try {
         await dispatch(
           updateGold({
@@ -186,8 +192,8 @@ const GameComponent = () => {
             id: sheetData.id,
           })
         );
-        // Fetch the updated gold
         dispatch(getGoldAsync({ race: sheetData.race, sheetID: sheetData.id }));
+        setcurrencyAmount(0);
       } catch (err) {
         console.error("Error subtracting gold:", err);
       }
@@ -232,6 +238,8 @@ const GameComponent = () => {
 
   return (
     <div className={styles.container}>
+      <ToastContainer />
+
       <div className={styles.firstColumn}>
         {sheetData ? (
           <>
@@ -244,7 +252,8 @@ const GameComponent = () => {
               race={sheetData.race}
               charClass={sheetData.char_class}
               handleLevelUp={handleLevelUp} // Pass handleLevelUp as a prop
-            />            <CharacterHP hitpoints={sheetData.hitpoints} CharClass={sheetData.char_class} />
+            /> 
+            <CharacterHP hitpoints={sheetData.hitpoints} CharClass={sheetData.char_class} />
             <CharacterGold gold={gold.gold} />
             <CharacterStats
               stats={Object.entries(sheetData)
@@ -273,12 +282,16 @@ const GameComponent = () => {
       </div>
 
       <div className={styles.thirdColumn}>
-        <CurrencyCalculator onAdd={handleAddGold} onSubtract={handleSubtractGold} />
-        {/* {sheetData && <TraitsComponent sheetID={sheetData.id} />} */}
+        <CurrencyCalculator 
+        onAdd={handleAddGold}
+        onSubtract={handleSubtractGold}
+        setCurrencyAmount={setcurrencyAmount} // Pass the setCurrencyAmount function
+        />
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => (modal ? close() : open())}
+          className={styles.button}
         >
           Open Dice Tray
         </motion.button>
@@ -289,6 +302,7 @@ const GameComponent = () => {
               modal={modal}
               backdropClass={styles.backdrop}
               modalClass={styles.modal}
+              isDarkMode
             >
               <DiceRoll />
             </DiceRollsModal>

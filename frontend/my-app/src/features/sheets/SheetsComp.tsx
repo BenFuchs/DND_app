@@ -13,6 +13,8 @@ import {
 } from "../sheets/sheetsSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import styles from '../../StyleSheets/gamecomponent.module.css'
+
 
 // Define types for Sheets data
 export interface Sheet {
@@ -136,7 +138,7 @@ const SheetsComp = () => {
         {Array.isArray(sheets) &&
           sheets.map((sheet: Sheet, index: number) => (
             <ul key={index}>
-              <button
+              <button className={styles.button}
                 onClick={() => {
                   console.log(
                     `Selected sheet: ${sheet.sheet_name || "Unnamed Character"}`
@@ -147,7 +149,7 @@ const SheetsComp = () => {
                 {sheet.sheet_name || "Unnamed Character"}
               </button>
               {" -- "}
-              <button onClick={() => handleDeleteSheet(sheet.sheetID)}>
+              <button onClick={() => handleDeleteSheet(sheet.sheetID)} className={styles.button}>
                 Delete character
               </button>
             </ul>

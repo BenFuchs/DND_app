@@ -1,0 +1,21 @@
+/* Container to hold label and input for proper alignment */
+.formField {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    margin-bottom: 15px; /* Add spacing between fields */
+}
+
+.input {
+    width: 200px; /* Adjust width as needed */
+    padding: 8px;
+    margin-top: 5px; /* Space between label and input */
+}
+
+.label {
+    text-align: center; /* Center the label text */
+}
+
+.button {
+    text-align: center;
+}

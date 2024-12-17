@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import styles from '../../StyleSheets/login.module.css'
 interface JwtPayload {
     username: string;
     is_staff: boolean;
@@ -57,39 +57,30 @@ const LoginRegister: React.FC = () => {
             });
     };
 
-    // const decodeJwt = (token: string): JwtPayload | null => {
-    //     if (!token) return null;
-
-    //     try {
-    //         const base64Url = token.split('.')[1];
-    //         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    //         const jsonPayload = decodeURIComponent(
-    //             atob(base64)
-    //                 .split('')
-    //                 .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-    //                 .join('')
-    //         );
-
-    //         return JSON.parse(jsonPayload) as JwtPayload;
-    //     } catch (error) {
-    //         console.error('Error decoding token:', error);
-    //         return null;
-    //     }
-    // };
-
     return (
         <div>
             <ToastContainer />
-            <label>Username:</label>
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-
-            <label>Password:</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
-            <button onClick={login} disabled={loading}>
-                {loading ? 'Logging in...' : 'LOGIN'}
-            </button>
-            <button onClick={register}>REGISTER</button>
+            <form>
+                <div className={styles.formField}>
+                    <label className={styles.label}>Username:</label>
+                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className={styles.input} />
+                </div>
+    
+                <div className={styles.formField}>
+                    <label className={styles.label}>Password:</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={styles.input} />
+                </div>
+                <div className={styles.formField}>
+                <button 
+                onClick={login} 
+                disabled={loading}
+                className={styles.button}
+                >
+                    {loading ? 'Logging in...' : 'LOGIN'}
+                </button>
+                <button onClick={register} className={styles.button}>REGISTER</button>
+                </div>
+            </form>
         </div>
     );
 };
