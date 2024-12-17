@@ -7,18 +7,21 @@ import {
   useParams,
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Layout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { sheetID } = useParams();
   const { roomName } = useParams();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    // Initialize the dark mode state based on localStorage
+    const savedMode = localStorage.getItem("darkMode");
+    return savedMode === "true"; // Default to false if not set
+  });
   // Logout function
   const logout = () => {
-    localStorage.removeItem("Token"); // Clear the token from local storage
+    localStorage.removeItem("Access"); // Clear the token from local storage
     navigate("/"); // Redirect to the home page
   };
 
@@ -204,23 +207,31 @@ const Layout: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    darkModeSwitch();
-  }, [isDarkMode]);
-
-  const darkModeSwitch = () => {
+  // Function to apply dark mode
+  const applyDarkMode = (darkMode: boolean) => {
     const element = document.body;
-    if (isDarkMode) {
+    if (darkMode) {
       element.classList.add("dark-mode");
       element.classList.remove("light-mode");
-      console.log(element.classList); // To check if the classes are toggled correctly
     } else {
       element.classList.add("light-mode");
       element.classList.remove("dark-mode");
-      console.log(element.classList); // To check if the classes are toggled correctly
-
     }
   };
+
+  // Toggle dark mode and save it to localStorage
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
+      localStorage.setItem("darkMode", newMode.toString());
+      return newMode;
+    });
+  };
+
+  // Effect to apply dark mode on mount or when `isDarkMode` changes
+  useEffect(() => {
+    applyDarkMode(isDarkMode);
+  }, [isDarkMode]);
 
   return (
     <div>
@@ -277,7 +288,7 @@ const Layout: React.FC = () => {
                 Logout
               </button>
               <button
-                onClick={() => setIsDarkMode((prev) => !prev)}
+                onClick={toggleDarkMode} // Use the toggleDarkMode function here
                 className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}
               >
                 {isDarkMode ? "Light Mode" : "Dark Mode"}

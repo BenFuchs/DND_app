@@ -104,6 +104,7 @@ const SheetsComp = () => {
           dispatch({ type: "UPDATE_SHEETS", payload: updatedSheets });
         }
         toast.success("Character sheet deleted successfully!");
+        window.location.reload()
       })
       .catch((error) => {
         console.error("Failed to delete sheet:", error);
