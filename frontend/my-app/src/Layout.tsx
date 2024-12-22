@@ -22,12 +22,25 @@ const Layout: React.FC = () => {
   // Logout function
   const logout = () => {
     localStorage.removeItem("Access"); // Clear the token from local storage
+    localStorage.removeItem("SDT");
+    localStorage.removeItem("SheetData");
     navigate("/"); // Redirect to the home page
   };
 
   // Determine the page and display relevant buttons
   const renderButtons = () => {
     switch (location.pathname) {
+      case "/":
+        return (
+          <>
+            <Link
+              to={"/login"}
+              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
+            >
+              Log in
+            </Link>
+          </>
+        );
       case "/sheets":
         return (
           <>
@@ -233,6 +246,9 @@ const Layout: React.FC = () => {
     applyDarkMode(isDarkMode);
   }, [isDarkMode]);
 
+  const shouldShowLogout =
+    location.pathname !== "/" && location.pathname !== "/login";
+
   return (
     <div>
       <nav
@@ -284,9 +300,11 @@ const Layout: React.FC = () => {
             </ul>
             <div className="d-flex align-items-center" style={{ gap: "3px" }}>
               {renderButtons()}
-              <button onClick={logout} className="btn btn-danger">
-                Logout
-              </button>
+              {shouldShowLogout && (
+                <button onClick={logout} className="btn btn-danger">
+                  Logout
+                </button>
+              )}
               <button
                 onClick={toggleDarkMode} // Use the toggleDarkMode function here
                 className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}

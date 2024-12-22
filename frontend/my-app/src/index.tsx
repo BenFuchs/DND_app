@@ -13,6 +13,7 @@ import ChatRoomView from "./features/ChatRoom/ChatRoomView";
 import Paypal from "./features/Paypal/Paypal";
 import './StyleSheets/layout.css'
 import GameComponent from "./features/game/GameComponent";
+import About from "./features/about/About";
 
 
 const container = document.getElementById("root")!;
@@ -24,7 +25,8 @@ root.render(
       <Provider store={store}>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<App />} />
+            <Route path="/" element={<About />} />
+            <Route path="/login" element={<App/>}/>
             <Route path="/sheets" element={<SheetsComp />} />
             <Route path="game/:sheetID" element={<GameComponent />} />
             <Route

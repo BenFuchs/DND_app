@@ -198,3 +198,13 @@ List of things to do before prod push
 11/12/24:
   NOT FOR PROD, could be cool tho
 - [ ] The website the item csv is from has pages specific to eaach item (url goes https://mythical.ink/rpg-tools/dnd-item-list/ (item ID)). item id in the website is the the item Id in the csv - 1 (they start from id 0)
+
+18/12/24: 
+- [X] Add an about page, the website isnt used by you but rather by users. they need to understand whats going on
+- [X] remove logout button from the log in page. you arent logged in but you can log out? 
+- [ ] potential add: AI character creation randomizer, for if you dont want to create a character let it make one for you
+- [ ] add email system both for maybe the registration system and also for party invites (see list of players and be able to send them an invite, maybe also integrate a friends list then?)
+
+22/12/24:
+- [ ] fix css for about page
+- [ ] fix database migration to mysql 
