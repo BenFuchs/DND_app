@@ -1,0 +1,69 @@
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .cardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .card {
+    background-color: #f9f9f9a8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.8s ease, box-shadow 0.8s ease;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 30px;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cardTitle {
+    background-color: #232d34;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 1.25rem;
+    margin: 0;
+  }
+  
+  .cardContent {
+    overflow: hidden;
+    transition: max-height 0.8s ease;
+  }
+  
+  .footerText {
+    margin-top: 30px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: #b42020df;
+  }
+  
+  .card.open .cardContent {
+    max-height: 300px; /* Adjust to fit your content size */
+    padding: 15px; /* Add padding for the revealed content */
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .test {
+        display: flex; /* Ensures flexbox layout */
+        justify-content: center; /* Centers horizontally */
+        align-items: center; /* Centers vertically */
+        height: 100px; /* Set a height for the container, if necessary */
+      }
+
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

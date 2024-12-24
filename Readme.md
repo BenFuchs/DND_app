@@ -104,7 +104,6 @@ An interactive D&D character management app, including features such as an inven
   7/11/24:
   to do list:
  - [X] after logging in, show the user 3 buttons labeled with their character names, this will later allow the user to access information about that character if they want to play it 
- - [ ] whole lot of design to do (QOL)
  - [X] add logout functionality 
   [X] Create component page for the character information for play, includes:
      - [X] stats
