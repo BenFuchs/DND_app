@@ -14,6 +14,7 @@ import Paypal from "./features/Paypal/Paypal";
 import './StyleSheets/layout.css'
 import GameComponent from "./features/game/GameComponent";
 import About from "./features/about/About";
+import FriendsList from "./features/friends_list/FriendsList";
 
 
 const container = document.getElementById("root")!;
@@ -37,6 +38,7 @@ root.render(
             <Route path="game/:sheetID/chat" element={<ChatWrapper />} />
             <Route path="game/:sheetID/chat/:roomName" element={<ChatRoomView />} />
             <Route path="/orders" element={   <Paypal />} />
+            <Route path="/friendsList" element={<FriendsList />} />
           </Route>
         </Routes>
       </Provider>

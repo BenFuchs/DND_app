@@ -6,6 +6,8 @@ import traitsReducer from '../features/traits/traitsSlice'
 import classFeaturesReducer from '../features/classFeats/classFeatsSlice'
 import chatRoomReducer from '../features/ChatRoom/chatRoomSlice';
 import authReducer from '../features/login_register/loginregisterSlice'
+import friendsListReducer from '../features/friends_list/friendsListSlice'
+
 export const store = configureStore({
   reducer: {
     sheets: sheetReducer,
@@ -15,6 +17,7 @@ export const store = configureStore({
     classTraits: classFeaturesReducer,
     chatRoom: chatRoomReducer,
     login_register: authReducer,
+    friendsList: friendsListReducer
   },
 });
 

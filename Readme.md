@@ -210,3 +210,8 @@ List of things to do before prod push
 
 24/12/24:
 - [ ] add auto log in if you move to the log in page and your access/refresh tokens exist and are valid (requires an endpoint and a useeffect check) 
+
+26/12/24 :
+- [X] start the friends list 
+- [ ] add a search bar to the friends list, goes through the user table and then gives you the option to send invites
+- [ ] move the entiere friends list component to be a side navbar opened by a click (MR style) navbar has three tabs: my friends (getAllFriends and delete friends option) / pending invitations (place to accept/reject) / search bar and invite tab 

@@ -21,9 +21,7 @@ const Layout: React.FC = () => {
   });
   // Logout function
   const logout = () => {
-    localStorage.removeItem("Access"); // Clear the token from local storage
-    localStorage.removeItem("SDT");
-    localStorage.removeItem("SheetData");
+    localStorage.clear();
     navigate("/"); // Redirect to the home page
   };
 

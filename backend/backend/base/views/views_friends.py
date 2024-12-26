@@ -21,12 +21,13 @@ def getUserFriends(request):
 
     # Extract friend user objects
     friends = [
-        {
-            'id': f.to_user.id if f.from_user == user else f.from_user.id,
-            'username': f.to_user.username if f.from_user == user else f.from_user.username,
-        }
-        for f in accepted_friendships
-    ]
+    {
+        'id': f.to_user.id if f.from_user == user else f.from_user.id,
+        'username': f.to_user.username if f.from_user == user else f.from_user.username,
+    }
+    for f in accepted_friendships
+    if f.from_user and f.to_user  # Ensures that both users are not None
+]
 
     return Response({"friends": friends})
 
