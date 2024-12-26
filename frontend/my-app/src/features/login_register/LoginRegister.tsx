@@ -5,11 +5,7 @@ import { useAppDispatch } from '../../app/hooks';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../../StyleSheets/login.module.css'
-interface JwtPayload {
-    username: string;
-    is_staff: boolean;
-    // Add other fields as needed
-}
+
 
 const LoginRegister: React.FC = () => {
     const [username, setUsername] = useState<string>('');

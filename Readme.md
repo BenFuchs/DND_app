@@ -205,5 +205,8 @@ List of things to do before prod push
 - [ ] add email system both for maybe the registration system and also for party invites (see list of players and be able to send them an invite, maybe also integrate a friends list then?)
 
 22/12/24:
-- [ ] fix css for about page
+- [X] fix css for about page
 - [ ] fix database migration to mysql 
+
+24/12/24:
+- [ ] add auto log in if you move to the log in page and your access/refresh tokens exist and are valid (requires an endpoint and a useeffect check) 

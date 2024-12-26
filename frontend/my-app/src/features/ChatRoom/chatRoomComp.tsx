@@ -102,6 +102,7 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
     try {
       await dispatch(deleteChatRoomAsync({ roomName, password: selectedRoomPassword }));
       toast.success(`Room '${roomName}' deleted successfully.`);
+      window.location.reload();
     } catch (error) {
       console.error(error);
       toast.error('Failed to delete the room. Please check the password and try again.');

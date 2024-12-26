@@ -257,18 +257,6 @@ const Layout: React.FC = () => {
         }`}
       >
         <div className="container-fluid">
-          <Link
-            className="navbar-brand disabled-link"
-            to="/"
-            onClick={(e) => e.preventDefault()} // Prevent default navigation
-            style={{
-              pointerEvents: "none", // Prevents interaction
-              color: isDarkMode ? "rgb(187, 187, 187)" : "rgb(46, 44, 44)",
-              cursor: "not-allowed", // Indicate it's disabled
-            }}
-          >
-            MyApp
-          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -288,6 +276,7 @@ const Layout: React.FC = () => {
                   aria-current="page"
                   to="/"
                   style={{
+                    // border: 2,
                     color: isDarkMode
                       ? "rgb(187, 187, 187)"
                       : "rgb(46, 44, 44)",

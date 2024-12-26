@@ -45,5 +45,11 @@ urlpatterns = [
 
     #Paypal endpoints
     path('orders/', views.orderView),
+
+    #Friends list endpoints
+    path('getAllFriends/', views.getUserFriends),
+    path('sendFriendRequest/', views.addFriendToList),
+    path('respondToFriendRequest/', views.respond_to_friend_request),
+    path('removeFriend/', views.removeFriendship),
 ]   
 

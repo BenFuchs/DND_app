@@ -6,3 +6,4 @@ from .views_inventory import *
 from .views_traits import * 
 from .views_chatroom import * 
 from .views_payment import *
+from .views_friends import *
