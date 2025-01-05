@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
@@ -16,7 +16,6 @@ import GameComponent from "./features/game/GameComponent";
 import About from "./features/about/About";
 import FriendsList from "./features/friends_list/FriendsList";
 
-
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 
@@ -26,19 +25,17 @@ root.render(
       <Provider store={store}>
         <Routes>
           <Route element={<Layout />}>
+            {/* Exclude / and /login from rendering FriendsList */}
             <Route path="/" element={<About />} />
-            <Route path="/login" element={<App/>}/>
+            <Route path="/login" element={<App />} />
             <Route path="/sheets" element={<SheetsComp />} />
             <Route path="game/:sheetID" element={<GameComponent />} />
-            <Route
-              path="game/:sheetID/inventory"
-              element={<InventoryWrapper />}
-            />
+            <Route path="game/:sheetID/inventory" element={<InventoryWrapper />} />
             <Route path="game/:sheetID/traits" element={<TraitsWrapper />} />
             <Route path="game/:sheetID/chat" element={<ChatWrapper />} />
             <Route path="game/:sheetID/chat/:roomName" element={<ChatRoomView />} />
-            <Route path="/orders" element={   <Paypal />} />
-            <Route path="/friendsList" element={<FriendsList />} />
+            <Route path="/orders" element={<Paypal />} />
+            <Route path="/friendsList" element={<FriendsList isSidenavOpen={false} openNav={() => {}} closeNav={() => {}} />} />
           </Route>
         </Routes>
       </Provider>

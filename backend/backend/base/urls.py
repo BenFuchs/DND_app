@@ -51,5 +51,8 @@ urlpatterns = [
     path('sendFriendRequest/', views.addFriendToList),
     path('respondToFriendRequest/', views.respond_to_friend_request),
     path('removeFriend/', views.removeFriendship),
+    path('getPendingRequests/', views.getPendingRequests),
+    path('searchUsers/', views.searchUsers),
+
 ]   
 

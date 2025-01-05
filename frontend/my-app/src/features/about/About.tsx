@@ -76,7 +76,7 @@ const About = () => {
             type="button"
             onClick={(e) => {
               e.preventDefault();
-              window.location.href= 'http://localhost:3000/login/';
+              window.location.href= 'http://localhost:3000/login';
               }}
           >Log In!
           </button>

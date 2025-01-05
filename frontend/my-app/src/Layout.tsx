@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import FriendsList from "./features/friends_list/FriendsList";
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -19,6 +20,13 @@ const Layout: React.FC = () => {
     const savedMode = localStorage.getItem("darkMode");
     return savedMode === "true"; // Default to false if not set
   });
+
+  const [isSidenavOpen, setIsSidenavOpen] = useState(false); // Shared sidenav state
+  const isExcludedRoute = location.pathname === "/" || location.pathname === "/login";
+  const openNav = () => setIsSidenavOpen(true);  // Open sidenav
+  const closeNav = () => setIsSidenavOpen(false); // Close sidenav
+
+
   // Logout function
   const logout = () => {
     localStorage.clear();
@@ -274,7 +282,6 @@ const Layout: React.FC = () => {
                   aria-current="page"
                   to="/"
                   style={{
-                    // border: 2,
                     color: isDarkMode
                       ? "rgb(187, 187, 187)"
                       : "rgb(46, 44, 44)",
@@ -283,25 +290,43 @@ const Layout: React.FC = () => {
                   Home
                 </Link>
               </li>
-              {/* You can add other nav items here if needed */}
             </ul>
             <div className="d-flex align-items-center" style={{ gap: "3px" }}>
               {renderButtons()}
               {shouldShowLogout && (
+                <div>
                 <button onClick={logout} className="btn btn-danger">
                   Logout
                 </button>
+                <button 
+                onClick={openNav}
+                className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}>
+                  Friends List
+                </button>
+                </div>
               )}
-              <button
-                onClick={toggleDarkMode} // Use the toggleDarkMode function here
-                className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}
-              >
-                {isDarkMode ? "Light Mode" : "Dark Mode"}
-              </button>
+              {/* Dark Mode Toggle Button */}
+              {location.pathname !== "/login" && location.pathname !== "/" && (
+                <button
+                  onClick={toggleDarkMode}
+                  className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}
+                >
+                  {isDarkMode ? "Light Mode" : "Dark Mode"}
+                </button>
+              )}
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Pass down the open/close sidenav handlers */}
+      {!isExcludedRoute && (
+        <FriendsList
+          isSidenavOpen={isSidenavOpen}
+          openNav={openNav}
+          closeNav={closeNav}
+        />
+      )}
 
       <div className="container mt-4">
         <Outlet />
