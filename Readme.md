@@ -213,5 +213,5 @@ List of things to do before prod push
 
 26/12/24 :
 - [X] start the friends list 
-- [ ] add a search bar to the friends list, goes through the user table and then gives you the option to send invites
-- [ ] move the entiere friends list component to be a side navbar opened by a click (MR style) navbar has three tabs: my friends (getAllFriends and delete friends option) / pending invitations (place to accept/reject) / search bar and invite tab 
+- [X] add a search bar to the friends list, goes through the user table and then gives you the option to send invites
+- [X] move the entiere friends list component to be a side navbar opened by a click (MR style) navbar has three tabs: my friends (getAllFriends and delete friends option) / pending invitations (place to accept/reject) / search bar and invite tab 
