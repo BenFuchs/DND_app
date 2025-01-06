@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { getChatRoomsAsync, setSocketData } from './features/ChatRoom/chatRoomSlice';
 import "react-toastify/dist/ReactToastify.css";
-import ChatRoomComp from './features/ChatRoom/ChatRoomComp'; 
+import ChatRoomComp from './features/ChatRoom/chatRoomComp'
 import { toast } from 'react-toastify';
 
 const ChatWrapper: React.FC = () => {
