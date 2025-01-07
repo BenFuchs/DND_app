@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { loginAsync, registerAsync } from './loginregisterSlice';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from '../../StyleSheets/login.module.css'
+import styles from '../../StyleSheets/login.module.css';
+import axios from 'axios';
 
+const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const LoginRegister: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -53,31 +56,85 @@ const LoginRegister: React.FC = () => {
             });
     };
 
+    const handleGoogleLoginSuccess = (credentialResponse: any) => {
+        // console.log('Google login successful:', credentialResponse);
+
+        // Send the Google token to the backend for verification
+        axios.post('http://127.0.0.1:8000/api/auth/google/', { token: credentialResponse.credential })
+            .then((response) => {
+                const { access, refresh } = response.data;
+                if (access && refresh) {
+                    localStorage.setItem('Access', access);
+                    localStorage.setItem('Refresh', refresh);
+                    toast.success('Google login successful!');
+                    navigate('/sheets'); // Navigate after successful login
+                } else {
+                    toast.error('Google login failed. No token received.');
+                }
+            })
+            .catch(() => {
+                toast.error('Google login verification failed.');
+            });
+    };
+
     return (
-        <div>
-            <ToastContainer />
-            <form>
-                <div className={styles.formField}>
-                    <label className={styles.label}>Username:</label>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className={styles.input} />
+        <GoogleOAuthProvider clientId={CLIENT_ID!}>
+            <div>
+                <ToastContainer />
+                <form>
+                    <div className={styles.formField}>
+                        <label className={styles.label}>Username:</label>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className={styles.input}
+                        />
+                    </div>
+
+                    <div className={styles.formField}>
+                        <label className={styles.label}>Password:</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={styles.input}
+                        />
+                    </div>
+
+                    <div className={styles.formField}>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                login();
+                            }}
+                            disabled={loading}
+                            className={styles.button}
+                        >
+                            {loading ? 'Logging in...' : 'LOGIN'}
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                register();
+                            }}
+                            className={styles.button}
+                        >
+                            REGISTER
+                        </button>
+                    </div>
+                </form>
+
+                <div className={styles.googleLogin}>
+                    <GoogleLogin
+                        onSuccess={handleGoogleLoginSuccess}
+                        onError={() => {
+                            toast.error('Google login failed. Please try again.');
+                        }}
+                    />
                 </div>
-    
-                <div className={styles.formField}>
-                    <label className={styles.label}>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={styles.input} />
-                </div>
-                <div className={styles.formField}>
-                <button 
-                onClick={login} 
-                disabled={loading}
-                className={styles.button}
-                >
-                    {loading ? 'Logging in...' : 'LOGIN'}
-                </button>
-                <button onClick={register} className={styles.button}>REGISTER</button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </GoogleOAuthProvider>
     );
 };
 

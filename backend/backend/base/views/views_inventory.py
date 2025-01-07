@@ -83,7 +83,7 @@ def getInventory(request):
 @permission_classes([IsAuthenticated])
 def searchItems(request):
     search_term = request.query_params.get("query", "").lower()
-    file_path = '/Users/benayah/Desktop/Code/dnd/DND_app/misc/NewItems.csv'
+    file_path = '/Users/benayah/Desktop/Code/dnd/misc/NewItems.csv'
     data = pd.read_csv(file_path)
 
     # Replace NaN values with an empty string or any other default value

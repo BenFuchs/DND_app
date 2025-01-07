@@ -1,4 +1,3 @@
-import axios from 'axios';
 import apiClient from '../../axiosInstance';
 const SERVER = 'http://127.0.0.1:8000/';
 
