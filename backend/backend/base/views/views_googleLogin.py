@@ -11,7 +11,6 @@ class GoogleLoginView(APIView):
         token = request.data.get('token')
         try:
             id_info = id_token.verify_oauth2_token(token, Request(), settings.GOOGLE_CLIENT_ID)
-            user_id = id_info['sub']
             email = id_info['email']
 
             # Create or get the user based on id_info

@@ -17,7 +17,7 @@ class UserProfile(models.Model):
 class InventoryItem(models.Model):
     itemID = models.IntegerField()  # The ID of the item
     quantity = models.IntegerField(default=1)  # The quantity of the item
-    name= models.CharField(max_length=20, default='')
+    name= models.CharField(max_length=50, default='')
 
     def __str__(self):
         return f"Item ID: {self.itemID}, Quantity: {self.quantity}"

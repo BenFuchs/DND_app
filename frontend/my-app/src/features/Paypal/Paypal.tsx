@@ -8,9 +8,9 @@ import { toast } from 'react-toastify';
 const Paypal: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
+  const CLIENT_ID = process.env.REACT_APP_PAYPAL_ID;
   const paypalOptions = {
-    clientId: 'AZ2I4WzcSOelYkwG3R2wNa_1kEYlATy7N_WD8hrxSIK8n0FBiZ5N_04ZcCZooQFli4oYLhJmN7C-kDJB', 
+    clientId: CLIENT_ID!,
     currency: 'USD',
   };
 
@@ -19,7 +19,7 @@ const Paypal: React.FC = () => {
       purchase_units: [
         {
           amount: {
-            value: '5.00', 
+            value: '5.00',
           },
         },
       ],
@@ -29,11 +29,9 @@ const Paypal: React.FC = () => {
   const onApprove = async (data: any, actions: any) => {
     try {
       const details = await actions.order.capture();
-      console.log(details)
       const paypal_id = details.id;
-      console.log(paypal_id)
-      dispatch(sendOrderAsync({ paypal_id, total_amount: '5.00' })); // Use `total_amount` here
-      
+      dispatch(sendOrderAsync({ paypal_id, total_amount: '5.00' }));
+
       toast.success('Payment successful!');
       dispatch(clearCart());
       navigate('/');
@@ -49,10 +47,15 @@ const Paypal: React.FC = () => {
   };
 
   return (
-    <div>
-      <PayPalScriptProvider options={paypalOptions}>
-        <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError} />
-      </PayPalScriptProvider>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div style={{ marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
+        Character Sheet Cost: $5
+      </div>
+      <div>
+        <PayPalScriptProvider options={paypalOptions}>
+          <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError} />
+        </PayPalScriptProvider>
+      </div>
     </div>
   );
 };
