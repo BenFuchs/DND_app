@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
-    'social_django',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -103,7 +102,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
 
 ]
 
@@ -131,7 +129,9 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [
+                        (os.getenv('REDIS_HOST', 'redis'), int(os.getenv('REDIS_PORT', 6379))) 
+                     ],
         },
     },
 }
@@ -142,11 +142,11 @@ WSGI_APPLICATION = 'myproj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DND_DB',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',  # Or '127.0.0.1'
-        'PORT': '5432',
+        'NAME': "DND_DB",
+        'USER': os.getenv('DJANGO_DB_USER'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD'),
+        'HOST': os.getenv('DJANGO_DB_HOST'),
+        'PORT': os.getenv('DJANGO_DB_PORT'),
     }
 }
 

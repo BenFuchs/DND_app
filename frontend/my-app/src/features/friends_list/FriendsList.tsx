@@ -35,12 +35,13 @@ const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, close
     dispatch(sendFriendInviteAsync(userId));
   };
 
-  const handleRespondToRequest = (friendshipId: number, action: string) => {
-    dispatch(respondToFriendRequestAsync({ friendshipId, action }));
+  const handleRespondToRequest = (friend_id: number, action: string) => {
+    dispatch(respondToFriendRequestAsync({ friend_id, action }));
   };
 
-  const handleRemoveFriend = (friendshipId: number) => {
-    dispatch(removeFriendAsync(friendshipId)).then(() => {
+  const handleRemoveFriend = (friend_id: number) => {
+    console.log('Removing friendship with ID:', friend_id);  // Debugging log
+    dispatch(removeFriendAsync(friend_id)).then(() => {
       dispatch(getAllFriendsAsync());
     });
   };

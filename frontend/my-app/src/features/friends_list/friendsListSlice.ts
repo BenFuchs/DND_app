@@ -60,11 +60,11 @@ export const sendFriendInviteAsync = createAsyncThunk<void, number>(
 );
 
 // Respond to friend request (accept or decline)
-export const respondToFriendRequestAsync = createAsyncThunk<void, { friendshipId: number, action: string }>(
+export const respondToFriendRequestAsync = createAsyncThunk<void, { friend_id: number, action: string }>(
   'friendsList/respondToFriendRequest',
-  async ({ friendshipId, action }) => {
+  async ({ friend_id, action }) => {
     try {
-      await respondToFriendRequest(friendshipId, action);
+      await respondToFriendRequest(friend_id, action);
     } catch (error) {
       throw new Error('Failed to respond to friend request');
     }
@@ -74,9 +74,10 @@ export const respondToFriendRequestAsync = createAsyncThunk<void, { friendshipId
 // Remove friend
 export const removeFriendAsync = createAsyncThunk<void, number>(
   'friendsList/removeFriend',
-  async (friendshipId) => {
+  async (friend_id) => {
     try {
-      await removeFriend(friendshipId);
+      console.log("debug 1")
+      await removeFriend(friend_id);
     } catch (error) {
       throw new Error('Failed to remove friend');
     }

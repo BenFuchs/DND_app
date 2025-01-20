@@ -12,9 +12,10 @@ class GoogleLoginView(APIView):
         try:
             id_info = id_token.verify_oauth2_token(token, Request(), settings.GOOGLE_CLIENT_ID)
             email = id_info['email']
-
+            username = email.split('@')[0]
+            print(username);
             # Create or get the user based on id_info
-            user, created = User.objects.get_or_create(email=email)
+            user, created = User.objects.get_or_create(email=email, username=username)
             user_profile, created = UserProfile.objects.get_or_create(user=user)
 
             # Create a refresh and access token using SimpleJWT

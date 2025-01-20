@@ -58,10 +58,10 @@ def getPendingRequests(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def addFriendToList(request):
+def sendFriendRequest(request):
     user = request.user
     friend_id = request.data.get('friend_id')
-    print(friend_id)
+    print(friend_id, user)
 
     # Validate friend_id
     try:
@@ -88,11 +88,11 @@ def addFriendToList(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def respond_to_friend_request(request):
-    friendship_id = request.data.get('friendship_id')
+    friend_id = request.data.get('friend_id')
     action = request.data.get('action')  # 'accept' or 'reject'
-    print(friendship_id,action, request.user)
+    print(friend_id,action, request.user)
     try:
-        friendship = Friendship.objects.get(from_user=friendship_id, to_user=request.user)
+        friendship = Friendship.objects.get(from_user=friend_id, to_user=request.user)
     except Friendship.DoesNotExist:
         return Response({'detail': 'Friend request not found'}, status=404)
 
@@ -110,16 +110,25 @@ def respond_to_friend_request(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def removeFriendship(request):
-    friendship_id = request.data.get('friendship_id')
-    # print(friendship_id)
+    friend_id = request.data.get('friend_id')
+    print(f"Friend ID: {friend_id}, Request User: {request.user}")
+    
+    try:
+        user = User.objects.get(username=request.user)
+        print(f"User ID: {user.id}")
+    except User.DoesNotExist:
+        return Response({'detail': 'User not found'}, status=404)
+    
     try: 
-        friendship = Friendship.objects.get(to_user=friendship_id, from_user=request.user)
+        friendship = Friendship.objects.get(to_user=user.id, from_user=friend_id, status='ACCEPTED')
+        print(f"Friendship found: {friendship}")
     except Friendship.DoesNotExist:
         return Response({'detail': 'Friend not found'}, status=404)
     
     friendship.status = Friendship.REJECTED
-    friendship.save();
+    friendship.save()
     return Response({"detail": "Friend removed"})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

@@ -51,7 +51,7 @@ urlpatterns = [
 
     #Friends list endpoints
     path('getAllFriends/', views.getUserFriends),
-    path('sendFriendRequest/', views.addFriendToList),
+    path('sendFriendRequest/', views.sendFriendRequest),
     path('respondToFriendRequest/', views.respond_to_friend_request),
     path('removeFriend/', views.removeFriendship),
     path('getPendingRequests/', views.getPendingRequests),

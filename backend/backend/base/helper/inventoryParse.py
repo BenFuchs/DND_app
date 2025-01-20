@@ -1,24 +1,18 @@
-# from ..models import ElfSheets,HalflingSheets,HumanSheets,GnomeSheets
+import os
 import pandas as pd
-import csv 
 
-def inventorySearch(id):
-    filePath = '/Users/benayah/Desktop/Code/dnd/misc/NewItems.csv'
-    data = pd.read_csv(filePath)
-
-    # Ensure 'ID' column is treated as integer for precise matching
-    data['ID'] = data['ID'].astype(int)
-
-    # Filter the DataFrame for the specific row ID
-    row = data[data['ID'] == id]
+def inventorySearch(itemID):
+    file_path = os.path.join(os.path.dirname(__file__), '../../../../misc/NewItems.csv')
+    data = pd.read_csv(file_path)
     
-    # Check if row exists and handle NaN values
-    if not row.empty:
-        item = row.iloc[0].fillna('').to_dict()  # Replace NaN values with an empty string
-        return item
+    # Replace NaN values with an empty string or any other default value
+    data = data.fillna('')
+    print(f"CSV Columns: {data.columns.tolist()}")
+
+    # Search for the item by itemID
+    item = data[data['ID'] == itemID]
+    
+    if not item.empty:
+        return item.iloc[0].to_dict()
     else:
         return None
-
-
-# local testing
-# inventorySearch(1)

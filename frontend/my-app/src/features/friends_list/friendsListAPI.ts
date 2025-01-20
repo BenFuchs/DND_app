@@ -32,28 +32,29 @@ export function sendFriendInvite(friend_id:number) {
     })
 }
 
-export function respondToFriendRequest(friendship_id:number , action: string) {
+export function respondToFriendRequest(friend_id:number , action: string) {
     const access = localStorage.getItem("Access");
     if (!access) {
         return Promise.reject("No access token found");
       } 
-    console.log(friendship_id, action)
+    console.log(friend_id, action)
     return apiClient.post(SERVER + 'respondToFriendRequest/', 
-        {friendship_id, action},
+        {friend_id, action},
         {headers: {
             Authorization: `Bearer ${access}`
         }
     })
 }
 
-export function removeFriend(friendship_id: number) {
+export function removeFriend(friend_id: number) {
+    console.log('debug 2')
     const access = localStorage.getItem("Access");
     if (!access) {
         return Promise.reject("No access token found");
     }
     return apiClient.post(
-        SERVER + 'removeFriend/',
-        { friendship_id }, // Request body
+        'http://127.0.0.1:8000/removeFriend/',
+        { friend_id }, // Request body
         {
             headers: {
                 Authorization: `Bearer ${access}`, // Request headers

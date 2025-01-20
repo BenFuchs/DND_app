@@ -1,14 +1,15 @@
+import os
 import pandas as pd
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
 from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, ElfSheets, InventoryItem, CharacterInventory
 
 from ..helper.inventoryParse import inventorySearch
 from ..helper.inventoryDetails import get_inventory_details
+
 # works!
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -16,7 +17,7 @@ def addItemToPlayerInv(request):
     user = request.user
     itemID = request.data.get("itemID")
     sheetID = request.data.get("id")
-    
+
     # Retrieve the item data from the CSV
     item_data = inventorySearch(itemID)
     if not item_data:
@@ -83,7 +84,7 @@ def getInventory(request):
 @permission_classes([IsAuthenticated])
 def searchItems(request):
     search_term = request.query_params.get("query", "").lower()
-    file_path = '/Users/benayah/Desktop/Code/dnd/misc/NewItems.csv'
+    file_path = os.path.join(os.path.dirname(__file__), '../../../../misc/NewItems.csv')
     data = pd.read_csv(file_path)
 
     # Replace NaN values with an empty string or any other default value
