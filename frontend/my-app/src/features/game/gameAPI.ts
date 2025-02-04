@@ -1,5 +1,5 @@
 import apiClient from '../../axiosInstance';
-const SERVER = "http://127.0.0.1:8000/";
+const SERVER = "https://dnd-backend-tndp.onrender.com/";
 
 export function currencyCalc(
   amount: number,

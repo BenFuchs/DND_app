@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import os 
 from dotenv import load_dotenv
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv();
@@ -138,18 +139,33 @@ CHANNEL_LAYERS = {
 
 WSGI_APPLICATION = 'myproj.wsgi.application'
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "DND_DB",
-        'USER': os.getenv('DJANGO_DB_USER'),
-        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD'),
-        'HOST': os.getenv('DJANGO_DB_HOST'),
-        'PORT': os.getenv('DJANGO_DB_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
+# Currently not using Postgres DB for development
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': "DND_DB",
+#         'USER': os.getenv('DJANGO_DB_USER'),
+#         'PASSWORD': os.getenv('DJANGO_DB_PASSWORD'),
+#         'HOST': os.getenv('DJANGO_DB_HOST'),
+#         'PORT': os.getenv('DJANGO_DB_PORT'),
+#     }
+# }
+
+# Code below is for render DB connection. need to find a better hosting website that is free for pstgresql
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=600,
+#         ssl_require=True,  # Enforce SSL for security in production
+#     )
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

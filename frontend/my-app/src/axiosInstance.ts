@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 // Create Axios instance
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/',
+  baseURL: 'https://dnd-backend-tndp.onrender.com/',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -43,7 +43,7 @@ apiClient.interceptors.response.use(
           }
 
           // Call the refresh token endpoint
-          const { data } = await axios.post('http://127.0.0.1:8000/refresh/', {
+          const { data } = await axios.post('https://dnd-backend-tndp.onrender.com/refresh/', {
             refresh: refreshToken,
           });
 
