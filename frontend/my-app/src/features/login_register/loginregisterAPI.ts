@@ -1,6 +1,8 @@
 import apiClient from '../../axiosInstance';
 
-const SERVER = 'http://127.0.0.1:8000/'
+const SERVER = "https://dnd-backend-f57d.onrender.com/";
+
+
 
 export function login(username:string, password:string) {
     console.log('Attempting to log in with:', username, password);

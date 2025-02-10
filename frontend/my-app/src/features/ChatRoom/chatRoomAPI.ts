@@ -1,5 +1,6 @@
 import apiClient from '../../axiosInstance';
-const SERVER = "http://127.0.0.1:8000/";
+const SERVER = "https://dnd-backend-f57d.onrender.com/";
+
 
 export function getChatRooms() {
   const access = localStorage.getItem("Access");

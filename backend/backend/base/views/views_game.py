@@ -221,6 +221,7 @@ def create_sheet_token(request):
 
     token = generate_user_token(user, sheet_data)
     if token:
+        print(token)
         return Response({"token": token}, status=200)
     else:
         return Response({"error": "Failed to generate token"}, status=500)

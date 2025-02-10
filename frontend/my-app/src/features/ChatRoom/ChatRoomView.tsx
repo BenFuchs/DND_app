@@ -19,6 +19,7 @@ const ChatRoomView: React.FC = () => {
   const [goldAmount, setGoldAmount] = useState<string>(""); // For storing the amount of gold to send
   const [loggedCharName, setloggedCharName] = useState<string>("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const SERVER = "dnd-backend-f57d.onrender.com";
 
   // get the logged username for the connected list later
   useEffect(() => {
@@ -34,7 +35,7 @@ const ChatRoomView: React.FC = () => {
     const token = localStorage.getItem("SDT");
 
     const ws = new WebSocket(
-      `ws://127.0.0.1:8000/ws/chat/${roomName}/?token=${token}`
+      `wss://${SERVER}/ws/chat/${roomName}/?token=${token}`
     );
 
     setSocket(ws);

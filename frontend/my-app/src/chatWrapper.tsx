@@ -19,7 +19,8 @@ const ChatWrapper: React.FC = () => {
   const handleRoomAction = (room: string, password: string, action: 'connect' | 'create') => {
     if (action === 'connect') {
       if (room && password) {
-        const socketUrl = `ws://127.0.0.1:8000/ws/chat/${room}/`;
+        const socketUrl = `wss://
+127.0.0.1:8000/ws/chat/${room}/`;
   
         // Dispatch socket connection data to Redux (not the WebSocket instance)
         dispatch(setSocketData({ socketUrl, socketStatus: 'connecting' }));

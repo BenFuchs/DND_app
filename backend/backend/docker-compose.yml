@@ -11,13 +11,5 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
+      # Removed the Redis dependency as it's hosted externally
     command: python manage.py runserver 0.0.0.0:8000
-
-  redis:
-    image: redis:6
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    ports:
-      - "6379:6379"

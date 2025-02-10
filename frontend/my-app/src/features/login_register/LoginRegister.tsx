@@ -9,7 +9,9 @@ import styles from '../../StyleSheets/login.module.css';
 import axios from 'axios';
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-// console.log(CLIENT_ID)
+const SERVER = "https://dnd-backend-f57d.onrender.com/";
+
+
 
 const LoginRegister: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -61,7 +63,7 @@ const LoginRegister: React.FC = () => {
         // console.log('Google login successful:', credentialResponse);
 
         // Send the Google token to the backend for verification
-        axios.post('http://127.0.0.1:8000/api/auth/google/', { token: credentialResponse.credential })
+        axios.post(SERVER+'api/auth/google/', { token: credentialResponse.credential })
             .then((response) => {
                 const { access, refresh } = response.data;
                 if (access && refresh) {

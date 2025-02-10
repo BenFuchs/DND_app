@@ -1,8 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
+const SERVER = "https://dnd-backend-f57d.onrender.com/";
+
 
 // Create Axios instance
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/',
+  baseURL: SERVER,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -43,7 +45,7 @@ apiClient.interceptors.response.use(
           }
 
           // Call the refresh token endpoint
-          const { data } = await axios.post('http://127.0.0.1:8000/refresh/', {
+          const { data } = await axios.post(SERVER+'refresh/', {
             refresh: refreshToken,
           });
 
