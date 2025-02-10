@@ -12,6 +12,7 @@ urlpatterns = [
     path('register/', views.register),
     path('logout/', views.logout),
     path('refresh/', TokenRefreshView.as_view()),
+    #Google Login endpoint
     path('api/auth/google/', GoogleLoginView.as_view(), name='google-login'),
 
 
