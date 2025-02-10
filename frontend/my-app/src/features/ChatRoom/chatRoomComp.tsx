@@ -6,7 +6,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-const SERVER = 'https://dnd-backend-tndp.onrender.com/';
+const SERVER = 'http://127.0.0.1:8000/';
 
 interface ChatRoomCompProps {
   room_names: string[];

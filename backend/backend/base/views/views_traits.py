@@ -12,7 +12,7 @@ from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, E
 def getSheetRaceTraits(request):
     user = request.user
     sheetID = request.data.get('id')
-    traits_path = os.path.join(os.path.dirname(__file__), '../../../../misc/traits.json')
+    traits_path = os.path.join(os.path.dirname(__file__), '../misc/traits.json')
     # print(traits_path)
     # get traits.json data
     try:
@@ -56,7 +56,7 @@ def getSheetRaceTraits(request):
 def getClassFeats(request):
     user = request.user
     char_name = request.data.get('char_name')
-    feats_path = os.path.join(os.path.dirname(__file__), '../../../../misc/classFeats.json')
+    feats_path = os.path.join(os.path.dirname(__file__), '../misc/classFeats.json')
 
     try:
         with open(feats_path, "r", encoding="utf-8") as file:

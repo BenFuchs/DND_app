@@ -60,7 +60,7 @@ const LoginRegister: React.FC = () => {
         // console.log('Google login successful:', credentialResponse);
 
         // Send the Google token to the backend for verification
-        axios.post('https://dnd-backend-tndp.onrender.com/api/auth/google/', { token: credentialResponse.credential })
+        axios.post('http://127.0.0.1:8000/api/auth/google/', { token: credentialResponse.credential })
             .then((response) => {
                 const { access, refresh } = response.data;
                 if (access && refresh) {

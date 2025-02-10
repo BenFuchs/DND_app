@@ -2,7 +2,7 @@
 
 import apiClient from '../../axiosInstance';
 
-const SERVER = 'https://dnd-backend-tndp.onrender.com/';
+const SERVER = 'http://127.0.0.1:8000/';
 
 
 export function getInventory(id:number){

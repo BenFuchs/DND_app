@@ -1,6 +1,6 @@
 import apiClient from '../../axiosInstance';
 
-const SERVER = 'https://dnd-backend-tndp.onrender.com/';
+const SERVER = 'http://127.0.0.1:8000/';
 
 export function getAllFriends() {
     const access = localStorage.getItem("Access");
@@ -53,7 +53,7 @@ export function removeFriend(friend_id: number) {
         return Promise.reject("No access token found");
     }
     return apiClient.post(
-        'https://dnd-backend-tndp.onrender.com/removeFriend/',
+        'http://127.0.0.1:8000/removeFriend/',
         { friend_id }, // Request body
         {
             headers: {
