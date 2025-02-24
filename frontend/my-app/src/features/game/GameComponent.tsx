@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync, levelUpAsync } from "./gameSlice";
 import { RootState } from "../../app/store";
@@ -56,6 +56,7 @@ const GameComponent = () => {
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
   const [proficiencyBonus, setproficiencyBonus] = useState<number>(2)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currencyAmount, setcurrencyAmount] = useState<number>(0);
 
   // Toggles for modal
