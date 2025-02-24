@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
-
 interface ChatRoomCompProps {
   room_names: string[];
   onRoomAction: (room: string, password: string, action: 'connect' | 'create') => void;

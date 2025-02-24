@@ -20,7 +20,7 @@ const About = () => {
               <li><strong>Interactive Character Creation:</strong> Select your race, class, and set stats using our guided creation system.</li>
               <li><strong>Spell Slots and Abilities:</strong> Automatically adjusted based on your class and level.</li>
               <li><strong>Inventory System:</strong> Add, remove, and manage items and gold easily.</li>
-              <li><strong>Party Features:</strong> Join or host parties to trade items and interact with other players. (Optional feature)</li>
+              <li><strong>Party Features:</strong> Join or host parties to trade items and interact with other players.</li>
               <li><strong>Dungeon Master Tools:</strong> DM-specific features to manage items and interact with party members.</li>
             </ul>
           </Card>
@@ -33,7 +33,7 @@ const About = () => {
             onLeave={() => activeCard === 'Technologies' && setActiveCard(null)}
           >
             <p>
-              The app is built using Django (Python) for the backend, MySQL for the database, and React/React Native with TypeScript for the frontend.
+              The app is built using Django (Python) for the backend, Postgres for the database, and React TypeScript for the frontend.
             </p>
           </Card>
         </div>
@@ -61,7 +61,7 @@ const About = () => {
           >
             <ul>
               <li>Improved party management with private rooms and chat functionality.</li>
-              <li>Level-up mechanics and automatic stat updates.</li>
+              <li>Dungeon master tools for item creation.</li>
               <li>Additional customization options for character sheets and inventory.</li>
             </ul>
           </Card>

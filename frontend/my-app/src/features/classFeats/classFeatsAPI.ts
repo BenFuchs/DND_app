@@ -2,7 +2,6 @@ import apiClient from '../../axiosInstance';
 const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
 
-
 export function getClassFeatures(char_name: string) {
     const access = localStorage.getItem("Access");
     if (!access) {

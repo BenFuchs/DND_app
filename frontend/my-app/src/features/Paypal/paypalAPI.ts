@@ -1,6 +1,6 @@
 import apiClient from '../../axiosInstance';
 
-const SERVER = 'https://dnd-backend-f57d.onrender.com'
+const SERVER = 'https://dnd-backend-f57d.onrender.com/'
 
 export interface OrderData {
   paypal_id: string;

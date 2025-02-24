@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
-
 // Create Axios instance
 const apiClient = axios.create({
   baseURL: SERVER,

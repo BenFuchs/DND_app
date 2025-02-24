@@ -3,7 +3,6 @@ import apiClient from '../../axiosInstance';
 const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
 
-
 export function getAllFriends() {
     const access = localStorage.getItem("Access");
     if (!access) {

@@ -12,7 +12,6 @@ const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
 
-
 const LoginRegister: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -52,7 +51,8 @@ const LoginRegister: React.FC = () => {
 
         dispatch(registerAsync({ username, password }))
             .then(() => {
-                toast.success('Registration successful! Please log in.');
+                toast.success('Registration successful! Logging in now...');
+                login();
             })
             .catch(() => {
                 toast.error('Registration failed. Please try again.');

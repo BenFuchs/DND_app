@@ -6,7 +6,6 @@ const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
 
 
-
 export function getInventory(id:number){
     const access = localStorage.getItem("Access");
     if (!access) {
