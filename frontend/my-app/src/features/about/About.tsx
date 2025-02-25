@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import styles from '../../StyleSheets/about.module.css';
+import { useNavigate } from 'react-router-dom';
 
 
 const About = () => {
   const [activeCard, setActiveCard] = useState<string | null>(null);
+  const navigate = useNavigate();
   return (
     <div className={styles.container}>
       <h1>Welcome to DnD Sheet Manager</h1>
@@ -76,7 +78,7 @@ const About = () => {
             type="button"
             onClick={(e) => {
               e.preventDefault();
-              window.location.href= 'http://localhost:3000/login';
+              navigate("/login")
               }}
           >Log In!
           </button>
