@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react";
+import React, { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { loginAsync, registerAsync } from "./loginregisterSlice";
 import { useNavigate } from "react-router-dom";
@@ -21,11 +21,6 @@ const LoginRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const override: CSSProperties = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "red",
-  }
 
   const login = () => {
     console.log("Attempting to log in with:", username, password);
