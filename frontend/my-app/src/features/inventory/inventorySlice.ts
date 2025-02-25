@@ -116,7 +116,7 @@ const inventorySlice = createSlice({
 
     // Handle searchForItems
     .addCase(searchItemsAsync.pending, (state) => {
-      state.isLoading = true;
+      state.isLoading = false;
     })
     .addCase(searchItemsAsync.fulfilled, (state, action) => {
       state.isLoading = false;

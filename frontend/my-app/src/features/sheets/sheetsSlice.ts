@@ -7,11 +7,12 @@ import { SheetData } from "./SheetsComp";
 interface SheetState {
   numSheets: SheetData | null;  // Modify this to accept a structured object or null
   username: string;
-  status: 'idle' | 'loading' | 'failed';
+  status: 'idle' | 'failed';
   error?: string;
   stats: number[];
   Id: number;
   data: {}
+  loading: boolean;
 }
 
 const initialState: SheetState = {
@@ -21,7 +22,8 @@ const initialState: SheetState = {
   error: undefined,
   stats: [],
   Id: 0,
-  data: {}
+  data: {},
+  loading: true,
 };
 
 // Async function to fetch the number of sheets
@@ -82,10 +84,11 @@ export const sheetSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getNum_of_sheetsAsync.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(getNum_of_sheetsAsync.fulfilled, (state, action) => {
         state.status = 'idle';
+        state.loading = false;
         state.numSheets = action.payload; // Set the number of sheets
       })
       .addCase(getNum_of_sheetsAsync.rejected, (state, action) => {
@@ -93,10 +96,11 @@ export const sheetSlice = createSlice({
         state.error = action.error.message;  // Capture error message
       })
       .addCase(create_new_sheetAsync.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(create_new_sheetAsync.fulfilled, (state, action) => {
         state.status = 'idle';
+        state.loading = false;
         // No need to store sheet here unless you want to track the created sheet
         // state.sheet = action.payload;  // Uncomment if you want to store created sheet data
       })
@@ -105,10 +109,11 @@ export const sheetSlice = createSlice({
         state.error = action.error.message;  // Capture error message
       })
       .addCase(rollStatsAsync.pending, (state)=> {
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(rollStatsAsync.fulfilled, (state, action)=> {
         state.status = 'idle';
+        state.loading = false;
         state.stats = action.payload; // Store the rolled stats in state
         // dont think any stat change is needed here for now
       })
@@ -118,6 +123,7 @@ export const sheetSlice = createSlice({
       })
       .addCase(deleteSheetAsync.fulfilled, (state, action) => {
         state.status = 'idle';
+        state.loading = false;
         if (state.numSheets) {
           state.numSheets.sheets = state.numSheets.sheets.filter(
             (sheet) => sheet.sheetID !== action.payload.sheetID
@@ -125,7 +131,7 @@ export const sheetSlice = createSlice({
         }
       })
       .addCase(deleteSheetAsync.pending, (state)=> {
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(deleteSheetAsync.rejected, (state, action)=> {
         state.status = 'failed';
@@ -133,6 +139,7 @@ export const sheetSlice = createSlice({
       })
       .addCase(getSheetDataAsync.fulfilled, (state, action)=> {
         state.status = 'idle';
+        state.loading = false;
         state.data = action.payload;
       })
   },
@@ -143,6 +150,7 @@ export const selectNumSheets = (state: RootState) => state.sheets.numSheets;
 export const selectSheetStatus = (state: RootState) => state.sheets.status;
 export const selectError = (state: RootState) => state.sheets.error;
 export const selectStats = (state: RootState) => state.sheets.stats;
-export const selectDelete = (state:RootState) => state.sheets.Id
+export const selectDelete = (state:RootState) => state.sheets.Id;
+export const selectLoading = (state:RootState) => state.sheets.loading;
 
 export default sheetSlice.reducer;

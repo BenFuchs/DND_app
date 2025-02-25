@@ -10,10 +10,12 @@ import {
   selectStats,
   deleteSheetAsync,
   getSheetDataAsync,
+  selectLoading,
 } from "../sheets/sheetsSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from '../../StyleSheets/gamecomponent.module.css'
+import LoadingIcon from "../hashLoading/loadingIcon";
 
 
 // Define types for Sheets data
@@ -33,6 +35,7 @@ const SheetsComp = () => {
   const dispatch = useAppDispatch();
   const numSheets = useAppSelector(selectNumSheets) as SheetData | null; // Type assertion here
   const status = useAppSelector(selectSheetStatus);
+  const loading = useAppSelector(selectLoading)
   const stats = useAppSelector(selectStats);
   const navigate = useNavigate();
 
@@ -121,8 +124,9 @@ const SheetsComp = () => {
     "Charisma",
   ];
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
+  if (loading) {
+    return <LoadingIcon loading={loading} />;
+
   }
 
   if (status === "failed") {

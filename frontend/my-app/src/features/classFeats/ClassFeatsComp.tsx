@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { getClassFeaturesAsync } from './classFeatsSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
+import LoadingIcon from '../hashLoading/loadingIcon';
 
 interface FeatProps {
     charName: string;
@@ -18,7 +19,7 @@ const ClassFeatsComp = ({ charName, charLevel }: FeatProps) => {
     }, [dispatch, charName]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingIcon loading={loading}/>;
     }
 
     if (!feats || Object.keys(feats).length === 0) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { RootState } from '../../app/store';
 import { addItemToInventoryAsync, getInventoryAsync, removeItemFromInventoryAsync, searchItemsAsync } from '../inventory/inventorySlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import LoadingIcon from '../hashLoading/loadingIcon';
 
 interface InventoryComponentProps {
   ID: number;
@@ -11,6 +12,7 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   const dispatch = useAppDispatch();
   const inventory = useAppSelector((state: RootState) => state.inventory.items);
   const error = useAppSelector((state: RootState) => state.inventory.error);
+  const loading = useAppSelector((state:RootState)=> state.inventory.isLoading)
   const searchResults = useAppSelector((state: RootState) => state.inventory.searchResults);
   const [item, setItem] = useState<string>(''); // The item name input
   const [showDropdown, setShowDropdown] = useState<boolean>(false); // To control the dropdown visibility
@@ -53,14 +55,13 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   const handleRemoveFromInventory = (itemID: number) => {
     console.log(itemID)
     dispatch(removeItemFromInventoryAsync({itemID, ID}))
-    dispatch(getInventoryAsync({ ID }));
-    window.location.reload()
+    dispatch(getInventoryAsync({ ID }));  
   }
 
   console.log(inventory)
 
   if (error) return <div>Error: {error}</div>;
-
+  if (loading) return <LoadingIcon loading={loading}/>
   return (
     <div>
       <h2>Your Inventory</h2>

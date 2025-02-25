@@ -19,3 +19,18 @@
 .button {
     text-align: center;
 }
+
+.loadingContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5); /* Optional: Adds a dim background */
+    z-index: 9999; /* Ensures it appears above everything */
+}
+

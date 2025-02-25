@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { updateGold, getGoldAsync, getModsAsync, getSheetDataTokenAsync, levelUpAsync } from "./gameSlice";
+import {
+  updateGold,
+  getGoldAsync,
+  getModsAsync,
+  getSheetDataTokenAsync,
+  levelUpAsync,
+} from "./gameSlice";
 import { RootState } from "../../app/store";
 import { motion, AnimatePresence } from "framer-motion";
 import CharacterName from "./components/CharacterName";
@@ -10,13 +16,14 @@ import CharacterStats from "./components/CharacterStats";
 import Skills from "./components/Skills";
 import CurrencyCalculator from "./components/CurrencyCalculator";
 import DiceRoll from "./components/DiceRoll";
-import styles from '../../StyleSheets/gamecomponent.module.css'
+import styles from "../../StyleSheets/gamecomponent.module.css";
 import CharacterGold from "./components/CharacterGold";
 import CharacterHP from "./components/CharachterHp";
 import CharacterLevel from "./components/CharacterLevel";
 import { PayloadAction } from "@reduxjs/toolkit";
 import DiceRollsModal from "./components/DiceRollsModal";
 import { ToastContainer, toast } from "react-toastify";
+import LoadingIcon from "../hashLoading/loadingIcon";
 
 // TypeScript interfaces
 interface SheetData {
@@ -55,7 +62,7 @@ const GameComponent = () => {
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
   const [Mods, setMods] = useState<Mods | null>(null);
   const [modal, setModal] = useState<boolean>(false);
-  const [proficiencyBonus, setproficiencyBonus] = useState<number>(2)
+  const [proficiencyBonus, setproficiencyBonus] = useState<number>(2);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currencyAmount, setcurrencyAmount] = useState<number>(0);
 
@@ -70,18 +77,18 @@ const GameComponent = () => {
       setSheetData(parsedData.data);
     }
   }, []);
-  
+
   useEffect(() => {
     if (sheetData) {
       const { race, id: sheetID } = sheetData;
-  
+
       // Fetch gold and mods
       dispatch(getGoldAsync({ race, sheetID }));
       dispatch(getModsAsync({ race, sheetID }))
         .unwrap()
         .then(setMods)
         .catch((err) => console.error("Error fetching mods:", err));
-  
+
       // Get and store the token using the async thunk
       dispatch(getSheetDataTokenAsync())
         .unwrap()
@@ -123,13 +130,17 @@ const GameComponent = () => {
     try {
       if (sheetData) {
         // Dispatch the level-up action and explicitly cast the result
-        const level_up_data = await dispatch(
-          levelUpAsync({ race: sheetData.race, id: sheetData.id, charClass: sheetData.char_class })
-        ) as PayloadAction<{ NewLevel: number; Newhitpoints: number }>;
-  
+        const level_up_data = (await dispatch(
+          levelUpAsync({
+            race: sheetData.race,
+            id: sheetData.id,
+            charClass: sheetData.char_class,
+          })
+        )) as PayloadAction<{ NewLevel: number; Newhitpoints: number }>;
+
         // Access the payload correctly after casting
         const { NewLevel, Newhitpoints } = level_up_data.payload;
-  
+
         // Update the sheetData state directly
         setSheetData((prevSheetData) => {
           if (!prevSheetData) return prevSheetData;
@@ -139,16 +150,18 @@ const GameComponent = () => {
             hitpoints: Newhitpoints,
           };
         });
-  
+
         console.log("new level: ", NewLevel);
         console.log("new hitpoints: ", Newhitpoints);
-  
+
         // After updating the state, save it to localStorage
         localStorage.setItem(
           "SheetData",
-          JSON.stringify({ data: { ...sheetData, level: NewLevel, hitpoints: Newhitpoints } })
+          JSON.stringify({
+            data: { ...sheetData, level: NewLevel, hitpoints: Newhitpoints },
+          })
         );
-  
+
         // Reload the sheet data to ensure the front-end updates
         reloadSheetData();
       }
@@ -156,7 +169,7 @@ const GameComponent = () => {
       console.error("Error leveling up:", error);
     }
   };
-  // console.log(sheetData?.level)  
+  // console.log(sheetData?.level)
 
   const handleAddGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
@@ -179,10 +192,10 @@ const GameComponent = () => {
 
   const handleSubtractGold = async (amount: number) => {
     if (sheetData && !isNaN(amount) && amount > 0) {
-      if(amount > gold.gold) {
+      if (amount > gold.gold) {
         toast.error("Not enough gold for this action");
         setcurrencyAmount(0);
-        return; 
+        return;
       }
       try {
         await dispatch(
@@ -240,7 +253,7 @@ const GameComponent = () => {
   return (
     <div className={styles.container}>
       <ToastContainer />
-
+      <LoadingIcon loading={loading} /> {/* Display the loader when loading */}
       <div className={styles.firstColumn}>
         {sheetData ? (
           <>
@@ -252,9 +265,12 @@ const GameComponent = () => {
               id={sheetData.id}
               race={sheetData.race}
               charClass={sheetData.char_class}
-              handleLevelUp={handleLevelUp} // Pass handleLevelUp as a prop
-            /> 
-            <CharacterHP hitpoints={sheetData.hitpoints} CharClass={sheetData.char_class} />
+              handleLevelUp={handleLevelUp}
+            />
+            <CharacterHP
+              hitpoints={sheetData.hitpoints}
+              CharClass={sheetData.char_class}
+            />
             <CharacterGold gold={gold.gold} />
             <CharacterStats
               stats={Object.entries(sheetData)
@@ -263,30 +279,28 @@ const GameComponent = () => {
             />
           </>
         ) : (
-          <p>Loading sheet data...</p>
+          <LoadingIcon loading={loading} />
         )}
       </div>
-
       <div className={styles.secondColumn}>
         {sheetData ? (
-          !Mods ? (
-            <p>Loading skills...</p>
+          !Mods || Object.keys(Mods.Mods).length === 0 ? (
+            <LoadingIcon loading={true} />
           ) : (
             <div>
-            <label>Proficiency Bonus:</label> {proficiencyBonus}
-            <Skills skills={skills} proficiency={proficiencyBonus} />
+              <label>Proficiency Bonus:</label> {proficiencyBonus}
+              <Skills skills={skills} proficiency={proficiencyBonus} />
             </div>
           )
         ) : (
           <p>Loading sheet data...</p>
         )}
       </div>
-
       <div className={styles.thirdColumn}>
-        <CurrencyCalculator 
-        onAdd={handleAddGold}
-        onSubtract={handleSubtractGold}
-        setCurrencyAmount={setcurrencyAmount} // Pass the setCurrencyAmount function
+        <CurrencyCalculator
+          onAdd={handleAddGold}
+          onSubtract={handleSubtractGold}
+          setCurrencyAmount={setcurrencyAmount}
         />
         <motion.button
           whileHover={{ scale: 1.1 }}
@@ -310,8 +324,6 @@ const GameComponent = () => {
           )}
         </AnimatePresence>
       </div>
-
-      {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
     </div>
   );

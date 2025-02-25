@@ -35,7 +35,7 @@ root.render(
             <Route path="game/:sheetID/chat" element={<ChatWrapper />} />
             <Route path="game/:sheetID/chat/:roomName" element={<ChatRoomView />} />
             <Route path="/orders" element={<Paypal />} />
-            <Route path="/friendsList" element={<FriendsList isSidenavOpen={false} openNav={() => {}} closeNav={() => {}} />} />
+            <Route path="/friendsList" element={<FriendsList isSidenavOpen={false} openNav={() => {}} closeNav={() => {}} isDarkMode/>} />
           </Route>
         </Routes>
       </Provider>

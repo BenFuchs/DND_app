@@ -16,9 +16,10 @@ interface FriendsListProps {
   isSidenavOpen: boolean;
   openNav: () => void;
   closeNav: () => void;
+  isDarkMode: boolean;
 }
 
-const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, closeNav }) => {
+const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, closeNav, isDarkMode }) => {
   const dispatch = useAppDispatch();
   const { friends, pendingRequests, searchResults, loading, error } = useAppSelector(
     (state: RootState) => state.friendsList
@@ -66,9 +67,7 @@ const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, close
   }
 
   return (
-    <div>
-      {/* Button to open sidenav */}
-
+    <div className={isDarkMode ? styles.darkMode : styles.lightMode}>
       {/* Sidenav */}
       {isSidenavOpen && (
         <div className={`${styles.sidenav} ${isSidenavOpen ? styles.open : ""}`}>

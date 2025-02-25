@@ -3,6 +3,7 @@ import { getRaceTraitsAsync } from "./traitsSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import ClassFeatsComp from "../classFeats/ClassFeatsComp";
+import LoadingIcon from "../hashLoading/loadingIcon";
 
 interface TraitsProps {
   sheetID: number;
@@ -42,12 +43,8 @@ const TraitsComponent = ({ sheetID }: TraitsProps) => {
   }, [dispatch, sheetID]);
 
   if (loading) {
-    return <p>Loading traits...</p>;
+    return <LoadingIcon loading={loading}/>;
   }
-
-  // if (!traits || traits.length === 0) {
-  //   return <p>No traits available.</p>;
-  // }
 
   return (
     <div>

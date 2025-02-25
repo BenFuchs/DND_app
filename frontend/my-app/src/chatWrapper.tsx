@@ -5,6 +5,7 @@ import { getChatRoomsAsync, setSocketData } from './features/ChatRoom/chatRoomSl
 import "react-toastify/dist/ReactToastify.css";
 import ChatRoomComp from './features/ChatRoom/chatRoomComp';
 import { toast } from 'react-toastify';
+import LoadingIcon from './features/hashLoading/loadingIcon';
 
 const ChatWrapper: React.FC = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const ChatWrapper: React.FC = () => {
   return (
     <div>
       <h1>Chat Room</h1>
-      {loading && <p>Loading chat rooms...</p>}
+      {loading && <LoadingIcon loading={loading}/>}
       <ChatRoomComp
         room_names={room_names}
         onRoomAction={handleRoomAction}

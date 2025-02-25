@@ -325,6 +325,7 @@ const Layout: React.FC = () => {
           isSidenavOpen={isSidenavOpen}
           openNav={openNav}
           closeNav={closeNav}
+          isDarkMode  
         />
       )}
 

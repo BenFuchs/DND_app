@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import LoadingIcon from "../hashLoading/loadingIcon";
 
 interface User {
   char_name: string;
@@ -91,27 +92,6 @@ const ChatRoomView: React.FC = () => {
             const messageContent = messageData.message || event.data;
             setMessages((prev) => [...prev, `${charName}: ${messageContent}`]); 
             break;
-
-          // default:
-          //   try {
-          //     const charName = messageData.char_name || "System";
-          //     const messageType = messageData.type; // Extract the type for debugging
-
-          //     // Only append unhandled types; avoid raw JSON error duplication
-          //     if (
-          //       !["gold_transfer_error", "gold_transfer"].includes(messageType)
-          //     ) {
-          //       const messageContent = messageData.message || event.data;
-          //       setMessages((prev) => [
-          //         ...prev,
-          //         `${charName}: ${messageContent}`,
-          //       ]);
-          //     }
-          //   } catch (error) {
-          //     console.error("Error parsing message data", error);
-          //     setMessages((prev) => [...prev, "An unknown error occurred."]);
-          //   }
-          //   break;
         }
       } catch (error) {
         console.error("Error parsing message data", error);
@@ -197,18 +177,14 @@ const ChatRoomView: React.FC = () => {
         amount: Number(goldAmount), // Gold amount as a number
       };
       socket.send(JSON.stringify(message));
-      // console.log("Socket ready:", socket?.readyState === WebSocket.OPEN);
-      // console.log("Selected user:", selectedUser);
-      // console.log("Gold amount:", goldAmount);
-      // console.log("Message sent:", message);
       setGoldAmount(""); // Clear the input
     }
   };
+  if (error) return <LoadingIcon loading={true} /> // bad code but works for now
 
   return (
     <div>
       <h2>Chat Room: {roomName}</h2>
-
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div
