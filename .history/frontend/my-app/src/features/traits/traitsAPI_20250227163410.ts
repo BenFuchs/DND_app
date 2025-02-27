@@ -1,23 +1,25 @@
 import apiClient from '../../axiosInstance';
-const SERVER = "https://dnd-backend-f57d.onrender.com/";
+
+const SERVER = "http://127.0.0.1:8000/"
 
 
-export function getClassFeatures(char_name: string) {
+export function getRaceTraits(id: number) {
     const access = localStorage.getItem("Access");
+
     if (!access) {
         return Promise.reject(new Error("No access token found"));
     }
 
     return apiClient.post(
-        SERVER + 'getClassFeatures/',
-        {char_name},
+        SERVER + 'getRaceFeatures/',
+        { id },
         {
             headers: {
                 'Authorization': `Bearer ${access}`
             }
         }
     ).catch(error => {
-        console.error("Error fetching class features:", error.message);
+        console.error("Error fetching race traits:", error.message);
         throw error; // Rethrow for error handling in Redux thunk
     });
 }

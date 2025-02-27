@@ -11,7 +11,7 @@ import LoadingIcon from "../hashLoading/loadingIcon";
 
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-const SERVER = "https://dnd-backend-f57d.onrender.com/";
+const SERVER = "http://127.0.0.1:8000/"
 
 const LoginRegister: React.FC = () => {
   const [username, setUsername] = useState<string>("");
