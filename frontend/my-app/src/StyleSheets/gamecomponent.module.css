@@ -51,6 +51,10 @@
   flex-basis: 30%; /* 30% of container width */
 }
 
+.dropDownButton {
+  width: 10%
+}
+
   
 .button {
     margin-top: 20px;

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { RootState } from '../../app/store';
-import { addItemToInventoryAsync, getInventoryAsync, removeItemFromInventoryAsync, searchItemsAsync } from '../inventory/inventorySlice';
+import { addItemToInventoryAsync, getInventoryAsync, getItemDataAsync, Item, removeItemFromInventoryAsync, searchItemsAsync } from '../inventory/inventorySlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import LoadingIcon from '../hashLoading/loadingIcon';
-
+import { AnimatePresence } from 'framer-motion';
+import ItemDataModal from './ItemDataModal';
+import styles from '../../StyleSheets/gamecomponent.module.css'
 interface InventoryComponentProps {
   ID: number;
 }
@@ -12,11 +14,22 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   const dispatch = useAppDispatch();
   const inventory = useAppSelector((state: RootState) => state.inventory.items);
   const error = useAppSelector((state: RootState) => state.inventory.error);
-  const loading = useAppSelector((state:RootState)=> state.inventory.isLoading)
-  const searchResults = useAppSelector((state: RootState) => state.inventory.searchResults);
-  const [item, setItem] = useState<string>(''); // The item name input
+  const loading = useAppSelector(
+    (state: RootState) => state.inventory.isLoading
+  );
+  const ITEMDATA = useAppSelector((state: RootState) => state.inventory.data);
+  const searchResults = useAppSelector(
+    (state: RootState) => state.inventory.searchResults
+  );
+  const [item, setItem] = useState<string>(""); // The item name input
+  const [modal, setModal] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false); // To control the dropdown visibility
   const [selectedItemID, setSelectedItemID] = useState<number | null>(null); // Track selected item ID
+  const [currentItemData, setCurrentItemData] = useState<Item | null>(null); // Store item data for modal
+
+  // Toggles for modal
+  const open = () => setModal(true);
+  const close = () => setModal(false);
 
   useEffect(() => {
     dispatch(getInventoryAsync({ ID })); // Get the user's inventory
@@ -31,6 +44,12 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
     }
   }, [item, dispatch]);
 
+  useEffect(() => {
+    if (ITEMDATA) {
+      setCurrentItemData(ITEMDATA);
+    }
+  }, [ITEMDATA]);
+
   const handleItemSelect = (selectedItem: string, itemID: number) => {
     setItem(selectedItem); // Set the item name
     setSelectedItemID(itemID); // Set the item ID
@@ -38,30 +57,29 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
   };
 
   const handleAddToInventory = () => {
-    console.log('adding item to inventory')
+    console.log("adding item to inventory");
     if (selectedItemID !== null) {
-      // Dispatch action to add the selected item to the user's inventory
       dispatch(addItemToInventoryAsync({ itemID: selectedItemID, ID }));
-      console.log(item) //prints the item name 
-      // Re-fetch the inventory after adding the item
       dispatch(getInventoryAsync({ ID }));
-      // window.location.reload()
-      // Clear input and selected item ID
-      setItem('');
+      setItem("");
       setSelectedItemID(null);
     }
   };
 
   const handleRemoveFromInventory = (itemID: number) => {
-    console.log(itemID)
-    dispatch(removeItemFromInventoryAsync({itemID, ID}))
-    dispatch(getInventoryAsync({ ID }));  
-  }
+    console.log(itemID);
+    dispatch(removeItemFromInventoryAsync({ itemID, ID }));
+    dispatch(getInventoryAsync({ ID }));
+  };
 
-  console.log(inventory)
+  const popUpInfo = (itemID: number) => {
+    dispatch(getItemDataAsync({ itemID })); // Fetch item data
+    open(); // Open modal, data will update via useEffect
+  };
 
   if (error) return <div>Error: {error}</div>;
-  if (loading) return <LoadingIcon loading={loading}/>
+  if (loading) return <LoadingIcon loading={loading} />;
+
   return (
     <div>
       <h2>Your Inventory</h2>
@@ -69,16 +87,43 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
         <ul>
           {inventory.map((invItem: any, index: number) => (
             <li key={index}>
-              {[invItem.name]} - Quantity: {invItem.quantity} - <button onClick={() => (handleRemoveFromInventory(invItem.itemID))}>Remove</button>
-
+              {[invItem.name]} - Quantity: {invItem.quantity} -
+              <button
+                className={styles.button}
+                onClick={() => {
+                  popUpInfo(invItem.itemID);
+                  open();
+                }}
+              >
+                Item Info
+              </button>{" "}
+              -{" "}
+              <button
+                className={styles.button}
+                onClick={() => handleRemoveFromInventory(invItem.itemID)}
+              >
+                Remove
+              </button>
             </li>
           ))}
         </ul>
       ) : (
         <p>Your inventory is empty.</p>
       )}
+      <AnimatePresence>
+        {modal && (
+          <ItemDataModal
+            handleClose={close}
+            modal={modal}
+            backdropClass={styles.backdrop}
+            modalClass={styles.modal}
+            isDarkMode
+            itemData={currentItemData} // Pass the whole item data here
+          />
+        )}
+      </AnimatePresence>
 
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <label>Add item to inventory: </label>
         <input
           value={item}
@@ -90,17 +135,17 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
         {showDropdown && searchResults && searchResults.length > 0 && (
           <ul
             style={{
-              position: 'absolute',
-              top: '100%',
+              position: "absolute",
+              top: "100%",
               left: 0,
               right: 0,
-              border: '1px solid #ccc',
-              backgroundColor: '#fff',
-              listStyleType: 'none',
+              border: "1px solid #ccc",
+              backgroundColor: "#fff",
+              listStyleType: "none",
               margin: 0,
-              padding: '0.5rem',
-              maxHeight: '150px',
-              overflowY: 'auto',
+              padding: "0.5rem",
+              maxHeight: "150px",
+              overflowY: "auto",
               zIndex: 1000,
             }}
           >
@@ -108,13 +153,15 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
               <li
                 key={index}
                 style={{
-                  padding: '0.5rem',
-                  cursor: 'pointer',
-                  backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff',
+                  padding: "0.5rem",
+                  cursor: "pointer",
+                  backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#fff",
                 }}
               >
                 {/* Select the item when clicked */}
-                <span onMouseDown={() => handleItemSelect(result.name, result.ID)}>
+                <span
+                  onMouseDown={() => handleItemSelect(result.name, result.ID)}
+                >
                   {result.name}
                 </span>
               </li>
@@ -131,4 +178,4 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
 };
 
 export default InventoryComponent;
-// The item names in the inventory get set to unknown and are connected to the search item input bar. need to find a fix for that. maybe second enpoint to read through the csv list and get just the names of items in the users inventory 
+// The item names in the inventory get set to unknown and are connected to the search item input bar. need to find a fix for that. maybe second enpoint to read through the csv list and get just the names of items in the users inventory

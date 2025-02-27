@@ -1,8 +1,8 @@
 :root {
   --sidenav-bg-light: #111; /* Light mode background color */
-  --sidenav-bg-dark: #333;  /* Dark mode background color */
-  --link-color-light: #818181;
-  --link-color-dark: #f1f1f1;
+  --sidenav-bg-dark: #6e6e6e;  /* Dark mode background color */
+  --link-color-light: #ffffff;
+  --link-color-dark: #ffffff;
 }
 
 body {
@@ -19,7 +19,6 @@ body {
   top: 0; /* Stay at the top */
   left: 0;
   background-color: var(--sidenav-bg-light); /* Set to light mode background */
-  color: white;
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 60px; /* Content spacing */
   transition: width 0.5s ease, background-color 0.3s ease; /* Smooth transition for width and background color */

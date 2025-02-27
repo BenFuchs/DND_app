@@ -1,10 +1,10 @@
 // src/store/inventorySlice.ts
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getInventory, searchItems, addItemToInventory, removeItemFromInventory } from '../inventory/inventoryAPI';
+import { getInventory, searchItems, addItemToInventory, removeItemFromInventory, getItemData } from '../inventory/inventoryAPI';
 
 // Define an initial state for the inventory
-interface Item {
+export interface Item {
     ID: number;
     name: string;
     description: string;
@@ -23,6 +23,7 @@ interface InventoryState {
   searchResults: Item[]; // Array for search results
   isLoading: boolean; // To track loading state
   error: string | null; // To track errors
+  data : Item;
 }
 
 const initialState: InventoryState = {
@@ -30,6 +31,19 @@ const initialState: InventoryState = {
   searchResults: [],
   isLoading: false,
   error: null,
+  data: {
+    ID: 0,
+    name: '',
+    description: '',
+    category: '',
+    rarity: '',
+    classification: '',
+    ac: '',
+    damage: '',
+    damage_type: '',
+    properties: '',
+    cost: '',
+  },
 };
 
 // Async thunk for getting inventory
@@ -38,7 +52,7 @@ export const getInventoryAsync = createAsyncThunk(
   async ({ ID }: { ID: number }, { rejectWithValue }) => {
     try {
       const response = await getInventory(ID);
-      console.log(response.data) 
+      // console.log(response.data) 
       return response.data.inventory; // Assuming the response has an 'inventory' field
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to get inventory');
@@ -52,10 +66,24 @@ export const searchItemsAsync = createAsyncThunk(
   async (query: string, { rejectWithValue }) => {
     try {
       const response = await searchItems(query);
-      console.log(response.data.items)
+      // console.log(response.data.items)
       return response.data.items; // Assuming the response has an 'items' field
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to search items');
+    }
+  }
+);
+
+// Async thunk for retreiving item data for display
+export const getItemDataAsync = createAsyncThunk(
+  'inventory/getItemData',
+  async({itemID} : {itemID: number}) => {
+    try {
+      const response = await getItemData(itemID)
+      // console.log(response.data) //debugging 
+      return response.data
+    } catch (error) {
+      return error
     }
   }
 );
@@ -66,7 +94,7 @@ export const addItemToInventoryAsync = createAsyncThunk(
   async ({ itemID, ID }: { itemID: number; ID: number }, { rejectWithValue }) => {
     try {
       const response = await addItemToInventory(itemID, ID);
-      console.log(response.data.inventory);
+      // console.log(response.data.inventory);
       return response.data.inventory; // Assuming the response contains the updated inventory
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.msg || 'Failed to add item to inventory');
@@ -152,6 +180,14 @@ const inventorySlice = createSlice({
     })
     .addCase(removeItemFromInventoryAsync.pending, (state)=> {
       state.isLoading = true;
+    })
+    .addCase(getItemDataAsync.fulfilled, (state,action)=> {
+      state.isLoading = false;
+      state.data = action.payload;
+    })
+    .addCase(getItemDataAsync.rejected, (state, action)=> {
+      state.isLoading = false;
+      state.error = action.payload as string;
     })
   },
 });

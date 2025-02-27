@@ -163,10 +163,11 @@ const SheetsComp = () => {
         {sheet_count < max_sheets && (
           <div>
             <div>
-              <label>Select Race: </label>
+              <label>Select Race:</label>
               <select
                 value={selectedRace ?? ""}
                 onChange={(e) => setSelectedRace(Number(e.target.value))}
+                className={styles.dropDownButton}
               >
                 <option value="">Select a race</option>
                 <option value={1}>Human</option>

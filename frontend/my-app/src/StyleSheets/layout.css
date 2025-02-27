@@ -7,13 +7,13 @@ body {
   }
   
   .dark-mode {
-    background-color: rgb(46, 44, 44) !important;
-    color: rgb(187, 187, 187) !important;
+    background-color: rgb(87, 86, 86) !important;
+    color: rgb(0, 0, 0) !important;
   }
   
   .light-mode {
     background-color: rgb(187, 187, 187) !important;
-    color: rgb(46, 44, 44) !important;
+    color: rgb(27, 27, 27) !important;
   }
   .d-flex {
     display: flex;
@@ -24,7 +24,7 @@ body {
   /* Navbar styles */
 
   .navbar-dark {
-    background-color: rgb(23, 22, 22) !important;
+    background-color: rgb(51, 49, 49) !important;
   }
   
   .navbar-dark .navbar-brand,

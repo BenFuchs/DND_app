@@ -10,7 +10,6 @@ from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, E
 from ..helper.inventoryParse import inventorySearch
 from ..helper.inventoryDetails import get_inventory_details
 
-# works!
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addItemToPlayerInv(request):
@@ -79,7 +78,6 @@ def getInventory(request):
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# works!
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def searchItems(request):
@@ -145,3 +143,24 @@ def removeItem(request):
     except Exception as e:
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def getItemInfo(request):
+    itemID = request.data.get('itemID')
+    print("Request item id:",itemID)
+    # Check if itemID is missing or invalid before calling inventorySearch
+    if not itemID:
+        return Response({"Error": "ItemID is missing or invalid"}, status=400)
+
+    try: 
+        itemData = inventorySearch(itemID)
+        
+        # If itemID exists but the item isn't found, return an error
+        if itemData is None:
+            return Response({"Error": "Item not found"}, status=404)
+
+        return Response({"Item Data": itemData}, status=200)
+
+    except Exception as e:
+        return Response({"Error": f"An error occurred: {str(e)}"}, status=500)

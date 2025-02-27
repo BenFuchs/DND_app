@@ -36,6 +36,7 @@ urlpatterns = [
     path('searchItems/', views.searchItems),
     path('addToInventory/', views.addItemToPlayerInv),
     path('removeItem/', views.removeItem),
+    path('itemData/', views.getItemInfo),
     
     #Traits endpoints
     path('getRaceFeatures/', views.getSheetRaceTraits),
