@@ -5,6 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CryptoJS from "crypto-js";
 
 const SERVER = "https://dnd-backend-f57d.onrender.com/";
 
@@ -24,6 +27,9 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roomSearch, setRoomSearch] = useState<string>('');
   const [filteredRooms, setFilteredRooms] = useState<string[]>([]);
+  const [deleteRoomDialogOpen, setDeleteRoomDialogOpen] = useState(false); // State for dialog visibility
+  const [deleteRoomPassword, setDeleteRoomPassword] = useState(''); // State for the password input in dialog
+  const [roomToDelete, setRoomToDelete] = useState<string | null>(null); // State to track the room to delete
   const { sheetID } = useParams();
 
   // Fetch available chat rooms on mount
@@ -65,46 +71,60 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       toast.error(error.response?.data?.error || 'Error creating room.');
     }
   };
-
+  const secretKey = process.env.REACT_APP_ROOM_ENCRYPT_KEY;
   const handleRoomLogin = () => {
     if (!selectedRoom || !inputPassword) {
-      toast.error('Please select a room and enter a password.');
+      toast.error("Please select a room and enter a password.");
       return;
     }
+    if (!secretKey) {
+      console.error("Error: Secret key is not defined.");
+      toast.error("Error: Secret key is not available.");
+      return;
+    }
+    // Encrypt the selectedRoom before sending it to the URL
+    const encryptedRoom = CryptoJS.AES.encrypt(selectedRoom, secretKey).toString(); // Use a secret key for encryption
+  
     axios
       .post(`${SERVER}verifyRoomPassword/`, {
         room_name: selectedRoom,
         password: inputPassword,
       })
       .then((response) => {
-        console.log(response.data);
         setIsLoggedIn(true);
-
-        // Navigate to ChatRoomView with room details
-        navigate(`/game/${sheetID}/chat/${selectedRoom}/`, {
+  
+        // Navigate to ChatRoomView with the encrypted room name in the URL
+        navigate(`/game/${sheetID}/chat/${encryptedRoom}/`, {
           state: { roomName: selectedRoom, password: inputPassword },
         });
       })
       .catch((error) => {
-        console.error(error);
         setIsLoggedIn(false);
-        toast.error('Invalid password or failed to join the room.');
+        toast.error("Invalid password or failed to join the room.");
       });
   };
 
-  const handleDeleteRoom = async (roomName: string) => {
-    const selectedRoomPassword = prompt('Please enter the room password to delete:');
-    if (!selectedRoomPassword) {
+  // New delete room handler using Dialog
+  const handleOpenDeleteRoomDialog = (roomName: string) => {
+    setRoomToDelete(roomName);
+    setDeleteRoomDialogOpen(true);
+  };
+
+  const handleDeleteRoom = async () => {
+    if (!deleteRoomPassword) {
       toast.error('Password is required to delete the room.');
       return;
     }
 
     try {
-      await dispatch(deleteChatRoomAsync({ roomName, password: selectedRoomPassword }));
-      toast.success(`Room '${roomName}' deleted successfully.`);
-      window.location.reload();
+      if (roomToDelete) {
+        await dispatch(deleteChatRoomAsync({ roomName: roomToDelete, password: deleteRoomPassword }));
+        toast.success(`Room '${roomToDelete}' deleted successfully.`);
+        setDeleteRoomDialogOpen(false); // Close the dialog after deletion
+        setDeleteRoomPassword(''); // Clear the password
+        dispatch(getChatRoomsAsync()); // Refresh room list
+      }
     } catch (error) {
-      console.error(error);
       toast.error('Failed to delete the room. Please check the password and try again.');
     }
   };
@@ -115,28 +135,31 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       {/* Room Creation */}
       <div>
         <h2>Create a Room</h2>
-        <input
-          type="text"
-          placeholder="Room Name"
+        <TextField 
           value={roomName}
           onChange={(e) => setRoomName(e.target.value)}
+          label='Room Name'
+          variant='filled'
         />
-        <input
-          type="password"
-          placeholder="Password"
+        {' '}
+        <TextField 
+          type='password'
+          label='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          variant='filled'
         />
-        <button onClick={handleCreateRoom}>Create Room</button>
+        <Button variant='contained' onClick={handleCreateRoom}>Create Room</Button>
       </div>
 
       {/* Available Rooms */}
       <div>
         <h2>Available Rooms</h2>
-        <input
-          placeholder="Search by room name"
+        <TextField 
+          label='Search by room name'
           value={roomSearch}
           onChange={(e) => setRoomSearch(e.target.value)}
+          variant='filled'
         />
         {filteredRooms.length > 0 && (
           <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: '5px' }}>
@@ -155,8 +178,10 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
           roomNames.map((room, index) => (
             <ul key={index}>
               <li>
-                <button onClick={() => setSelectedRoom(room)}>{room || 'Unnamed Room'}</button> -{' '}
-                <button onClick={() => handleDeleteRoom(room)}>Delete Room</button>
+                <Button variant='contained' onClick={() => setSelectedRoom(room)}>{room || 'Unnamed Room'}</Button> {" "}
+                <Button variant='contained' onClick={() => handleOpenDeleteRoomDialog(room)}>
+                  <DeleteIcon />
+                </Button>
               </li>
             </ul>
           ))
@@ -169,15 +194,39 @@ const ChatRoomComp: React.FC<ChatRoomCompProps> = ({ room_names, onRoomAction })
       {selectedRoom && !isLoggedIn && (
         <div>
           <h3>Join Room: {selectedRoom}</h3>
-          <input
-            type="password"
-            placeholder="Enter Password"
+          <TextField  
+            type='password'
+            label='Enter Password'
             value={inputPassword}
             onChange={(e) => setInputPassword(e.target.value)}
+            variant='filled'
           />
-          <button onClick={handleRoomLogin}>Join Room</button>
+          <Button variant='contained' onClick={handleRoomLogin}>Join Room</Button>
         </div>
       )}
+
+      {/* Dialog for Deleting Room */}
+      <Dialog open={deleteRoomDialogOpen} onClose={() => setDeleteRoomDialogOpen(false)}>
+        <DialogTitle>Delete Room</DialogTitle>
+        <DialogContent>
+          <TextField
+            type='password'
+            label='Enter Room Password'
+            value={deleteRoomPassword}
+            onChange={(e) => setDeleteRoomPassword(e.target.value)}
+            variant='filled'
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteRoomDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteRoom} color="secondary">
+            Delete Room
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

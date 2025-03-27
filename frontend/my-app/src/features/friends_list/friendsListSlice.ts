@@ -108,7 +108,7 @@ export const searchUsersAsync = createAsyncThunk(
   async (username: string, { rejectWithValue }) => {
     try {
       const response = await searchUsers(username);
-      console.log('Search API Response:', response); // Check the response structure
+      // console.log('Search API Response:', response); // Check the response structure
       if (response.data && Array.isArray(response.data.users)) {
         return response.data.users; // Access the 'users' array and return it
       }

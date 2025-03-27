@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 interface SkillsProps {
@@ -40,7 +41,7 @@ const Skills = ({ skills, proficiency = 0 }: SkillsProps) => {
               style={{ marginRight: "8px" }}
             />
             <label htmlFor={`checkbox-${key}`}>
-              <strong>{key}:</strong> {displayValue}
+              {key}: {displayValue}
             </label>
           </div>
         );

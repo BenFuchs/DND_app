@@ -9,9 +9,9 @@ import {
   getPendingRequestsAsync,
   searchUsersAsync,
 } from "./friendsListSlice";
-import styles from "../../StyleSheets/FriendsSideNav.module.css";
+import { Box, Drawer, Button, TextField, List, ListItemButton, ListItemText, Divider } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
 
-// Define the type for props
 interface FriendsListProps {
   isSidenavOpen: boolean;
   openNav: () => void;
@@ -19,11 +19,15 @@ interface FriendsListProps {
   isDarkMode: boolean;
 }
 
-const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, closeNav, isDarkMode }) => {
+const FriendsList: React.FC<FriendsListProps> = ({
+  isSidenavOpen,
+  openNav,
+  closeNav,
+  isDarkMode,
+}) => {
   const dispatch = useAppDispatch();
-  const { friends, pendingRequests, searchResults, loading, error } = useAppSelector(
-    (state: RootState) => state.friendsList
-  );
+  const { friends, pendingRequests, searchResults } =
+    useAppSelector((state: RootState) => state.friendsList);
   const [selectedTab, setSelectedTab] = useState("accepted");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -34,14 +38,19 @@ const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, close
 
   const handleSendFriendInvite = (userId: number) => {
     dispatch(sendFriendInviteAsync(userId));
+    toast('Invite Sent!')
   };
 
   const handleRespondToRequest = (friend_id: number, action: string) => {
     dispatch(respondToFriendRequestAsync({ friend_id, action }));
+    if (action === 'accept') {
+    toast.success("Friend Request Accepted!")
+    } else {
+      toast.error("Frieend Reqest Denied!")
+    }
   };
 
   const handleRemoveFriend = (friend_id: number) => {
-    console.log('Removing friendship with ID:', friend_id);  // Debugging log
     dispatch(removeFriendAsync(friend_id)).then(() => {
       dispatch(getAllFriendsAsync());
     });
@@ -50,7 +59,6 @@ const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, close
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
       dispatch(searchUsersAsync(searchQuery));
-      console.log(`Target user: '${searchQuery}'`);
     }
   };
 
@@ -58,137 +66,134 @@ const FriendsList: React.FC<FriendsListProps> = ({ isSidenavOpen, openNav, close
     setSelectedTab(tab);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation">
+      <List>
+        <ListItemButton onClick={() => handleTabChange("accepted")}>
+          <ListItemText primary="Accepted Friends" />
+        </ListItemButton>
+        <ListItemButton onClick={() => handleTabChange("pending")}>
+          <ListItemText primary="Pending Requests" />
+        </ListItemButton>
+        <ListItemButton onClick={() => handleTabChange("search")}>
+          <ListItemText primary="Search" />
+        </ListItemButton>
+      </List>
+      <Divider />
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+    </Box>
+  );
 
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (error) {
+  //   return toast.error("An Error has Occured");
+  // }
+  
   return (
-    <div className={isDarkMode ? styles.darkMode : styles.lightMode}>
-      {/* Sidenav */}
-      {isSidenavOpen && (
-        <div className={`${styles.sidenav} ${isSidenavOpen ? styles.open : ""}`}>
-          <button className={styles.closebtn} onClick={closeNav}>
-            &times;
-          </button>
-          {/* Tabs for different views */}
-          <div className={styles.tabs}>
-            <button
-              className={selectedTab === "accepted" ? styles.activeTab : ""}
-              onClick={() => handleTabChange("accepted")}
-            >
-              Accepted Friends
-            </button>
-            <button
-              className={selectedTab === "pending" ? styles.activeTab : ""}
-              onClick={() => handleTabChange("pending")}
-            >
-              Pending Requests
-            </button>
-            <button
-              className={selectedTab === "search" ? styles.activeTab : ""}
-              onClick={() => handleTabChange("search")}
-            >
-              Search
-            </button>
+    <div>
+      <ToastContainer />
+      <Drawer
+        anchor="left"
+        open={isSidenavOpen}
+        onClose={closeNav}
+        sx={{}}
+      >
+        {DrawerList}
+      
+
+      {/* Display content based on selected tab */}
+      <Box sx={{ padding: 2 }}>
+        {selectedTab === "accepted" && (
+          <div>
+            <h3>Accepted Friends</h3>
+            {friends.length === 0 ? (
+              <div>No friends found.</div>
+            ) : (
+              <ul>
+                {friends.map((friend) => (
+                  <li key={friend.id}>
+                    {friend.username} -
+                    <Button
+                      variant="contained"
+                      onClick={() => handleRemoveFriend(friend.id)}
+                    >
+                      Remove Friend
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-
-          {/* Show the content based on the selected tab */}
-          {selectedTab === "accepted" && (
+        )}
+        {selectedTab === "pending" && (
+          <div>
+            <h3>Pending Friend Requests</h3>
+            {pendingRequests.length === 0 ? (
+              <div>No pending requests.</div>
+            ) : (
+              <ul>
+                {pendingRequests.map((request) => (
+                  <li key={request.id}>
+                    {request.username} -
+                    <Button
+                      variant="contained"
+                      onClick={() =>
+                        handleRespondToRequest(request.id, "accept")
+                      }
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() =>
+                        handleRespondToRequest(request.id, "reject")
+                      }
+                    >
+                      Reject
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+        {selectedTab === "search" && (
+          <div>
+            <h3>Search Users</h3>
+            <TextField
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              label="Search for users"
+            />
+            <Button variant="contained" onClick={handleSearch}>
+              Search
+            </Button>
             <div>
-              <h3>Accepted Friends</h3>
-              {friends.length === 0 ? (
-                <div>No friends found.</div>
-              ) : (
+              {Array.isArray(searchResults) && searchResults.length > 0 ? (
                 <ul>
-                  {friends.map((friend) => (
-                    <li key={friend.id}>
-                      {friend.username} -
-                      <button
-                        onClick={() => handleRemoveFriend(friend.id)}
-                        className={styles.removeButton}
+                  {searchResults.map((user) => (
+                    <li key={user.id}>
+                      {user.username} -
+                      <Button
+                        variant="contained"
+                        onClick={() => handleSendFriendInvite(user.id)}
                       >
-                        Remove Friend
-                      </button>
+                        Send Friend Request
+                      </Button>
                     </li>
                   ))}
                 </ul>
-              )}
-            </div>
-          )}
-
-          {selectedTab === "pending" && (
-            <div>
-              <h3>Pending Friend Requests</h3>
-
-              {pendingRequests.length === 0 ? (
-                <div>No pending requests.</div>
               ) : (
-                <ul>
-                  {pendingRequests.map((request) => (
-                    <li key={request.id}>
-                      {request.username} -
-                      <button
-                        onClick={() =>
-                          handleRespondToRequest(request.id, "accept")
-                        }
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleRespondToRequest(request.id, "reject")
-                        }
-                      >
-                        Reject
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                <div>No users found for "{searchQuery}".</div>
               )}
             </div>
-          )}
-
-          {selectedTab === "search" && (
-            <div>
-              <h3>Search Users</h3>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for users..."
-              />
-              <button onClick={handleSearch}>Search</button>
-
-              {/* Display search results */}
-              <div>
-                {loading ? (
-                  <div>Loading...</div>
-                ) : Array.isArray(searchResults) && searchResults.length > 0 ? (
-                  <ul>
-                    {searchResults.map((user) => (
-                      <li key={user.id}>
-                        {user.username} -
-                        <button
-                          onClick={() => handleSendFriendInvite(user.id)}
-                          className={styles.sendInviteButton}
-                        >
-                          Send Friend Request
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div>No users found for "{searchQuery}".</div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </Box>
+      </Drawer>
     </div>
   );
 };

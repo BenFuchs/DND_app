@@ -22,7 +22,7 @@ export function sendFriendInvite(friend_id:number) {
     if (!access) {
         return Promise.reject("No access token found");
       } 
-    console.log(access)
+    // console.log(access)
 
     return apiClient.post(SERVER + 'sendFriendRequest/', 
         {   friend_id   },
@@ -38,7 +38,7 @@ export function respondToFriendRequest(friend_id:number , action: string) {
     if (!access) {
         return Promise.reject("No access token found");
       } 
-    console.log(friend_id, action)
+    // console.log(friend_id, action)
     return apiClient.post(SERVER + 'respondToFriendRequest/', 
         {friend_id, action},
         {headers: {
@@ -48,7 +48,6 @@ export function respondToFriendRequest(friend_id:number , action: string) {
 }
 
 export function removeFriend(friend_id: number) {
-    console.log('debug 2')
     const access = localStorage.getItem("Access");
     if (!access) {
         return Promise.reject("No access token found");

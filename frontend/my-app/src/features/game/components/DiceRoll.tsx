@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-// import '../styleSheets/diceTray.css'; // Adjust the path if necessary
 import '../../../StyleSheets/diceTray.module.css';
-import styles from '../../../StyleSheets/gamecomponent.module.css'
 import { rollDiceAsync } from '../gameSlice';
 import { useAppDispatch } from "../../../app/hooks";
-// import DiceRollsModal from './DiceRollsModal'; // Import the modal component
+import { Button } from '@mui/material';
 
 const DiceRoll = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +17,7 @@ const DiceRoll = () => {
 
   useEffect(() => {
     if (rollResult) {
-      console.log('Updated roll results:', rollResult);
+      // console.log('Updated roll results:', rollResult);
     }
   }, [rollResult]);
 
@@ -39,11 +37,6 @@ const DiceRoll = () => {
       console.error('Error rolling dice:', error);
     }
   };
-
-  // Handle modal close
-  // const handleCloseModal = () => {
-  //   setModalOpen(false); // Close the modal
-  // };
 
   return (
     <div>
@@ -81,14 +74,18 @@ const DiceRoll = () => {
       </div>
 
       <div>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleDiceRoll}
-          className={styles.centerButton}
-        >
-          Roll!
-        </motion.button>
+        <motion.div>
+          <Button
+            variant='contained'
+            component={motion.button}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}    
+            onClick={handleDiceRoll}
+            sx={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}
+            >
+            Roll!
+          </Button>
+        </motion.div>
       </div>
 
       {/* Conditionally render the DiceRollsModal with the roll results */}

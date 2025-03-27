@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import LoadingIcon from "../hashLoading/loadingIcon";
+import { Button, TextField } from "@mui/material";
+import { toast } from "react-toastify";
+import CryptoJS from "crypto-js";
 
 interface User {
   char_name: string;
@@ -19,6 +22,7 @@ const ChatRoomView: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null); // User selected for private message
   const [goldAmount, setGoldAmount] = useState<string>(""); // For storing the amount of gold to send
   const [loggedCharName, setloggedCharName] = useState<string>("");
+  const [decryptedRoomName, setDecryptedRoomName] = useState<string>(""); // State for decrypted room name
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const SERVER = "dnd-backend-f57d.onrender.com";
 
@@ -31,21 +35,35 @@ const ChatRoomView: React.FC = () => {
     }
   }, [loggedCharName]);
 
+  const decryptRoomName = (encryptedRoom: string) => {
+    const secretKey = process.env.REACT_APP_ROOM_ENCRYPT_KEY;
+  
+    if (!secretKey) {
+      throw new Error("Secret key is not defined in the environment variables.");
+    }
+  
+    const bytes = CryptoJS.AES.decrypt(encryptedRoom, secretKey);
+    const decryptedRoom = bytes.toString(CryptoJS.enc.Utf8);
+    // console.log(decryptedRoom) //debuggging 
+    return decryptedRoom;
+  };
+
   useEffect(() => {
     if (!roomName) return;
+
+    const decrypt = decryptRoomName(roomName);
+    setDecryptedRoomName(decrypt);
+
     const token = localStorage.getItem("SDT");
 
     const ws = new WebSocket(
-      `wss://${SERVER}/ws/chat/${roomName}/?token=${token}`
+      `wss://${SERVER}/ws/chat/${decryptedRoomName}/?token=${token}`
     );
 
     setSocket(ws);
 
     ws.onopen = () => {
-      console.log("Connected to the chat room");
       setError(null);
-
-      // Send the character name to the server
       ws.send(JSON.stringify({ type: "connect" }));
     };
 
@@ -76,9 +94,8 @@ const ChatRoomView: React.FC = () => {
             setMessages((prev) => [...prev, msg]);
             break;
 
-          case "handle_gold_transfer_error": // Handle gold transfer errors
+          case "handle_gold_transfer_error":
             const { error_message } = messageData;
-            // Extract the meaningful error message
             const errorText =
               typeof error_message === "string"
                 ? error_message
@@ -88,29 +105,23 @@ const ChatRoomView: React.FC = () => {
             break;
           
           case "chat_message":
-            const charName = messageData.char_name; // Change from username to char_name
+            const charName = messageData.char_name;
             const messageContent = messageData.message || event.data;
             setMessages((prev) => [...prev, `${charName}: ${messageContent}`]); 
             break;
         }
       } catch (error) {
-        console.error("Error parsing message data", error);
         setMessages((prev) => [...prev, event.data]);
       }
     };
 
     ws.onclose = (event) => {
-      console.log(
-        `WebSocket closed: ${event.code}, Reason: ${
-          event.reason || "No reason"
-        }`
-      );
       setError("Connection closed unexpectedly.");
     };
 
     ws.onerror = (ev: Event) => {
       const err = ev as ErrorEvent;
-      console.error("WebSocket error:", err.message || err);
+      toast.error(err.message);
       setError(
         "Failed to connect to the chat room. Please check the server and try again."
       );
@@ -118,9 +129,8 @@ const ChatRoomView: React.FC = () => {
 
     return () => {
       ws.close(1000, "Component unmounted");
-      console.log("WebSocket closed");
     };
-  }, [roomName, selectedUser?.char_name, loggedCharName]);
+  }, [roomName, selectedUser?.char_name, loggedCharName, decryptedRoomName]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -129,7 +139,7 @@ const ChatRoomView: React.FC = () => {
     }
   }, [messages]);
 
-  const sendMessage = () => {
+  const sendMessage = useCallback(() => {
     if (
       socket &&
       socket.readyState === WebSocket.OPEN &&
@@ -137,9 +147,23 @@ const ChatRoomView: React.FC = () => {
     ) {
       const message = { type: "group_message", message: newMessage };
       socket.send(JSON.stringify(message));
-      setNewMessage("");
+      setNewMessage(""); // Clear input after sending
     }
-  };
+  }, [socket, newMessage]);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [sendMessage]);
 
   const sendPrivateMessage = () => {
     if (
@@ -180,11 +204,12 @@ const ChatRoomView: React.FC = () => {
       setGoldAmount(""); // Clear the input
     }
   };
-  if (error) return <LoadingIcon loading={true} /> // bad code but works for now
+
+  if (error) return <LoadingIcon loading={true} />;
 
   return (
     <div>
-      <h2>Chat Room: {roomName}</h2>
+      <h2>Chat Room: {decryptedRoomName}</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div
@@ -200,15 +225,16 @@ const ChatRoomView: React.FC = () => {
           <p key={idx}>{msg}</p>
         ))}
       </div>
-
-      <input
-        type="text"
+      <br />
+      <TextField
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
+        sx={{ width: "80%" }}
         placeholder="Type a message..."
-        style={{ width: "80%" }}
       />
-      <button onClick={sendMessage}>Send</button>
+      <Button variant="contained" onClick={sendMessage}>
+        Send
+      </Button>
       <hr />
 
       <div>
@@ -219,9 +245,9 @@ const ChatRoomView: React.FC = () => {
             .map((user, idx) => (
               <li key={idx}>
                 {user.char_name} -
-                <button onClick={() => setSelectedUser(user)}>
+                <Button variant="contained" onClick={() => setSelectedUser(user)}>
                   Send DM/Gold
-                </button>
+                </Button>
               </li>
             ))}
         </ul>
@@ -236,14 +262,15 @@ const ChatRoomView: React.FC = () => {
           }}
         >
           <h4>Send Private Message to {selectedUser.char_name}</h4>
-          <input
-            type="text"
+          <TextField
             value={privateMessage}
             onChange={(e) => setPrivateMessage(e.target.value)}
-            placeholder={`Message for ${selectedUser.char_name}`}
-            style={{ width: "80%" }}
+            label={`Message for ${selectedUser.char_name}`}
+            sx={{ width: "80%" }}
           />
-          <button onClick={sendPrivateMessage}>Send</button>
+          <Button variant="contained" onClick={sendPrivateMessage}>
+            Send
+          </Button>
         </div>
       )}
 
@@ -256,15 +283,18 @@ const ChatRoomView: React.FC = () => {
           }}
         >
           <h4>Send Gold to {selectedUser.char_name}</h4>
-          <input
+
+          <TextField
             type="number"
-            min={0}
+            inputProps={{ min: 0 }}
             value={goldAmount}
             onChange={(e) => setGoldAmount(e.target.value)}
             placeholder={`Amount to send to ${selectedUser.char_name}`}
-            style={{ width: "80%" }}
+            sx={{ width: "80%" }}
           />
-          <button onClick={sendGold}>Send Gold</button>
+          <Button variant="contained" onClick={sendGold}>
+            Send Gold
+          </Button>
         </div>
       )}
     </div>

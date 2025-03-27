@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import Backdrop from "../game/components/Backdrop";
 import { Item } from "./inventorySlice"; // Ensure you import Item type
+import { Button, Box, useTheme } from "@mui/material"; // Use MUI's Box and useTheme
+import CloseIcon from '@mui/icons-material/Close';
 import styles from '../../StyleSheets/itemDataModal.module.css';
 
 interface ItemDataModalProps {
@@ -41,6 +43,7 @@ const ItemDataModal: React.FC<ItemDataModalProps> = ({
   isDarkMode,
   itemData,
 }) => {
+  const theme = useTheme(); // Get the current theme
   if (!itemData) {
     return <div>Loading...</div>;
   }
@@ -53,6 +56,8 @@ const ItemDataModal: React.FC<ItemDataModalProps> = ({
   };
 
   const formattedItemData = formatData(itemData); // Format the item data to exclude unwanted fields
+  
+  
 
   return (
     <Backdrop onClick={handleClose} className={backdropClass}>
@@ -64,28 +69,43 @@ const ItemDataModal: React.FC<ItemDataModalProps> = ({
         animate="visible"
         exit="exit"
       >
-        <div className={styles.itemContent}>
-          {Object.entries(formattedItemData).map(([key, value]) => (
-            <div key={key} className={styles.itemProperty}>
-              <strong>{key.replace(/_/g, " ").toUpperCase()}:</strong>
-              <span
-                className={
-                  key.toLowerCase() === "description"
-                    ? styles.itemDescription
-                    : styles.itemValue
-                }
-              >
-                {typeof value === "string" || typeof value === "number"
-                  ? value
-                  : JSON.stringify(value)}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <button onClick={handleClose} className={styles.modalBtn}>
-          Close
-        </button>
+        <Box
+          sx={{
+            backgroundColor: theme.palette.background.paper, // Adjust to the current theme's background
+            color: theme.palette.text.primary, // Text color based on theme
+            padding: "2rem",
+            borderRadius: "12px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "120%", // Set modal width
+            height: "120%", // Set modal height
+            boxShadow: theme.shadows[5], // Optional: Add shadow to the modal for better contrast
+          }}
+        >
+          <div className={styles.itemContent}>
+            {Object.entries(formattedItemData).map(([key, value]) => (
+              <div key={key} className={styles.itemProperty}>
+                <strong>{key.replace(/_/g, " ").toUpperCase()}:</strong>
+                <span
+                  className={
+                    key.toLowerCase() === "description"
+                      ? styles.itemDescription
+                      : styles.itemValue
+                  }
+                >
+                  {typeof value === "string" || typeof value === "number"
+                    ? value
+                    : JSON.stringify(value)}
+                </span>
+              </div>
+            ))}
+          </div>
+          <Button variant="contained" onClick={handleClose} sx={{ marginTop: "1rem" }}>
+            <CloseIcon />
+          </Button>
+        </Box>
       </motion.div>
     </Backdrop>
   );

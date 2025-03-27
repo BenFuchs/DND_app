@@ -1,338 +1,156 @@
-import React, { useEffect, useState } from "react";
-import {
-  Link,
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import React, { useState } from "react";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import FriendsList from "./features/friends_list/FriendsList";
+import { getTheme } from "../src/features/colors/colorPalette";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import { useTheme } from "./features/DarkModeSwitch/ThemeProviderWrapper";
+import { AppBar, Toolbar, Button, IconButton, Container, Box, ThemeProvider, Drawer, List, ListItem, ListItemButton, ListItemText, useMediaQuery } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const Layout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { sheetID } = useParams();
-  const { roomName } = useParams();
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    // Initialize the dark mode state based on localStorage
-    const savedMode = localStorage.getItem("darkMode");
-    return savedMode === "true"; // Default to false if not set
-  });
+  const { sheetID, roomName } = useParams();
+  const { isDarkMode, toggleTheme } = useTheme();
+  const theme = getTheme(isDarkMode);
+  const isMobile = useMediaQuery("(max-width:756px)");
 
-  const [isSidenavOpen, setIsSidenavOpen] = useState(false); // Shared sidenav state
+  const [isSidenavOpen, setIsSidenavOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isExcludedRoute = location.pathname === "/" || location.pathname === "/login";
-  const openNav = () => setIsSidenavOpen(true);  // Open sidenav
-  const closeNav = () => setIsSidenavOpen(false); // Close sidenav
+  const openNav = () => setIsSidenavOpen(true);
+  const closeNav = () => setIsSidenavOpen(false);
+  const toggleDrawer = (open: boolean) => setIsDrawerOpen(open);
 
-
-  // Logout function
   const logout = () => {
     localStorage.clear();
-    navigate("/"); // Redirect to the home page
+    navigate("/");
   };
 
-  // Determine the page and display relevant buttons
-  const renderButtons = () => {
-    switch (location.pathname) {
-      case "/":
-        return (
-          <>
-            <Link
-              to={"/login"}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Log in
-            </Link>
-          </>
-        );
-      case "/sheets":
-        return (
-          <>
-            <Link
-              to="/orders"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Extra Sheets!
-            </Link>
-          </>
-        );
-
-      case `/game/${sheetID}`:
-        return (
-          <>
-            <Link
-              to="/sheets"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Sheets
-            </Link>
-            <Link
-              to={`/game/${sheetID}/inventory`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Inventory
-            </Link>
-            <Link
-              to={`/game/${sheetID}/traits`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Traits
-            </Link>
-            <Link
-              to={`/game/${sheetID}/chat`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Chat
-            </Link>
-          </>
-        );
-      case `/game/${sheetID}/inventory`:
-        return (
-          <>
-            <Link
-              to="/sheets"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Sheets
-            </Link>
-            <Link
-              to={`/game/${sheetID}`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Main Sheet
-            </Link>
-            <Link
-              to={`/game/${sheetID}/traits`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Traits
-            </Link>
-            <Link
-              to={`/game/${sheetID}/chat`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Chat
-            </Link>
-          </>
-        );
-      case `/game/${sheetID}/traits`:
-        return (
-          <>
-            <Link
-              to="/sheets"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Sheets
-            </Link>
-            <Link
-              to={`/game/${sheetID}`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Main Sheet
-            </Link>
-            <Link
-              to={`/game/${sheetID}/inventory`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Inventory
-            </Link>
-            <Link
-              to={`/game/${sheetID}/chat`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Chat
-            </Link>
-          </>
-        );
-      case `/game/${sheetID}/chat`:
-        return (
-          <>
-            <Link
-              to="/sheets"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Sheets
-            </Link>
-            <Link
-              to={`/game/${sheetID}`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Main Sheet
-            </Link>
-            <Link
-              to={`/game/${sheetID}/inventory`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Inventory
-            </Link>
-            <Link
-              to={`/game/${sheetID}/traits`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Traits
-            </Link>
-          </>
-        );
-      case "/orders":
-        return (
-          <>
-            <Link
-              to="/sheets"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Sheets
-            </Link>
-          </>
-        );
-      case `/game/${sheetID}/chat/${roomName}/`:
-        return (
-          <>
-            <Link
-              to="/sheets"
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Sheets
-            </Link>
-            <Link
-              to={`/game/${sheetID}`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Main Sheet
-            </Link>
-            <Link
-              to={`/game/${sheetID}/inventory`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Inventory
-            </Link>
-            <Link
-              to={`/game/${sheetID}/traits`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Traits
-            </Link>
-            <Link
-              to={`/game/${sheetID}/chat`}
-              className={`btn ${isDarkMode ? "btn-light" : "btn-dark"} `}
-            >
-              Chat
-            </Link>
-          </>
-        );
-      default:
-        return;
-    }
+  const buttonStyle = {
+    backgroundColor: isDarkMode ? "#3F4F44" : "#AAB99A",
+    color: isDarkMode ? "#ffffff" : "#000000DE",
+    "&:hover": {
+      backgroundColor: isDarkMode ? "#2C3930" : "#8F9F7D",
+    },
   };
 
-  // Function to apply dark mode
-  const applyDarkMode = (darkMode: boolean) => {
-    const element = document.body;
-    if (darkMode) {
-      element.classList.add("dark-mode");
-      element.classList.remove("light-mode");
-    } else {
-      element.classList.add("light-mode");
-      element.classList.remove("dark-mode");
-    }
-  };
+  const pages = [
+    { path: "/sheets", label: "Sheets" },
+    { path: `/game/${sheetID}`, label: "Main Sheet" },
+    { path: `/game/${sheetID}/inventory`, label: "Inventory" },
+    { path: `/game/${sheetID}/traits`, label: "Traits" },
+    { path: `/game/${sheetID}/chat`, label: "Chat" },
+    { path: `/game/${sheetID}/chat/${roomName}`, label: roomName },
+    { path: "/", label: "About" },
+    {path: '/login', label: "login"},
+    {path: '/register', label: "register"},
+    { path: "/orders", label: "Extra Sheets!" }
+  ];
 
-  // Toggle dark mode and save it to localStorage
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => {
-      const newMode = !prev;
-      localStorage.setItem("darkMode", newMode.toString());
-      return newMode;
-    });
-  };
+  const buttons = (
+    <>
+    {(location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register") && (
+      // Only render the login button if we're on the About, Login, or Register page
+      <Button variant="contained" sx={buttonStyle} component={Link} to="/login">Log in</Button>
+    )}
 
-  // Effect to apply dark mode on mount or when `isDarkMode` changes
-  useEffect(() => {
-    applyDarkMode(isDarkMode);
-  }, [isDarkMode]);
+    {location.pathname === "/sheets" ? (
+      // Only render the "Extra Sheets!" button on the /sheets page
+      <Button key="/orders" variant="contained" sx={buttonStyle} component={Link} to="/orders">Extra Sheets!</Button>
+    ) : location.pathname === "/orders" ? (
+      // Render only the "Back to Sheets" button on the /orders page
+      <Button key="/sheets" variant="contained" sx={buttonStyle} component={Link} to="/sheets">Character Sheets</Button>
+    ) : (
+      (location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== "/register") && (
+        pages.map(({ path, label }) => {
+          // Skip rendering button for specific labels like 'About', 'Login', 'Register', and labels like 'Extra Sheets!'
+          if (
+            label === 'About' ||
+            label === 'Login' ||
+            label === 'Register' ||
+            label === 'Extra Sheets!'
+          ) return null;
 
-  const shouldShowLogout =
-    location.pathname !== "/" && location.pathname !== "/login";
+          // Skip the current page, so it doesn't show a button for itself
+          if (location.pathname === path) return null;
 
-  return (
-    <div>
-      <nav
-        className={`navbar navbar-expand-lg ${
-          isDarkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
-        }`}
-      >
-        <div className="container-fluid">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  aria-current="page"
-                  to="/"
-                  style={{
-                    color: isDarkMode
-                      ? "rgb(187, 187, 187)"
-                      : "rgb(46, 44, 44)",
-                  }}
-                >
-                  Home
-                </Link>
-              </li>
-            </ul>
-            <div className="d-flex align-items-center" style={{ gap: "3px" }}>
-              {renderButtons()}
+          // Render buttons only for pages that are different from the current one
+          // If on a specific page, filter out the relevant options
+          if (
+            (location.pathname.startsWith(`/game/${sheetID}`) &&
+              !["Sheets", "Main Sheet", "Inventory", "Traits", "Chat"].includes(label!))
+          ) {
+            return null;
+          }
+
+          return (
+            <Button key={path} variant="contained" sx={buttonStyle} component={Link} to={path}>
+              {label}
+            </Button>
+          );
+        })
+      )
+    )}
+  </>
+  );
+  
+
+  const shouldShowLogout = location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== '/register';
+
+  return (  
+    <ThemeProvider theme={theme}>
+      <div>
+        <AppBar position="sticky" sx={{ backgroundColor: theme.palette.background.default }}>
+          <Toolbar>
+            <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {isMobile ? (
+                <>
+                  <IconButton onClick={() => toggleDrawer(true)}>
+                    <MenuIcon />
+                  </IconButton>
+                  <Drawer anchor="left" open={isDrawerOpen} onClose={() => toggleDrawer(false)}>
+                    <List>
+                      {buttons && buttons.props.children && buttons.props.children.map((btn: any, index: number) => (
+                        <ListItem key={index} disablePadding>
+                          <ListItemButton component={btn.props.component} to={btn.props.to} onClick={() => toggleDrawer(false)}>
+                            <ListItemText primary={btn.props.children} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                      <ListItem disablePadding>
+                        <ListItemButton onClick={toggleTheme}>
+                          <ListItemText primary="Toggle Theme" />
+                          {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                        </ListItemButton>
+                      </ListItem>
+                    </List>
+                  </Drawer>
+                </>
+              ) : (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  {buttons}
+                  <IconButton onClick={toggleTheme}>
+                    {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                  </IconButton>
+                </Box>
+              )}
               {shouldShowLogout && (
-                <div>
-                <button onClick={logout} className="btn btn-danger">
-                  Logout
-                </button>
-                <button 
-                onClick={openNav}
-                className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}>
-                  Friends List
-                </button>
-                </div>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button variant="contained" onClick={logout}>Logout</Button>
+                  <Button variant="contained" onClick={openNav}>Friends List</Button>
+                </Box>
               )}
-              {/* Dark Mode Toggle Button */}
-              {location.pathname !== "/login" && location.pathname !== "/" && (
-                <button
-                  onClick={toggleDarkMode}
-                  className={`btn ${isDarkMode ? "btn-light" : "btn-dark"}`}
-                >
-                  {isDarkMode ? "Light Mode" : "Dark Mode"}
-                </button>
-              )}
-            </div>
-          </div>
+            </Container>
+          </Toolbar>
+        </AppBar>
+        {!isExcludedRoute && <FriendsList isSidenavOpen={isSidenavOpen} openNav={openNav} closeNav={closeNav} isDarkMode={isDarkMode} />}
+        <div className="container mt-4">
+          <Outlet />
         </div>
-      </nav>
-
-      {/* Pass down the open/close sidenav handlers */}
-      {!isExcludedRoute && (
-        <FriendsList
-          isSidenavOpen={isSidenavOpen}
-          openNav={openNav}
-          closeNav={closeNav}
-          isDarkMode  
-        />
-      )}
-
-      <div className="container mt-4">
-        <Outlet />
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

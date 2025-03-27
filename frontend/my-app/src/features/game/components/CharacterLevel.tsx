@@ -1,4 +1,4 @@
-import styles from '../../../StyleSheets/gamecomponent.module.css'
+import { Button } from '@mui/material';
 
 interface CharacterLevelProps {
   level: number;
@@ -12,7 +12,7 @@ const CharacterLevel = ({ level, id, race, charClass, handleLevelUp }: Character
   return (
     <div>
       <strong>Level:</strong> {level}{" "}
-      <button onClick={handleLevelUp} className={styles.button}>Level up!</button>
+      <Button variant='contained' onClick={handleLevelUp}>Level up!</Button>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import styles from '../../StyleSheets/about.module.css';
 import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material";
 
 
 const About = () => {
@@ -23,7 +24,6 @@ const About = () => {
               <li><strong>Spell Slots and Abilities:</strong> Automatically adjusted based on your class and level.</li>
               <li><strong>Inventory System:</strong> Add, remove, and manage items and gold easily.</li>
               <li><strong>Party Features:</strong> Join or host parties to trade items and interact with other players.</li>
-              <li><strong>Dungeon Master Tools:</strong> DM-specific features to manage items and interact with party members.</li>
             </ul>
           </Card>
         </div>
@@ -72,16 +72,21 @@ const About = () => {
       <p className={styles.footerText}>
         Dive into the world of Dungeons & Dragons with ease and let us take care of the details while you focus on the adventure!
       </p>
-      <div className={styles.test}>
-          <button
-            className={styles.button}
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/login")
-              }}
-          >Log In!
-          </button>
+      <div className={styles.centerLoginBtn}>
+          <Button variant="contained" 
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/login")
+            }}
+            >Login 
+            </Button>
+            <Button variant="contained" 
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/register")
+            }}
+            >Register 
+            </Button>
       </div>
     </div>
   );

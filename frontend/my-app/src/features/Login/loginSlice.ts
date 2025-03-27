@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { login, register } from './loginregisterAPI';
+import { login } from './loginAPI';
 
 // Define the initial state structure for authentication
 interface AuthState {
@@ -19,15 +19,6 @@ export const loginAsync = createAsyncThunk(
   'auth/login',
   async ({ username, password }: { username: string; password: string }) => {
     const response = await login(username, password);
-    return response.data; // Assuming the API returns { user, token }
-  }
-);
-
-// Async thunk for register
-export const registerAsync = createAsyncThunk(
-  'auth/register',
-  async ({ username, password }: { username: string; password: string }) => {
-    const response = await register(username, password);
     return response.data; // Assuming the API returns { user, token }
   }
 );
@@ -58,20 +49,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Login failed';
       })
-
-      // Handle register async states
-      .addCase(registerAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerAsync.fulfilled, (state, action: PayloadAction<{ user: string; token: string }>) => {
-        state.loading = false;
-        state.user = action.payload.user;
-      })
-      .addCase(registerAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'Registration failed';
-      });
   },
 });
 

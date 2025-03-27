@@ -12,16 +12,25 @@
 }
 
 .modal {
-    width: clamp(50%, 700px, 90%);
-    height: min(50%, 300px);
-    background-color: rgba(255, 255, 255, 1 );
-    padding: 2rem;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  width: clamp(50%, 700px, 90%);
+  height: min(50%, 300px);
+  padding: 2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgb(27, 27, 27);
 }
+
+.lightMode {
+  background-color: #AAB99A;
+}
+
+.darkMode {
+  background-color: #3F4F44;
+}
+
 
 .container {
   width: clamp(300px, 80vw, 1200px);
@@ -61,12 +70,6 @@
     border-radius: 10px;
   }
 
-  .centerButton {
-    display: flex; /* Enable flexbox */
-    justify-content: center; /* Horizontally center */
-    align-items: center; /* Vertically center */
-    width: 100%; /* Ensure it stretches across the available space */
-  }
 
   @media (max-width: 768px) {
     .container {

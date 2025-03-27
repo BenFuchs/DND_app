@@ -1,14 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Backdrop from "./Backdrop";
+import { Modal, Button, Box, useTheme } from "@mui/material";
+import styles from "../../../StyleSheets/gamecomponent.module.css";
 
 interface DiceRollsModalProps {
   modal: boolean;
   handleClose: () => void;
-  backdropClass: string;
-  modalClass: string;
   children: React.ReactNode; // Accept children as props
-  isDarkMode: boolean;
 }
 
 const dropIn = {
@@ -33,30 +31,65 @@ const dropIn = {
 };
 
 const DiceRollsModal: React.FC<DiceRollsModalProps> = ({
+  modal,
   handleClose,
-  backdropClass,
-  modalClass,
   children,
-  isDarkMode,
 }) => {
+  const theme = useTheme()
   return (
-    <Backdrop onClick={handleClose} className={backdropClass}>
-      <motion.div
-        onClick={(e) => e.stopPropagation()}
-        className={`${modalClass} ${isDarkMode ? "dark-modal" : "light-modal"}`}
-        variants={dropIn}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
+    <Modal
+      open={modal}
+      onClose={handleClose}
+      closeAfterTransition
+      BackdropProps={{
+        timeout: 500, // Customize backdrop transition if needed
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center", // Center horizontally
+          alignItems: "center", // Center vertically
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1300, // Ensure the modal backdrop stays on top
+        }}
       >
-        {children}
-        <button onClick={handleClose} className="modal-btn">
-          Close
-        </button>
-      </motion.div>
-    </Backdrop>
+        <motion.div
+          onClick={(e) => e.stopPropagation()}
+          className={`${styles.modal}`}
+          variants={dropIn}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          <Box
+            sx={{
+              width: "100%", // Set modal width
+              height: "100%", // Set modal height
+              padding: "2rem",
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "rgb(27, 27, 27)",
+              backgroundColor: theme.palette.background.paper,
+            }}
+          >
+            {children}
+            <br />
+            <Button variant="contained" onClick={handleClose}>
+              Close
+            </Button>
+          </Box>
+        </motion.div>
+      </Box>
+    </Modal>
   );
 };
-
 
 export default DiceRollsModal;

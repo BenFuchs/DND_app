@@ -24,6 +24,7 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import DiceRollsModal from "./components/DiceRollsModal";
 import { ToastContainer, toast } from "react-toastify";
 import LoadingIcon from "../hashLoading/loadingIcon";
+import { Button } from "@mui/material";
 
 // TypeScript interfaces
 interface SheetData {
@@ -250,6 +251,8 @@ const GameComponent = () => {
     return races[sheetData?.race || 0];
   };
 
+
+
   return (
     <div className={styles.container}>
       <ToastContainer />
@@ -302,22 +305,24 @@ const GameComponent = () => {
           onSubtract={handleSubtractGold}
           setCurrencyAmount={setcurrencyAmount}
         />
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => (modal ? close() : open())}
-          className={styles.button}
-        >
-          Open Dice Tray
-        </motion.button>
+        <br/>
+        <motion.div>
+          <Button 
+            variant="contained"
+            component={motion.button}
+            onClick={() => (modal ? close() : open())}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            Open Dice Tray
+          </Button>
+        </motion.div>
+
         <AnimatePresence>
           {modal && (
             <DiceRollsModal
               handleClose={close}
               modal={modal}
-              backdropClass={styles.backdrop}
-              modalClass={styles.modal}
-              isDarkMode
             >
               <DiceRoll />
             </DiceRollsModal>

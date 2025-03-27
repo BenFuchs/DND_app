@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { loginAsync, registerAsync } from "./loginregisterSlice";
+import { loginAsync } from "./loginSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import { toast, ToastContainer } from "react-toastify";
@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import styles from "../../StyleSheets/login.module.css";
 import axios from "axios";
 import LoadingIcon from "../hashLoading/loadingIcon";
+import { Button, TextField } from "@mui/material";
 
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -21,9 +22,8 @@ const LoginRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-
   const login = () => {
-    console.log("Attempting to log in with:", username, password);
+    // console.log("Attempting to log in with:", username, password);
     setLoading(true);
 
     dispatch(loginAsync({ username, password }))
@@ -48,23 +48,7 @@ const LoginRegister: React.FC = () => {
       });
   };
 
-  const register = () => {
-    console.log("Attempting to register with:", username, password);
-
-    dispatch(registerAsync({ username, password }))
-      .then(() => {
-        toast.success("Registration successful! Logging in now...");
-        login();
-      })
-      .catch(() => {
-        toast.error("Registration failed. Please try again.");
-      });
-  };
-
   const handleGoogleLoginSuccess = (credentialResponse: any) => {
-    // console.log('Google login successful:', credentialResponse);
-
-    // Send the Google token to the backend for verification
     axios
       .post(SERVER + "api/auth/google/", {
         token: credentialResponse.credential,
@@ -89,53 +73,43 @@ const LoginRegister: React.FC = () => {
     <GoogleOAuthProvider clientId={CLIENT_ID!}>
       <div>
         <ToastContainer />
-        <LoadingIcon loading={loading} /> {/* Display the loader when loading */}
+        <LoadingIcon loading={loading} />{" "}
+        {/* Display the loader when loading */}
         {!loading && (
           <>
             <form>
               <div className={styles.formField}>
-                <label className={styles.label}>Username:</label>
-                <input
-                  type="text"
+                <TextField
+                  label="Username"
+                  variant="filled"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className={styles.input}
                 />
               </div>
-  
+
               <div className={styles.formField}>
-                <label className={styles.label}>Password:</label>
-                <input
+                <TextField
+                  label="Password"
+                  variant="filled"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={styles.input}
                 />
               </div>
-  
+
               <div className={styles.formField}>
-                <button
+                <Button
+                  variant="contained"
                   onClick={(e) => {
                     e.preventDefault();
                     login();
                   }}
-                  className={styles.button}
                 >
                   Login
-                </button>
-  
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    register();
-                  }}
-                  className={styles.button}
-                >
-                  Register
-                </button>
+                </Button>
               </div>
             </form>
-  
+
             <div className={styles.googleLogin}>
               <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}

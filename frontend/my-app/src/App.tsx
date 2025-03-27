@@ -1,5 +1,5 @@
 import React from 'react'
-import LoginRegister from './features/login_register/LoginRegister'
+import LoginRegister from './features/Login/Login'
 
 
 const App = () => {

@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -14,9 +14,9 @@ import {
 } from "../sheets/sheetsSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import styles from '../../StyleSheets/gamecomponent.module.css'
 import LoadingIcon from "../hashLoading/loadingIcon";
-
+import { Button, MenuItem, TextField } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // Define types for Sheets data
 export interface Sheet {
@@ -35,7 +35,7 @@ const SheetsComp = () => {
   const dispatch = useAppDispatch();
   const numSheets = useAppSelector(selectNumSheets) as SheetData | null; // Type assertion here
   const status = useAppSelector(selectSheetStatus);
-  const loading = useAppSelector(selectLoading)
+  const loading = useAppSelector(selectLoading);
   const stats = useAppSelector(selectStats);
   const navigate = useNavigate();
 
@@ -61,6 +61,7 @@ const SheetsComp = () => {
 
   const handleCreateCharacterSheet = () => {
     if (characterName && charClass && selectedRace !== null) {
+      console.log(characterName, charClass, selectedRace, stats);
       dispatch(
         create_new_sheetAsync({
           characterName,
@@ -76,7 +77,7 @@ const SheetsComp = () => {
   };
 
   const handleRollStat = () => {
-    console.log("stats:", stats);
+    // console.log("stats:", stats);
     dispatch(rollStatsAsync());
   };
 
@@ -99,7 +100,7 @@ const SheetsComp = () => {
   const handleDeleteSheet = (sheetID: number) => {
     dispatch(deleteSheetAsync(sheetID))
       .then(() => {
-        console.log("Deleted Sheet ID: ", sheetID);
+        // console.log("Deleted Sheet ID: ", sheetID);
         if (numSheets) {
           const updatedSheets = numSheets.sheets.filter(
             (sheet: Sheet) => sheet.sheetID !== sheetID
@@ -107,7 +108,7 @@ const SheetsComp = () => {
           dispatch({ type: "UPDATE_SHEETS", payload: updatedSheets });
         }
         toast.success("Character sheet deleted successfully!");
-        window.location.reload()
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Failed to delete sheet:", error);
@@ -126,7 +127,6 @@ const SheetsComp = () => {
 
   if (loading) {
     return <LoadingIcon loading={loading} />;
-
   }
 
   if (status === "failed") {
@@ -136,6 +136,25 @@ const SheetsComp = () => {
   if (numSheets && typeof numSheets === "object") {
     const { username, sheet_count, sheets, max_sheets } = numSheets;
 
+    const selectOptions = [
+      {
+        value: 1,
+        label: "Human",
+      },
+      {
+        value: 2,
+        label: "Gnome",
+      },
+      {
+        value: 3,
+        label: "Elf",
+      },
+      {
+        value: 4,
+        label: "Halfling",
+      },
+    ];
+
     return (
       <div>
         <h1>Username: {username}</h1>
@@ -143,53 +162,60 @@ const SheetsComp = () => {
         {Array.isArray(sheets) &&
           sheets.map((sheet: Sheet, index: number) => (
             <ul key={index}>
-              <button className={styles.button}
+              <Button
+                variant="contained"
                 onClick={() => {
-                  console.log(
-                    `Selected sheet: ${sheet.sheet_name || "Unnamed Character"}`
-                  );
                   handleGetSheetData(sheet.sheetID);
                 }}
               >
                 {sheet.sheet_name || "Unnamed Character"}
-              </button>
-              {" -- "}
-              <button onClick={() => handleDeleteSheet(sheet.sheetID)} className={styles.button}>
-                Delete character
-              </button>
+              </Button>
+              {"  "}
+              <Button
+                variant="contained"
+                onClick={() => handleDeleteSheet(sheet.sheetID)}
+              >
+                <DeleteIcon />
+              </Button>
             </ul>
           ))}
         <Outlet />
         {sheet_count < max_sheets && (
           <div>
             <div>
-              <label>Select Race:</label>
-              <select
+              <label>Select a race:</label>
+              <TextField
+                select
+                defaultValue={1}
                 value={selectedRace ?? ""}
                 onChange={(e) => setSelectedRace(Number(e.target.value))}
-                className={styles.dropDownButton}
+                variant="filled"
+                label='Race Options'
+                sx={{
+                  width: "25%",
+                }}
               >
-                <option value="">Select a race</option>
-                <option value={1}>Human</option>
-                <option value={2}>Gnome</option>
-                <option value={3}>Elf</option>
-                <option value={4}>Halfling</option>
-              </select>
+                {selectOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             </div>
-            <button onClick={handleCreateSheet}>
+            <Button variant="contained" onClick={handleCreateSheet}>
               Create new character sheet
-            </button>
-
+            </Button>
             {showForm && (
               <div>
+                <hr />
                 <div>
                   <label>Character Name: </label>
-                  <input
-                    type="text"
+                  <TextField
+                    variant="filled"
+                    label="Enter Character Name"
                     value={characterName}
                     onChange={(e) => setCharacterName(e.target.value)}
-                    placeholder="Enter character name"
-                  />
+                  ></TextField>
                 </div>
 
                 <div>
@@ -207,18 +233,26 @@ const SheetsComp = () => {
                 </div>
 
                 <div>
-                  <button onClick={handleRollStat}>Roll Stats</button>
+                  <Button variant="contained" onClick={() => handleRollStat()}>
+                    Roll Stats
+                  </Button>
                   <div>
                     {stats?.map((stat: number, index: number) => (
                       <div key={index}>
                         <label>{statNames[index]}: </label>
-                        <input type="number" value={stat} readOnly />
+                        <TextField type="number" value={stat} disabled variant='outlined' sx={{alignContent: "center"}}/> 
+                        {/* Align number to center of textfield  */}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <button onClick={handleCreateCharacterSheet}>Submit</button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleCreateCharacterSheet()}
+                >
+                  Submit
+                </Button>
               </div>
             )}
           </div>

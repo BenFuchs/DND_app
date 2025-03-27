@@ -1,4 +1,7 @@
+import { Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 interface CurrencyCalculatorProps {
     onAdd: (amount: number) => void;
@@ -24,16 +27,19 @@ const CurrencyCalculator = ({ onAdd, onSubtract, setCurrencyAmount}: CurrencyCal
     <div id="currencyCalc">
       <label>
         Currency Action:
-        <input
-          id="currencyAction"
-          type="number"
-          min={0}
-          value={localCurrencyAmount}
-          onChange={handleChange}
+        <br/>
+        <TextField 
+        type="number"
+        inputProps={{min: 0}}
+        value={localCurrencyAmount}
+        onChange={handleChange}
+        variant="filled"
         />
       </label>
-      <button onClick={() => onAdd(localCurrencyAmount)}>+</button>
-      <button onClick={() => onSubtract(localCurrencyAmount)}>-</button>
+      <br/>
+      <Button variant="contained" onClick={() => onAdd(localCurrencyAmount)}><AddIcon/></Button>
+      <Button variant="contained" onClick={() => onSubtract(localCurrencyAmount)}><RemoveIcon/></Button>
+
     </div>
   );
 };
