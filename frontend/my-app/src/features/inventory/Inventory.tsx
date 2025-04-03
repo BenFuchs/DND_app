@@ -6,7 +6,7 @@ import LoadingIcon from '../hashLoading/loadingIcon';
 import { AnimatePresence } from 'framer-motion';
 import ItemDataModal from './ItemDataModal';
 import styles from '../../StyleSheets/gamecomponent.module.css'
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Menu, MenuItem } from '@mui/material';
 
 interface InventoryComponentProps {
   ID: number;
@@ -142,7 +142,7 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
           onFocus={() => item && setShowDropdown(true)} // Show dropdown when input is focused
           onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           />
-
+        
         {showDropdown && searchResults && searchResults.length > 0 && (
           <ul
             style={{
@@ -158,6 +158,7 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
               overflowY: "auto",
               zIndex: 1000,
               backgroundColor: isDarkMode ? "#1e1e1e" : "#fff", // Background for dropdown
+              color: isDarkMode ? "#ffffff" : "#000000" // text color for dropdown
             }}
           >
             {searchResults.map((result, index) => (
@@ -192,4 +193,4 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
 };
 
 export default InventoryComponent;
-// The item names in the inventory get set to unknown and are connected to the search item input bar. need to find a fix for that. maybe second enpoint to read through the csv list and get just the names of items in the users inventory
+

@@ -105,7 +105,7 @@ const Layout: React.FC = () => {
         <AppBar position="sticky" sx={{ backgroundColor: theme.palette.background.default }}>
           <Toolbar>
             <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              {isMobile ? (
+              {/* {isMobile ? (
                 <>
                   <IconButton onClick={() => toggleDrawer(true)}>
                     <MenuIcon />
@@ -128,14 +128,14 @@ const Layout: React.FC = () => {
                     </List>
                   </Drawer>
                 </>
-              ) : (
+              ) : ( */}
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {buttons}
                   <IconButton onClick={toggleTheme}>
                     {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
                   </IconButton>
                 </Box>
-              )}
+              {/* )} */}
               {shouldShowLogout && (
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <Button variant="contained" onClick={logout}>Logout</Button>
