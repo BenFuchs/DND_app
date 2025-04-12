@@ -4,6 +4,7 @@ import { getRaceTraits } from './traitsAPI';
 
 const initialState = {
   features: [] as { name: string; description: string }[], // Update type to store name and description
+  languages: [],
   loading: false,  // Add loading state
 };
 
@@ -12,6 +13,7 @@ export const getRaceTraitsAsync = createAsyncThunk(
   "traits/getRaceTraits",
   async (sheetID: number) => {
     const response = await getRaceTraits(sheetID);
+    console.log(response) // testing
     return response.data; // Assuming the backend returns the full features array with name and description
   }
 );
@@ -30,7 +32,8 @@ const traitsSlice = createSlice({
       })
       .addCase(getRaceTraitsAsync.fulfilled, (state, action) => {
         // console.log("Payload received in fulfilled:", action.payload); // Log the payload here
-        state.features = action.payload; // Store the full feature objects with name and description
+        state.features = action.payload.features; 
+        state.languages = action.payload.languages;
         state.loading = false;  // Handle error and stop loading
       })
       .addCase(getRaceTraitsAsync.rejected, (state) => {

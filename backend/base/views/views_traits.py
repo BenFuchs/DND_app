@@ -13,8 +13,7 @@ def getSheetRaceTraits(request):
     user = request.user
     sheetID = request.data.get('id')
     traits_path = os.path.join(os.path.dirname(__file__), '../misc/traits.json')
-    # print(traits_path)
-    # get traits.json data
+
     try:
         with open(traits_path, "r") as file:
             data = json.load(file)
@@ -23,15 +22,8 @@ def getSheetRaceTraits(request):
     except json.JSONDecodeError:
         return Response({"msg": "Error decoding traits file."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    race_features = {
-        race: details.get("Race Features", [])
-        for race, details in data["races"].items()
-    }
-
     try:
-        # Get the character sheet associated with the current user
         character_sheet = CharacterSheet.objects.get(owner=user, id=sheetID)
-        charName = character_sheet.char_name
         
         race_map = {
             1: "Human",
@@ -39,16 +31,24 @@ def getSheetRaceTraits(request):
             3: "Elf",
             4: "Halfling"
         }
-        
+
         race_name = race_map.get(character_sheet.race)
-        if race_name:
-            return Response(race_features.get(race_name, []))  # Return race features
+
+        if race_name and race_name in data["races"]:
+            race_data = data["races"][race_name]
+            return Response({
+                "features": race_data.get("Race Features", []),
+                "languages": race_data.get("Languages", [])
+            })
         else:
             return Response({"msg": "Invalid race."}, status=status.HTTP_400_BAD_REQUEST)
+    
     except CharacterSheet.DoesNotExist:
         return Response({"msg": "Character sheet not found."}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         print(f"Error: {e}")
+        return Response({"msg": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
     
 @api_view(['POST'])
@@ -68,7 +68,7 @@ def getClassFeats(request):
         return Response({"msg": "Error decoding class feats file."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     class_features = data.get("classes", {})
-    print(f"class_features: {class_features}")
+    # print(f"class_features: {class_features}")
 
     try:
         # Get the character sheet associated with the current user
@@ -101,12 +101,12 @@ def getClassFeats(request):
             return Response({"msg": "Invalid char_class"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Debugging: Print the class features and class key
-        print(f"class_features: {class_features}")
-        print(f"class_key: {class_key}")
+        # print(f"class_features: {class_features}")
+        # print(f"class_key: {class_key}")
 
         # Get the class features and return
         response_data = class_features.get(class_key, [])
-        print(f"response_data: {response_data}")  # Debugging
+        # print(f"response_data: {response_data}")  # Debugging
         return Response(response_data)
 
     except CharacterSheet.DoesNotExist:

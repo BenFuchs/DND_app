@@ -12,6 +12,7 @@ interface TraitsProps {
 const TraitsComponent = ({ sheetID }: TraitsProps) => {
   const dispatch = useAppDispatch();
   const traits = useAppSelector((state: RootState) => state.raceTraits.features);
+  const langauges = useAppSelector((state: RootState)=> state.raceTraits.languages);
   const loading = useAppSelector((state: RootState) => state.raceTraits.loading);
   const [charName, setCharName] = useState<string | null>(null);
   const [charLevel, setcharLevel] = useState<number>(0)
@@ -53,6 +54,14 @@ const TraitsComponent = ({ sheetID }: TraitsProps) => {
         {traits.map((trait, index) => (
           <li key={index}>
             <strong>{trait.name}:</strong> {trait.description}
+          </li>
+        ))}
+      </ul>
+      <h1>Languages</h1>
+      <ul>
+        {langauges.map((language, index)=> (
+          <li key={index}>
+            {language}
           </li>
         ))}
       </ul>

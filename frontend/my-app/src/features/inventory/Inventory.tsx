@@ -97,22 +97,22 @@ const InventoryComponent: React.FC<InventoryComponentProps> = ({ ID }) => {
         <ul>
           {inventory.map((invItem: any, index: number) => (
             <li key={index}>
-              {[invItem.name]} - Quantity: {invItem.quantity} -
+                {[invItem.name]} - Quantity: {invItem.quantity} -
+                <Button 
+                  variant='contained' 
+                  onClick={() => {
+                    popUpInfo(invItem.itemID);
+                    open();
+                  }}>
+                    Item Info
+                  </Button>
+                {" "}
+                -{" "}
               <Button 
-                variant='contained' 
-                onClick={() => {
-                  popUpInfo(invItem.itemID);
-                  open();
-                }}>
-                  Item Info
-                </Button>
-              {" "}
-              -{" "}
-            <Button 
-              variant='contained'
-              onClick={() => handleRemoveFromInventory(invItem.itemID)}>
-                Remove
-            </Button>
+                variant='contained'
+                onClick={() => handleRemoveFromInventory(invItem.itemID)}>
+                  Remove
+              </Button>
             </li>
           ))}
         </ul>

@@ -7,7 +7,7 @@ const CharacterTempHp = () => {
     const HandleTempHp = (e: React.ChangeEvent<HTMLInputElement>) => {
         const tempHP = parseInt(e.target.value, 10) || 0; // Handle NaN case
         setTempHP(tempHP)
-        console.log(TempHP) // debugging
+        // console.log(TempHP) // debugging
     }
 
     return (

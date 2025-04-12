@@ -21,10 +21,3 @@
     font-size: 1rem;
   }
 
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-left: 0;
-    list-style: none;
-  }
