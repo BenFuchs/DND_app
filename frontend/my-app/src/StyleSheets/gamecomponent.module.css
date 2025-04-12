@@ -12,8 +12,8 @@
 }
 
 .modal {
-  width: clamp(50%, 700px, 90%);
-  height: min(50%, 300px);
+  width: clamp(50%, 900px, 90%);
+  height: min(50%,450px);
   padding: 2rem;
   border-radius: 12px;
   display: flex;

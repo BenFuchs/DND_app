@@ -6,7 +6,7 @@ import LoadingIcon from '../hashLoading/loadingIcon';
 import { AnimatePresence } from 'framer-motion';
 import ItemDataModal from './ItemDataModal';
 import styles from '../../StyleSheets/gamecomponent.module.css'
-import { Button, TextField, Menu, MenuItem } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
 interface InventoryComponentProps {
   ID: number;

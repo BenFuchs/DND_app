@@ -9,7 +9,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } 
 import DeleteIcon from '@mui/icons-material/Delete';
 import CryptoJS from "crypto-js";
 
-const SERVER = "https://dnd-backend-f57d.onrender.com/";
+// const SERVER = "https://dnd-backend-f57d.onrender.com/";
+const SERVER = "http://127.0.0.1:8000/";
 
 interface ChatRoomCompProps {
   room_names: string[];

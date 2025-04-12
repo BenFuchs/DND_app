@@ -24,7 +24,8 @@ const ChatRoomView: React.FC = () => {
   const [loggedCharName, setloggedCharName] = useState<string>("");
   const [decryptedRoomName, setDecryptedRoomName] = useState<string>(""); // State for decrypted room name
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const SERVER = "dnd-backend-f57d.onrender.com";
+  // const SERVER = "dnd-backend-f57d.onrender.com";
+  const SERVER = "http://127.0.0.1:8000/";
 
   // get the logged username for the connected list later
   useEffect(() => {

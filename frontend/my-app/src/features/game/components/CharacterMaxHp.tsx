@@ -4,7 +4,7 @@ interface CharacterHPProps {
   hitpoints: number;
 }
 
-const CharacterHP = ({ hitpoints, CharClass }: CharacterHPProps) => {
+const CharacterMaxHP = ({ hitpoints, CharClass }: CharacterHPProps) => {
   return (
     <div>
         <strong>HP:</strong> {hitpoints}
@@ -12,4 +12,4 @@ const CharacterHP = ({ hitpoints, CharClass }: CharacterHPProps) => {
   )
 }
 
-export default CharacterHP
+export default CharacterMaxHP

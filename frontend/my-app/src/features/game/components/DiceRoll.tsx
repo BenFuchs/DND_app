@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import '../../../StyleSheets/diceTray.module.css';
-import { rollDiceAsync } from '../gameSlice';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import "../../../StyleSheets/diceTray.module.css";
+import { rollDiceAsync } from "../gameSlice";
 import { useAppDispatch } from "../../../app/hooks";
-import { Button } from '@mui/material';
+import { Button } from "@mui/material";
 
 const DiceRoll = () => {
   const dispatch = useAppDispatch();
@@ -11,9 +11,11 @@ const DiceRoll = () => {
   // Set up state for diceType, amount, and roll results
   const [diceType, setDiceType] = useState(4); // Default dice type (d4)
   const [amount, setAmount] = useState(1); // Default number of dice
-  const [rollResult, setRollResult] = useState<number[] | null>([0]); // Array for roll results
+  const [rollResult, setRollResult] = useState<{
+    results: number[];
+    total: number;
+  } | null>(null);
   const [modalOpen, setModalOpen] = useState(false); // State for controlling modal visibility
-
 
   useEffect(() => {
     if (rollResult) {
@@ -31,10 +33,10 @@ const DiceRoll = () => {
         setRollResult(result.payload); // Set the array of results
         setModalOpen(true); // Open the modal with the results
       } else {
-        console.error('No result in response:', result);
+        console.error("No result in response:", result);
       }
     } catch (error) {
-      console.error('Error rolling dice:', error);
+      console.error("Error rolling dice:", error);
     }
   };
 
@@ -76,13 +78,18 @@ const DiceRoll = () => {
       <div>
         <motion.div>
           <Button
-            variant='contained'
+            variant="contained"
             component={motion.button}
             whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}    
+            whileTap={{ scale: 0.9 }}
             onClick={handleDiceRoll}
-            sx={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}
-            >
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             Roll!
           </Button>
         </motion.div>
@@ -90,9 +97,19 @@ const DiceRoll = () => {
 
       {/* Conditionally render the DiceRollsModal with the roll results */}
       {modalOpen && rollResult && (
-       
-          <p className='formGroup'>Roll Results: {rollResult.join(', ')}</p>
-      
+        <div className="formGroup">
+          <p>Roll Results:</p>
+          <ul>
+            {rollResult.results.map((num, index) => (
+              <li key={index}>
+                🎲 Roll {index + 1}: {num}
+              </li>
+            ))}
+          </ul>
+          <p>
+            <strong>Total:</strong> {rollResult.total}
+          </p>
+        </div>
       )}
     </div>
   );

@@ -18,13 +18,16 @@ import CurrencyCalculator from "./components/CurrencyCalculator";
 import DiceRoll from "./components/DiceRoll";
 import styles from "../../StyleSheets/gamecomponent.module.css";
 import CharacterGold from "./components/CharacterGold";
-import CharacterHP from "./components/CharachterHp";
+import CharacterMaxHp from "./components/CharacterMaxHp";
 import CharacterLevel from "./components/CharacterLevel";
 import { PayloadAction } from "@reduxjs/toolkit";
 import DiceRollsModal from "./components/DiceRollsModal";
 import { ToastContainer, toast } from "react-toastify";
 import LoadingIcon from "../hashLoading/loadingIcon";
 import { Button } from "@mui/material";
+import CharacterCurrentHp from "./components/CharacterCurrentHp";
+import CharacterTempHp from "./components/CharacterTempHp";
+
 
 // TypeScript interfaces
 interface SheetData {
@@ -270,10 +273,13 @@ const GameComponent = () => {
               charClass={sheetData.char_class}
               handleLevelUp={handleLevelUp}
             />
-            <CharacterHP
+            <CharacterMaxHp
               hitpoints={sheetData.hitpoints}
               CharClass={sheetData.char_class}
             />
+
+            <CharacterCurrentHp hitpoints={sheetData.hitpoints}/>
+            <CharacterTempHp />
             <CharacterGold gold={gold.gold} />
             <CharacterStats
               stats={Object.entries(sheetData)

@@ -19,15 +19,20 @@ def statRoll(request):
 def nSidedDice(request):
     # Get query parameters (not positional arguments)
     numOfSides = int(request.GET.get('diceType'))
-    amount = request.GET.get('amount')
-
+    amount = int(request.GET.get('amount'))
+    TotalSum = 0
     if not numOfSides or not amount:
         return Response({"error": "Missing diceType or amount"}, status=400)
-
+        
     dice = Dice(numOfSides)
     results = []
     for _ in range(int(amount)):
         roll = dice.roll()
         results.append(roll)
+        if amount > 1: 
+            TotalSum += roll
 
-    return Response(results)
+    return Response({
+    "results": results,
+    "total": TotalSum if amount > 1 else results[0]
+}, status=200)

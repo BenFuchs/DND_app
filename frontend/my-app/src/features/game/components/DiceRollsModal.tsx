@@ -68,6 +68,7 @@ const DiceRollsModal: React.FC<DiceRollsModalProps> = ({
         >
           <Box
             sx={{
+              overflowY: "allow",
               width: "100%", // Set modal width
               height: "100%", // Set modal height
               padding: "2rem",
@@ -76,8 +77,9 @@ const DiceRollsModal: React.FC<DiceRollsModalProps> = ({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              color: "rgb(27, 27, 27)",
+              color: theme.palette.text.primary,
               backgroundColor: theme.palette.background.paper,
+              
             }}
           >
             {children}
