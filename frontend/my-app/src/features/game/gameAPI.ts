@@ -73,8 +73,8 @@ export function rollDice(diceType: number, amount: number) {
 
 export function getSheetDataToken() {
   const SD = localStorage.getItem('SheetData');
-  // console.log(SD)
-  const access = localStorage.getItem('Access'); // Example auth access
+  console.log(SD)
+  const access = localStorage.getItem('Access'); 
   return apiClient.post(SERVER + 'SDT/', {
     sheet_data: SD
   }, {
@@ -87,7 +87,7 @@ export function getSheetDataToken() {
 export function updateSheetDataToken() {
   const oldSDT = localStorage.getItem('SDT')
   const SD = localStorage.getItem('SheetData');
-  const access = localStorage.getItem('Access'); // Example auth access
+  const access = localStorage.getItem('Access'); 
   if (oldSDT) {
     return apiClient.post(SERVER + 'updateSDT/', {
       current_sheet_data: SD

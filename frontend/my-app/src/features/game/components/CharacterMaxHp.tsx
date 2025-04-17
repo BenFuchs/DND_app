@@ -5,6 +5,7 @@ interface CharacterHPProps {
 }
 
 const CharacterMaxHP = ({ hitpoints, CharClass }: CharacterHPProps) => {
+  // console.log(hitpoints)
   return (
     <div>
         <strong>HP:</strong> {hitpoints}

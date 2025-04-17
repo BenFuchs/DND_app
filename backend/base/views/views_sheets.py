@@ -155,7 +155,7 @@ def sheet_delete(request):
 def get_specific_sheet(request, sheetID):
     # Ensure the user is authenticated through the token
     user = request.user  # The user is retrieved from the request, thanks to JWT authentication
-    
+    print(sheetID)
     try:
         # Get the parent sheet      
         parent_sheet = CharacterSheet.objects.get(id=sheetID, active=True)

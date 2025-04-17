@@ -1,27 +1,29 @@
 import { TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 
-const CharacterTempHp = () => {
-    const [TempHP, setTempHP] = useState<number>(0)
-
-    const HandleTempHp = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const tempHP = parseInt(e.target.value, 10) || 0; // Handle NaN case
-        setTempHP(tempHP)
-        // console.log(TempHP) // debugging
-    }
-
+interface CharacterTempHpProps {
+    tempHP: number;
+    setTempHP: (value: number) => void;
+  }
+  
+  const CharacterTempHp = ({ tempHP, setTempHP }: CharacterTempHpProps) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseInt(e.target.value, 10);
+      setTempHP(isNaN(value) ? 0 : value);
+    };
+  
     return (
-
-            <TextField
-             type="number"
-             inputProps={{min: 0}}
-             label="Temp HP"
-             variant="filled"
-             onChange={HandleTempHp}
-             sx={{width: 100}} // This works but width should be precentage based instead of based on set pixel constant
-            />
+      <TextField
+        type="number"
+        inputProps={{ min: 0 }}
+        label="Temp HP"
+        variant="filled"
+        value={tempHP}
+        onChange={handleChange}
+        sx={{ width: 100 }}
+      />
     );
-}
-
-export default CharacterTempHp;
-// works but isnt saved anywhere, consider adding to SDT
+  };
+  
+  export default CharacterTempHp;
+  

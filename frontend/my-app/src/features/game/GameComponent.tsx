@@ -27,7 +27,8 @@ import LoadingIcon from "../hashLoading/loadingIcon";
 import { Button } from "@mui/material";
 import CharacterCurrentHp from "./components/CharacterCurrentHp";
 import CharacterTempHp from "./components/CharacterTempHp";
-
+import { CheckBox } from "@mui/icons-material";
+import DeathSaveCounter from "./components/DeathSaveCounter";
 
 // TypeScript interfaces
 interface SheetData {
@@ -43,7 +44,9 @@ interface SheetData {
   stat_Charisma: number;
   race: number;
   level: number;
-  hitpoints: number;
+  MaxHitPoints: number;
+  CurrentHitPoints: number;
+  TempHitPoints: number;
   proficiency: number;
 }
 
@@ -69,6 +72,8 @@ const GameComponent = () => {
   const [proficiencyBonus, setproficiencyBonus] = useState<number>(2);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currencyAmount, setcurrencyAmount] = useState<number>(0);
+  const [currentHP, setCurrentHP] = useState<number>(0);
+  const [tempHP, setTempHP] = useState<number>(0);
 
   // Toggles for modal
   const open = () => setModal(true);
@@ -84,6 +89,9 @@ const GameComponent = () => {
 
   useEffect(() => {
     if (sheetData) {
+      setCurrentHP(sheetData.CurrentHitPoints);
+      setTempHP(sheetData.TempHitPoints);
+
       const { race, id: sheetID } = sheetData;
 
       // Fetch gold and mods
@@ -105,6 +113,18 @@ const GameComponent = () => {
         .catch((err) => console.error("Error fetching sheet data token:", err));
     }
   }, [sheetData, dispatch]);
+
+  useEffect(() => {
+    if (sheetData) {
+      const updatedData = {
+        ...sheetData,
+        CurrentHitPoints: currentHP,
+        TempHitPoints: tempHP,
+      };
+      setSheetData(updatedData);
+      localStorage.setItem("SheetData", JSON.stringify({ data: updatedData }));
+    }
+  }, [currentHP, tempHP]);
 
   const reloadSheetData = () => {
     const storedSheetData = localStorage.getItem("SheetData");
@@ -144,14 +164,14 @@ const GameComponent = () => {
 
         // Access the payload correctly after casting
         const { NewLevel, Newhitpoints } = level_up_data.payload;
-
+        console.log(Newhitpoints);
         // Update the sheetData state directly
         setSheetData((prevSheetData) => {
           if (!prevSheetData) return prevSheetData;
           return {
             ...prevSheetData,
             level: NewLevel,
-            hitpoints: Newhitpoints,
+            MaxHitPoints: Newhitpoints,
           };
         });
 
@@ -162,7 +182,7 @@ const GameComponent = () => {
         localStorage.setItem(
           "SheetData",
           JSON.stringify({
-            data: { ...sheetData, level: NewLevel, hitpoints: Newhitpoints },
+            data: { ...sheetData, level: NewLevel, MaxHitPoints: Newhitpoints },
           })
         );
 
@@ -254,8 +274,6 @@ const GameComponent = () => {
     return races[sheetData?.race || 0];
   };
 
-
-
   return (
     <div className={styles.container}>
       <ToastContainer />
@@ -274,12 +292,15 @@ const GameComponent = () => {
               handleLevelUp={handleLevelUp}
             />
             <CharacterMaxHp
-              hitpoints={sheetData.hitpoints}
+              hitpoints={sheetData.MaxHitPoints}
               CharClass={sheetData.char_class}
             />
-
-            <CharacterCurrentHp hitpoints={sheetData.hitpoints}/>
-            <CharacterTempHp />
+            <CharacterCurrentHp
+              hitpoints={sheetData.MaxHitPoints}
+              currentHP={currentHP}
+              setCurrentHP={setCurrentHP}
+            />
+            <CharacterTempHp tempHP={tempHP} setTempHP={setTempHP} />
             <CharacterGold gold={gold.gold} />
             <CharacterStats
               stats={Object.entries(sheetData)
@@ -311,9 +332,9 @@ const GameComponent = () => {
           onSubtract={handleSubtractGold}
           setCurrencyAmount={setcurrencyAmount}
         />
-        <br/>
+        <br />
         <motion.div>
-          <Button 
+          <Button
             variant="contained"
             component={motion.button}
             onClick={() => (modal ? close() : open())}
@@ -326,14 +347,15 @@ const GameComponent = () => {
 
         <AnimatePresence>
           {modal && (
-            <DiceRollsModal
-              handleClose={close}
-              modal={modal}
-            >
+            <DiceRollsModal handleClose={close} modal={modal}>
               <DiceRoll />
             </DiceRollsModal>
           )}
         </AnimatePresence>
+        <hr/>
+        <input type="checkbox" /> Inspiration 
+
+        <DeathSaveCounter />
       </div>
       {error && <p>Error: {error}</p>}
     </div>

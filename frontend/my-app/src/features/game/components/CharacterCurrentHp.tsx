@@ -1,31 +1,30 @@
 import { TextField } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 interface CharacterHPProps {
     hitpoints: number;
-}
-
-const CharacterCurrentHp = ({ hitpoints }: CharacterHPProps) => {
-    const [CurrentHP, setCurrentHP] = useState<number>(hitpoints); // Initialize directly
-
-    useEffect(() => {
-        setCurrentHP(hitpoints); // Update when `hitpoints` changes
-    }, [hitpoints]); 
-
+    currentHP: number;
+    setCurrentHP: (value: number) => void;
+  }
+  
+  const CharacterCurrentHp = ({ hitpoints, currentHP, setCurrentHP }: CharacterHPProps) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseInt(e.target.value, 10);
+      setCurrentHP(isNaN(value) ? 0 : value);
+    };
+  
     return (
-        <div>
-            <TextField
-             type="number"
-             inputProps={{min: 0, max: hitpoints}}
-             defaultValue={CurrentHP}
-             label="Current HP"
-             variant="filled"
-             sx={{width: 100}} // This works but width should be precentage based instead of based on set pixel constant
-            />
-        </div>
+      <TextField
+        type="number"
+        inputProps={{ min: 0, max: hitpoints }}
+        value={currentHP}
+        onChange={handleChange}
+        label="Current HP"
+        variant="filled"
+        sx={{ width: 100 }}
+      />
     );
-}
-
-export default CharacterCurrentHp;
-// Essentially finished, requires maybe some new design for the main sheet page 
-// Consider adding to SDT 
+  };
+  
+  export default CharacterCurrentHp;
+  

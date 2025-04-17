@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import FriendsList from "./features/friends_list/FriendsList";
 import { getTheme } from "../src/features/colors/colorPalette";
@@ -7,6 +7,8 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme } from "./features/DarkModeSwitch/ThemeProviderWrapper";
 import { AppBar, Toolbar, Button, IconButton, Container, Box, ThemeProvider, Drawer, List, ListItem, ListItemButton, ListItemText, useMediaQuery } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import apiClient from "./axiosInstance";
+
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -22,6 +24,43 @@ const Layout: React.FC = () => {
   const openNav = () => setIsSidenavOpen(true);
   const closeNav = () => setIsSidenavOpen(false);
   const toggleDrawer = (open: boolean) => setIsDrawerOpen(open);
+
+  // const SERVER = "https://dnd-backend-f57d.onrender.com/";
+  const SERVER = "http://127.0.0.1:8000/";
+
+  useEffect(() => {
+    const syncInterval = setInterval(() => {
+      updateSheetData();
+    }, 3600000); 
+    return () => clearInterval(syncInterval); // Clear interval on component unmount
+  }, []);
+
+  const updateSheetData = () => {
+    const SheetDataTemp = localStorage.getItem('SheetData');
+    if (!SheetDataTemp) {
+      console.log("Error: no Sheet Data in localStorage");
+      return;
+    }
+  
+    const parsedData = JSON.parse(SheetDataTemp);
+  
+    const payload = {
+      race: parsedData.data?.race,
+      id: parsedData.data?.id,
+      CurrentHitPoints: parsedData.data?.CurrentHitPoints,
+      TempHitPoints: parsedData.data?.TempHitPoints
+    };
+  
+    apiClient.get(SERVER + 'timed_sheet_data_sync/', {
+      params: payload
+    })
+    .then(response => {
+      console.log("Sync successful:", response.data);
+    })
+    .catch(error => {
+      console.error("Sync failed:", error);
+    });
+  };
 
   const logout = () => {
     localStorage.clear();

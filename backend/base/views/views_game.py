@@ -216,6 +216,7 @@ def addItemToPlayerInv(request):
 def create_sheet_token(request):
     user = request.user
     sheet_data = request.data.get("sheet_data")
+    print(sheet_data)
     if not sheet_data:
         return Response({"error": "Sheet data is required"}, status=400)
 
@@ -226,6 +227,37 @@ def create_sheet_token(request):
     else:
         return Response({"error": "Failed to generate token"}, status=500)
     
+@api_view(["GET"])
+def timed_sheet_data_sync(request):
+    user= request.user
+    race = int(request.query_params.get('race')) 
+    sheetID = request.query_params.get('id')
+    currentHP = request.query_params.get('CurrentHitPoints')
+    tempHP = request.query_params.get("TempHitPoints")
+
+    race_models = {
+        'HumanSheets': HumanSheets,
+        'GnomeSheets': GnomeSheets,
+        'ElfSheets': ElfSheets,
+        'HalflingSheets': HalflingSheets,
+    }
+    user_race_name = RaceSheets(race).name
+    user_race_sheet = race_models.get(user_race_name)
+
+    try:
+        userSheet = user_race_sheet.objects.get(id=sheetID)
+    except user_race_sheet.DoesNotExist:
+        return Response({'error': 'Sheet not found'}, status=404)
+
+    userSheet.CurrentHitPoints = currentHP
+    userSheet.TempHitPoints = tempHP
+    userSheet.save()
+
+    return Response({
+        'CurrentHP':currentHP,
+        'TempHP': tempHP
+    })
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def levelUp(request):
@@ -249,16 +281,16 @@ def levelUp(request):
 
     # Level up
     userSheet.level += 1
-
+    print(userSheet.MaxHitPoints)
     # Update HP
     levelHitpoints = LevelOneHealth(charClass)
     newHitpoints = levelHitpoints.getLevelXHP()
-    userSheet.hitpoints += newHitpoints
-
+    userSheet.MaxHitPoints += newHitpoints
+    print("New MaxHitPoints: ", userSheet.MaxHitPoints)
     userSheet.save()
 
     return Response({
         'Level': userSheet.level,
-        'Newhitpoints': userSheet.hitpoints,
-        'Message': f"{userSheet.char_name} leveled up to {userSheet.level} with {userSheet.hitpoints} HP",
+        'Newhitpoints': userSheet.MaxHitPoints,
+        'Message': f"{userSheet.char_name} leveled up to {userSheet.level} with {userSheet.MaxHitPoints} HP",
     })

@@ -62,8 +62,9 @@ class HumanSheets(models.Model):
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=1)
     level = models.IntegerField(default=1)
-    hitpoints = models.IntegerField(default=0)
-
+    MaxHitPoints = models.IntegerField(default=0)
+    CurrentHitPoints = models.IntegerField(default=0)
+    TempHitPoints = models.IntegerField(default=0)
     
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -87,7 +88,9 @@ class GnomeSheets(models.Model):
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=2)
     level = models.IntegerField(default=1)
-    hitpoints = models.IntegerField(default=0)
+    MaxHitPoints = models.IntegerField(default=0)
+    CurrentHitPoints = models.IntegerField(default=0)
+    TempHitPoints = models.IntegerField(default=0)
    
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -111,7 +114,9 @@ class ElfSheets(models.Model):
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=3)
     level = models.IntegerField(default=1)
-    hitpoints = models.IntegerField(default=0)
+    MaxHitPoints = models.IntegerField(default=0)
+    CurrentHitPoints = models.IntegerField(default=0)
+    TempHitPoints = models.IntegerField(default=0)
  
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
@@ -135,7 +140,9 @@ class HalflingSheets(models.Model):
     active = models.BooleanField(default=True)
     race = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE, default=4)
     level = models.IntegerField(default=1)
-    hitpoints = models.IntegerField(default=0)
+    MaxHitPoints = models.IntegerField(default=0)
+    CurrentHitPoints = models.IntegerField(default=0)
+    TempHitPoints = models.IntegerField(default=0)
 
     #stats
     stat_Strength = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)

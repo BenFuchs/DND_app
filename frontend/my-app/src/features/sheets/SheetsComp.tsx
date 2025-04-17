@@ -85,6 +85,7 @@ const SheetsComp = () => {
     dispatch(getSheetDataAsync(sheetID))
       .then((result) => {
         if (result.payload) {
+          console.log(JSON.stringify(result.payload))
           // Store the fetched sheet data in local storage
           localStorage.setItem("SheetData", JSON.stringify(result.payload));
 

@@ -15,8 +15,8 @@ def createHumanSheet(user, user_Stats, user_Name, user_Class):
 
     # Calculate hit points based on class
     level_health = LevelOneHealth(user_Class)
-    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
-    print(f"Hitpoints: {hitpoints}")
+    MaxHitPoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {MaxHitPoints}")
 
     # Save the HumanSheet to the database
     HumanSheets.objects.create(
@@ -30,7 +30,7 @@ def createHumanSheet(user, user_Stats, user_Name, user_Class):
         stat_Constitution=stat_Constitution,
         stat_Charisma=stat_Charisma,
         level=1,
-        hitpoints=hitpoints
+        MaxHitPoints=MaxHitPoints
     )    
     
     return {"msg": f"Human character sheet created for {user.username} with name {user_Name} and class {HumanSheets.CharClass(user_Class).label}."}
@@ -47,8 +47,8 @@ def createGnomeSheet(user, user_Stats, user_Name, user_Class):
     stat_Charisma = int(stats[5])    # Index 5 = Charisma
 
     level_health = LevelOneHealth(user_Class)
-    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
-    print(f"Hitpoints: {hitpoints}")
+    MaxHitPoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {MaxHitPoints}")
 
     GnomeSheets.objects.create(
         owner=user, 
@@ -61,7 +61,7 @@ def createGnomeSheet(user, user_Stats, user_Name, user_Class):
         stat_Constitution=stat_Constitution,
         stat_Charisma=stat_Charisma,
         level=1,
-        hitpoints=hitpoints
+        MaxHitPoints=MaxHitPoints
     )    
     return {"msg": f"Gnome character sheet created for {user.username} with name {user_Name} and class {GnomeSheets.CharClass(user_Class).label}."}
 
@@ -77,8 +77,8 @@ def createElfSheet(user, user_Stats, user_Name, user_Class):
     stat_Constitution = int(stats[2]) # 
     stat_Charisma = int(stats[5])    # 
     level_health = LevelOneHealth(user_Class)
-    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
-    print(f"Hitpoints: {hitpoints}")
+    MaxHitPoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {MaxHitPoints}")
 
     ElfSheets.objects.create(
         owner=user, 
@@ -91,7 +91,7 @@ def createElfSheet(user, user_Stats, user_Name, user_Class):
         stat_Constitution=stat_Constitution,
         stat_Charisma=stat_Charisma,
         level=1,
-        hitpoints=hitpoints
+        MaxHitPoints = MaxHitPoints
     )    
     return {"msg": f"Elf character sheet created for {user.username} with name {user_Name} and class {ElfSheets.CharClass(user_Class).label}."}
 
@@ -106,8 +106,8 @@ def createHalflingSheet(user, user_Stats, user_Name, user_Class):
     stat_Constitution = int(stats[2]) # Index 4 = Constitution
     stat_Charisma = int(stats[5])    # Index 5 = Charisma
     level_health = LevelOneHealth(user_Class)
-    hitpoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
-    print(f"Hitpoints: {hitpoints}")
+    MaxHitPoints = level_health.getLevelOneHP() + int((stat_Constitution - 10) / 2)
+    print(f"Hitpoints: {MaxHitPoints}")
 
     HalflingSheets.objects.create(
         owner=user, 
@@ -120,6 +120,6 @@ def createHalflingSheet(user, user_Stats, user_Name, user_Class):
         stat_Constitution=stat_Constitution,
         stat_Charisma=stat_Charisma,
         level=1,
-        hitpoints=hitpoints
+        MaxHitPoints = MaxHitPoints
     )    
     return {"msg": f"Halfling character sheet created for {user.username} with name {user_Name} and class {HalflingSheets.CharClass(user_Class).label}."}
