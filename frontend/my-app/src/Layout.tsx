@@ -16,14 +16,14 @@ const Layout: React.FC = () => {
   const { sheetID, roomName } = useParams();
   const { isDarkMode, toggleTheme } = useTheme();
   const theme = getTheme(isDarkMode);
-  const isMobile = useMediaQuery("(max-width:756px)");
+  // const isMobile = useMediaQuery("(max-width:756px)");
 
   const [isSidenavOpen, setIsSidenavOpen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isExcludedRoute = location.pathname === "/" || location.pathname === "/login";
   const openNav = () => setIsSidenavOpen(true);
   const closeNav = () => setIsSidenavOpen(false);
-  const toggleDrawer = (open: boolean) => setIsDrawerOpen(open);
+  // const toggleDrawer = (open: boolean) => setIsDrawerOpen(open);
 
   // const SERVER = "https://dnd-backend-f57d.onrender.com/";
   const SERVER = "http://127.0.0.1:8000/";
@@ -31,24 +31,27 @@ const Layout: React.FC = () => {
   useEffect(() => {
     const syncInterval = setInterval(() => {
       updateSheetData();
-    }, 3600000); 
+    }, 600000); 
     return () => clearInterval(syncInterval); // Clear interval on component unmount
   }, []);
 
   const updateSheetData = () => {
     const SheetDataTemp = localStorage.getItem('SheetData');
-    if (!SheetDataTemp) {
-      console.log("Error: no Sheet Data in localStorage");
+    const ProficiencyDataTemp = localStorage.getItem('TempDataSelectedProficiency')
+    if (!SheetDataTemp || !ProficiencyDataTemp){
+      console.log("Error: Missing data in localStorage");
       return;
     }
   
-    const parsedData = JSON.parse(SheetDataTemp);
-  
+    const parsedSheetDataTemp = JSON.parse(SheetDataTemp);
+    const parsedProficiencyDataTemp = JSON.parse(ProficiencyDataTemp);
+
     const payload = {
-      race: parsedData.data?.race,
-      id: parsedData.data?.id,
-      CurrentHitPoints: parsedData.data?.CurrentHitPoints,
-      TempHitPoints: parsedData.data?.TempHitPoints
+      race: parsedSheetDataTemp.data?.race,
+      id: parsedSheetDataTemp.data?.id,
+      CurrentHitPoints: parsedSheetDataTemp.data?.CurrentHitPoints,
+      TempHitPoints: parsedSheetDataTemp.data?.TempHitPoints,
+      ChosenProficiencies: JSON.stringify(parsedProficiencyDataTemp)    
     };
   
     apiClient.get(SERVER + 'timed_sheet_data_sync/', {

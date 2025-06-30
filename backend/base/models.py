@@ -74,6 +74,9 @@ class HumanSheets(models.Model):
     stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
 
+    #proficiency
+    ChosenProficiencies = models.JSONField(default=list, blank=True)
+
 
 class GnomeSheets(models.Model):
     class CharClass(models.IntegerChoices):
@@ -99,6 +102,8 @@ class GnomeSheets(models.Model):
     stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+
+    ChosenProficiencies = models.JSONField(default=list, blank=True)
 
 
 class ElfSheets(models.Model):
@@ -126,6 +131,8 @@ class ElfSheets(models.Model):
     stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
 
+    ChosenProficiencies = models.JSONField(default=list, blank=True)
+
 
 class HalflingSheets(models.Model):
     class CharClass(models.IntegerChoices):
@@ -151,6 +158,8 @@ class HalflingSheets(models.Model):
     stat_Intelligence = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Constitution = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
     stat_Charisma = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(8)], default=0)
+
+    ChosenProficiencies = models.JSONField(default=list, blank=True)
 
 class ChatRoom(models.Model):
     room_name = models.CharField(max_length=255, unique=True)

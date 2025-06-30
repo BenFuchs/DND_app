@@ -73,7 +73,7 @@ export function rollDice(diceType: number, amount: number) {
 
 export function getSheetDataToken() {
   const SD = localStorage.getItem('SheetData');
-  console.log(SD)
+  // console.log(SD)
   const access = localStorage.getItem('Access'); 
   return apiClient.post(SERVER + 'SDT/', {
     sheet_data: SD

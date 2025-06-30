@@ -38,7 +38,6 @@ def generate_user_token(user, sheet_data):
     if charRace == 1:
         charID = HumanSheets.objects.filter(race=1, char_name=charName).values_list('id', flat=True).first()
         charGold = HumanSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
-        print(charID)
     elif charRace == 2:
         charID = GnomeSheets.objects.filter(race=2, char_name=charName).values_list('id', flat=True).first()
         charGold = GnomeSheets.objects.filter(char_name=charName).values_list('char_gold', flat=True).first()
@@ -57,7 +56,6 @@ def generate_user_token(user, sheet_data):
         "id": charID,
         "char_name": sheet_data["char_name"],
         "char_class": sheet_data["char_class"],
-        "char_gold": sheet_data["char_gold"],
         "level": sheet_data["level"],
         "MaxHitPoints": sheet_data["MaxHitPoints"],
         "CurrentHitPoints": sheet_data["CurrentHitPoints"],

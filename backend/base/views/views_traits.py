@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from ..models import CharacterSheet, HalflingSheets, HumanSheets, GnomeSheets, ElfSheets
+from ..models import CharacterSheet
+from ..helper.Race_Filter import get_race_model
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -68,27 +69,17 @@ def getClassFeats(request):
         return Response({"msg": "Error decoding class feats file."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     class_features = data.get("classes", {})
-    # print(f"class_features: {class_features}")
 
     try:
-        # Get the character sheet associated with the current user
         character_sheet = CharacterSheet.objects.get(owner=user, char_name=char_name)
         char_race = character_sheet.race
 
-        race_sheet_model = {
-            1: HumanSheets,
-            2: GnomeSheets,
-            3: ElfSheets,
-            4: HalflingSheets
-        }.get(char_race)
-
-        if not race_sheet_model:
+        race_model = get_race_model(char_race)
+        if not race_model:
             return Response({"msg": "Invalid race option"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Fetch the specific sheet
-        specific_sheet = race_sheet_model.objects.get(owner=user, char_name=char_name)
+        specific_sheet = race_model.objects.get(owner=user, char_name=char_name)
 
-        # Map char_class to class features
         class_feature_map = {
             1: "barbarian",
             2: "wizard",
@@ -100,13 +91,7 @@ def getClassFeats(request):
         if not class_key:
             return Response({"msg": "Invalid char_class"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Debugging: Print the class features and class key
-        # print(f"class_features: {class_features}")
-        # print(f"class_key: {class_key}")
-
-        # Get the class features and return
         response_data = class_features.get(class_key, [])
-        # print(f"response_data: {response_data}")  # Debugging
         return Response(response_data)
 
     except CharacterSheet.DoesNotExist:

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SkillsProps {
   skills: { [key: string]: number };
@@ -9,18 +9,47 @@ interface SkillsProps {
 const Skills = ({ skills, proficiency = 0 }: SkillsProps) => {
   const [selectedSkills, setSelectedSkills] = useState<{ [key: string]: boolean }>({});
 
-  const toggleSkill = (key: string) => {
-    setSelectedSkills((prev) => ({
+useEffect(() => {
+  const SDT_selected_skills = localStorage.getItem('TempDataSelectedProficiency');
+  if (SDT_selected_skills) {
+    try {
+      const parsedSkills: string[] = JSON.parse(SDT_selected_skills);
+      const restoredState: { [key: string]: boolean } = {};
+
+      parsedSkills.forEach((skill) => {
+        restoredState[skill] = true;
+      });
+
+      setSelectedSkills(restoredState);
+    } catch (err) {
+      console.error("Failed to parse stored proficiencies:", err);
+    }
+  }
+}, []);
+
+
+const toggleSkill = (key: string) => {
+  setSelectedSkills((prev) => {
+    const updated = {
       ...prev,
       [key]: !prev[key],
-    }));
-  };
+    };
+
+    const selectedProficiency = Object.keys(updated).filter((k) => updated[k]);
+    // console.log("Selected skill keys:", selectedProficiency);
+    localStorage.setItem('TempDataSelectedProficiency', JSON.stringify(selectedProficiency))
+    return updated;
+  });
+};
 
   if (!skills || Object.keys(skills).length === 0) {
     return <p>No skills data available.</p>;
   }
 
+
+  
   // console.log("Proficiency Bonus:", proficiency); // Debugging
+// console.log(Object.keys(skills)[0]); // logs the first skill name, e.g., 'Acrobatics'
 
   return (
     <div>

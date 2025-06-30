@@ -60,5 +60,10 @@ urlpatterns = [
     path('getPendingRequests/', views.getPendingRequests),
     path('searchUsers/', views.searchUsers),
 
+    #Logbook endpoints
+    path('getAllLogBooks/', views.get_all_texts),
+    path('GetLogbookByUser/', views.get_text_by_ID),
+    path('CreateLogbook/', views.Create_LogBook),
+    path('UpdateLogbook/', views.update_logbook_content),
 ]   
 

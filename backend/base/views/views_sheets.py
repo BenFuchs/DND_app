@@ -2,13 +2,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
 from ..models import CharacterSheet, UserProfile
-from ..helper.raceSheets import * 
+from ..helper.raceSheets import *
+from ..helper.Race_Filter import get_race_model
 from ..serializers import HumanSheetsSerializer, GnomeSheetsSerializer, ElfSheetsSerializer, HalflingSheetsSerializer
 
 
-# Endpoint to check how many sheets are owned by current logged user
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def logged_sheetNum_check(request):
@@ -18,25 +17,14 @@ def logged_sheetNum_check(request):
     max_sheets = 3
     user_profile = UserProfile.objects.filter(user=user).first()
     extra_sheets = user_profile.extra_sheets
-    if extra_sheets: 
+    if extra_sheets:
         max_sheets += extra_sheets
-
 
     for sheet in character_sheets:
         sheet_name = "Unnamed"
-        race_model = None
-
-        if sheet.race == CharacterSheet.Race.HUMAN:
-            race_model = HumanSheets
-        elif sheet.race == CharacterSheet.Race.GNOME:
-            race_model = GnomeSheets
-        elif sheet.race == CharacterSheet.Race.ELF:
-            race_model = ElfSheets
-        elif sheet.race == CharacterSheet.Race.HALFLING:
-            race_model = HalflingSheets
+        race_model = get_race_model(sheet.race)
 
         if race_model:
-            # Debugging: Log the query and results
             print(f"Debug: Fetching from {race_model.__name__} for sheet ID {sheet.id}, sheet name: {sheet.char_name}")
             race_sheet = race_model.objects.filter(owner=user, race=sheet.race).first()
             print(f"Debug: Query Result: {race_sheet}")
@@ -58,37 +46,35 @@ def logged_sheetNum_check(request):
         'max_sheets': max_sheets,
     })
 
-#Endpoint to create a sheet for the logged user / requires logged in user and sending statBlocks
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sheet_creation(request):
-    # print(request.data)
     user = request.user
-    data = request.data.get('data', {}) #use data to get information 
-    max_sheets = 3 #defualt max sheets per user
-    #info from data
-    user_stats = data.get('stats')  
+    data = request.data.get('data', {})
+    max_sheets = 3
+    user_stats = data.get('stats')
     user_Name = data.get('characterName')
     user_Class = data.get('charClass')
-    # Check if the user already has 3 character sheets
+
     sheet_count = CharacterSheet.objects.filter(owner=user, active=True).count()
-    # Check if the user has purchased any extra sheets
     user_profile = UserProfile.objects.filter(user=user).first()
     extra_sheet_count = user_profile.extra_sheets
     if extra_sheet_count:
-        # print(extra_sheet_count)
         max_sheets += extra_sheet_count
-        # print(max_sheets) # New max sheets for this user
+
     if sheet_count >= max_sheets:
         return Response({"msg": "You have reached the maximum number of character sheets, if you would like more please purchase one."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Get the race selection from the request data
     race = data.get('race')
-    if race is None or int(race) not in [choice[0] for choice in CharacterSheet.Race.choices]:
+    try:
+        race = int(race)
+        print("race debug", race)
+    except (TypeError, ValueError):
         return Response({"msg": "Invalid race selection."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Create a new character sheet with the selected race
     CharacterSheet.objects.create(owner=user, race=race, char_name=user_Name)
+
     if race == 1:
         createHumanSheet(user, user_stats, user_Name, user_Class)
     elif race == 2:
@@ -96,15 +82,16 @@ def sheet_creation(request):
     elif race == 3:
         createElfSheet(user, user_stats, user_Name, user_Class)
     elif race == 4:
+        print("race is 4")
         createHalflingSheet(user, user_stats, user_Name, user_Class)
     else:
-        return Response({"Error":"Invalid race selection"})
+        return Response({"Error": "Invalid race selection"})
 
     return Response({
         "msg": f"New character sheet created for {user.username} with race {CharacterSheet.Race(race).label}."
-        }, status=status.HTTP_201_CREATED)
+    }, status=status.HTTP_201_CREATED)
 
-#Endpoint to delete sheets for logged user @api_view(['POST'])
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sheet_delete(request):
@@ -115,25 +102,17 @@ def sheet_delete(request):
         return Response({"msg": "Sheet ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # Mark global sheet as inactive
         sheet = CharacterSheet.objects.get(id=sheet_id, owner=user, active=True)
         sheet.active = False
         sheet.save()
 
-        # Fetch associated race sheet
-        race = sheet.race
-        race_sheet = None
-        if race == CharacterSheet.Race.HUMAN:
-            race_sheet = HumanSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
-        elif race == CharacterSheet.Race.GNOME:
-            race_sheet = GnomeSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
-        elif race == CharacterSheet.Race.ELF:
-            race_sheet = ElfSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
-        elif race == CharacterSheet.Race.HALFLING:
-            race_sheet = HalflingSheets.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
+        race_model = get_race_model(sheet.race)
+        if not race_model:
+            return Response({"msg": "Race model not found."}, status=status.HTTP_400_BAD_REQUEST)
+
+        race_sheet = race_model.objects.filter(owner=user, char_name=sheet.char_name, active=True).first()
 
         if race_sheet:
-            # Mark the race-specific sheet as inactive
             race_sheet.active = False
             race_sheet.save()
         else:
@@ -153,41 +132,33 @@ def sheet_delete(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_specific_sheet(request, sheetID):
-    # Ensure the user is authenticated through the token
-    user = request.user  # The user is retrieved from the request, thanks to JWT authentication
-    print(sheetID)
+    user = request.user
     try:
-        # Get the parent sheet      
         parent_sheet = CharacterSheet.objects.get(id=sheetID, active=True)
+        race_model = get_race_model(parent_sheet.race)
+        if not race_model:
+            return Response({"msg": "Invalid race."}, status=400)
 
-        # Check the race of the sheet
-        sheet_race = parent_sheet.race
-        parent_sheet_owner = parent_sheet.owner
-        sheet_name = parent_sheet.char_name
+        char_sheet = race_model.objects.get(owner=parent_sheet.owner, char_name=parent_sheet.char_name, active=True)
 
-        if sheet_race == 1:  
-            char_sheet = HumanSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
-            serializer = HumanSheetsSerializer(char_sheet)
-            return Response({"data": serializer.data})
-        elif sheet_race ==2:
-            char_sheet = GnomeSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
-            serializer = GnomeSheetsSerializer(char_sheet)
-            return Response({"data": serializer.data})
-        elif sheet_race ==3:
-            char_sheet = ElfSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
-            serializer = ElfSheetsSerializer(char_sheet)
-            return Response({"data": serializer.data})
-        elif sheet_race ==4:
-            char_sheet = HalflingSheets.objects.get(owner=parent_sheet_owner, char_name = sheet_name, active=True)
-            serializer = HalflingSheetsSerializer(char_sheet)
-            return Response({"data": serializer.data})
+        serializer_map = {
+            1: HumanSheetsSerializer,
+            2: GnomeSheetsSerializer,
+            3: ElfSheetsSerializer,
+            4: HalflingSheetsSerializer,
+        }
+        serializer_class = serializer_map.get(parent_sheet.race)
+        if not serializer_class:
+            return Response({"msg": "No serializer found for race."}, status=400)
+
+        serializer = serializer_class(char_sheet)
+        return Response({"data": serializer.data})
 
     except CharacterSheet.DoesNotExist:
         return Response({"msg": "CharacterSheet not found."}, status=404)
-    except HumanSheets.DoesNotExist:
-        return Response({"msg": "HumanSheets not found for the given owner."}, status=404)
+    except race_model.DoesNotExist:
+        return Response({"msg": "Race-specific sheet not found."}, status=404)
     except Exception as e:
-        # Log the error for debugging if needed
         print(f"Error: {e}")
         return Response({"msg": "An error occurred."}, status=500)
 

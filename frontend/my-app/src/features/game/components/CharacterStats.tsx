@@ -25,10 +25,10 @@ const CharacterStats = ({ stats }: CharacterStatsProps) => {
         {statNames.map((statName, index) => {
           // For each stat name, find the corresponding value
           const statValue = stats.find(stat => stat.name === `stat_${statName}`)?.value || 0;
-
+          const modValue = Math.floor((statValue - 10) / 2);
           return (
             <li key={statName}>
-              {statName}: {statValue}
+              {statName}: {statValue} | Modifier: {modValue}
             </li>
           );
         })}

@@ -122,4 +122,5 @@ def createHalflingSheet(user, user_Stats, user_Name, user_Class):
         level=1,
         MaxHitPoints = MaxHitPoints
     )    
+    print("Character Created")
     return {"msg": f"Halfling character sheet created for {user.username} with name {user_Name} and class {HalflingSheets.CharClass(user_Class).label}."}

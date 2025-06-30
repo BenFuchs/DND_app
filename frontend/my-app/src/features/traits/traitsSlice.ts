@@ -13,7 +13,7 @@ export const getRaceTraitsAsync = createAsyncThunk(
   "traits/getRaceTraits",
   async (sheetID: number) => {
     const response = await getRaceTraits(sheetID);
-    console.log(response) // testing
+    // console.log(response) // testing
     return response.data; // Assuming the backend returns the full features array with name and description
   }
 );

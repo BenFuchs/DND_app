@@ -27,7 +27,7 @@ import LoadingIcon from "../hashLoading/loadingIcon";
 import { Button } from "@mui/material";
 import CharacterCurrentHp from "./components/CharacterCurrentHp";
 import CharacterTempHp from "./components/CharacterTempHp";
-import { CheckBox } from "@mui/icons-material";
+// import { CheckBox } from "@mui/icons-material";
 import DeathSaveCounter from "./components/DeathSaveCounter";
 
 // TypeScript interfaces
@@ -48,6 +48,7 @@ interface SheetData {
   CurrentHitPoints: number;
   TempHitPoints: number;
   proficiency: number;
+  ChosenProficiency: [];
 }
 
 interface Mods {
@@ -79,6 +80,7 @@ const GameComponent = () => {
   const open = () => setModal(true);
   const close = () => setModal(false);
 
+  console.log(Mods)
   useEffect(() => {
     const storedSheetData = localStorage.getItem("SheetData");
     if (storedSheetData) {
@@ -263,6 +265,7 @@ const GameComponent = () => {
   };
 
   const skills: SkillMap = Mods ? calculateSkills() : {};
+// console.log(Object.keys(skills)[0]); // logs the first skill name, e.g., 'Acrobatics'
 
   const charClassString = (): string => {
     const classes = ["Unknown", "Barbarian", "Wizard", "Cleric", "Rogue"];
